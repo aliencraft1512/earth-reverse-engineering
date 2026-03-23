@@ -1,0 +1,66 @@
+https://kh.google.com
+
+https://earth.googleusercontent.com
+
+
+https://kh.google.com/rt/earth/PlanetoidMetadata
+
+
+https://kh.google.com/dbRoot.v5?hl=el&gl=cy&output=proto&cv=7.3.6.10201&ct=pro
+
+
+https://kh.google.com/geauth?ct=pro
+
+
+https://mw1.google.com
+
+
+curl -H 'User-Agent: GoogleEarth/7.3.6.10201(Windows;Microsoft Windows (6.2.9200.0);el;kml:2.2;client:Pro;type:default)' -H 'Cookie: NID=528=LIfmr7X2PvhgXFNFVa26fPiH6jxedHfOiFDf5k9O13ZCP7uyhvFbUEmIZf3t1CqcOVUv1zN64iHPIIOVqIjoY0GcJQJwL2VEM4xBRLTz1THZMo42m7nuhTEXQSCjdXO5lVOrsCDwXNTNScUsRXqBOIOWUPI3-79yksV6jmyrZMqhiThTo3ijxwLtZdyPi9wvgJbCoFpEaX0A_-54ToNWa8Evao9MB95smjqgaJJqexEsoxC4cnflKtFX3VBedE37fA; __Secure-BUCKET=CBY; $Version="0"; SessionId=egPTzQADEAEAAQBAZcaEp6/YI6zSZxPtvFX404aPykSMOe4w0CAcBTICa4WpGf7YvhGQ2osgkqUQhSzogGkKkTgdKL+FmkLe2JQ9tA==; State=1' -H 'Accept-Language: el-CY,en,*' -H 'Host: kh.google.com' --compressed 'https://kh.google.com/flatfile?q2-0-q.1033'
+
+
+curl -H 'User-Agent: GoogleEarth/7.3.6.10201(Windows;Microsoft Windows (6.2.9200.0);el;kml:2.2;client:Pro;type:default)' -H 'Cookie: NID=528=LIfmr7X2PvhgXFNFVa26fPiH6jxedHfOiFDf5k9O13ZCP7uyhvFbUEmIZf3t1CqcOVUv1zN64iHPIIOVqIjoY0GcJQJwL2VEM4xBRLTz1THZMo42m7nuhTEXQSCjdXO5lVOrsCDwXNTNScUsRXqBOIOWUPI3-79yksV6jmyrZMqhiThTo3ijxwLtZdyPi9wvgJbCoFpEaX0A_-54ToNWa8Evao9MB95smjqgaJJqexEsoxC4cnflKtFX3VBedE37fA; __Secure-BUCKET=CBY; $Version="0"; SessionId=egPTzQADEAEAAQBAZcaEp6/YI6zSZxPtvFX404aPykSMOe4w0CAcBTICa4WpGf7YvhGQ2osgkqUQhSzogGkKkTgdKL+FmkLe2JQ9tA==; State=1' -H 'Accept-Language: el-CY,en,*' -H 'Host: kh.google.com' --compressed 'https://kh.google.com/rt/earth/Copyrights/pb=1u1008'
+
+
+
+curl -H 'User-Agent: GoogleEarth/7.3.6.10201(Windows;Microsoft Windows (6.2.9200.0);el;kml:2.2;client:Pro;type:default)' -H 'Cookie: NID=528=LIfmr7X2PvhgXFNFVa26fPiH6jxedHfOiFDf5k9O13ZCP7uyhvFbUEmIZf3t1CqcOVUv1zN64iHPIIOVqIjoY0GcJQJwL2VEM4xBRLTz1THZMo42m7nuhTEXQSCjdXO5lVOrsCDwXNTNScUsRXqBOIOWUPI3-79yksV6jmyrZMqhiThTo3ijxwLtZdyPi9wvgJbCoFpEaX0A_-54ToNWa8Evao9MB95smjqgaJJqexEsoxC4cnflKtFX3VBedE37fA; __Secure-BUCKET=CBY' -H 'Accept-Language: el-CY,en,*' -H 'Host: kh.google.com' --compressed 'https://kh.google.com/rt/earth/PlanetoidMetadata'
+
+
+curl -H 'User-Agent: GoogleEarth/7.3.6.10201(Windows;Microsoft Windows (6.2.9200.0);el;kml:2.2;client:Pro;type:default)' -H 'Cookie: NID=528=LIfmr7X2PvhgXFNFVa26fPiH6jxedHfOiFDf5k9O13ZCP7uyhvFbUEmIZf3t1CqcOVUv1zN64iHPIIOVqIjoY0GcJQJwL2VEM4xBRLTz1THZMo42m7nuhTEXQSCjdXO5lVOrsCDwXNTNScUsRXqBOIOWUPI3-79yksV6jmyrZMqhiThTo3ijxwLtZdyPi9wvgJbCoFpEaX0A_-54ToNWa8Evao9MB95smjqgaJJqexEsoxC4cnflKtFX3VBedE37fA; __Secure-BUCKET=CBY; $Version="0"; SessionId=egPTzQADEAEAAQBAZcaEp6/YI6zSZxPtvFX404aPykSMOe4w0CAcBTICa4WpGf7YvhGQ2osgkqUQhSzogGkKkTgdKL+FmkLe2JQ9tA==; State=1' -H 'Accept-Language: el-CY,en,*' -H 'Host: khmdb.google.com' --compressed 'https://khmdb.google.com/flatfile?db=tm&f1-02002311-i.273-fc99f'
+
+
+
+curl -H 'Accept: application/vnd.google-earth.kml+xml, application/vnd.google-earth.kmz, image/*, */*' -H 'Content-Type: application/octet-stream' -H 'User-Agent: GoogleEarth/7.3.6.10201(Windows;Microsoft Windows (6.2.9200.0);el;kml:2.2;client:Pro;type:default)' -H 'Cookie: NID=528=LIfmr7X2PvhgXFNFVa26fPiH6jxedHfOiFDf5k9O13ZCP7uyhvFbUEmIZf3t1CqcOVUv1zN64iHPIIOVqIjoY0GcJQJwL2VEM4xBRLTz1THZMo42m7nuhTEXQSCjdXO5lVOrsCDwXNTNScUsRXqBOIOWUPI3-79yksV6jmyrZMqhiThTo3ijxwLtZdyPi9wvgJbCoFpEaX0A_-54ToNWa8Evao9MB95smjqgaJJqexEsoxC4cnflKtFX3VBedE37fA; __Secure-BUCKET=CBY; $Version="0"; SessionId=egPTzQADEAEAAQBAZcaEp6/YI6zSZxPtvFX404aPykSMOe4w0CAcBTICa4WpGf7YvhGQ2osgkqUQhSzogGkKkTgdKL+FmkLe2JQ9tA==; State=1' -H 'Accept-Language: el-CY,en,*' -H 'Host: kh.google.com' --data-binary "
+
+
+
+
+
+
+curl -H 'If-Modified-Since: Mon, 23 Mar 2026 17:03:03 UT' -H 'User-Agent: GoogleEarth/7.3.6.10201(Windows;Microsoft Windows (6.2.9200.0);el;kml:2.2;client:Pro;type:default)' -H 'Cookie: NID=528=LIfmr7X2PvhgXFNFVa26fPiH6jxedHfOiFDf5k9O13ZCP7uyhvFbUEmIZf3t1CqcOVUv1zN64iHPIIOVqIjoY0GcJQJwL2VEM4xBRLTz1THZMo42m7nuhTEXQSCjdXO5lVOrsCDwXNTNScUsRXqBOIOWUPI3-79yksV6jmyrZMqhiThTo3ijxwLtZdyPi9wvgJbCoFpEaX0A_-54ToNWa8Evao9MB95smjqgaJJqexEsoxC4cnflKtFX3VBedE37fA; __Secure-BUCKET=CBY' -H 'Accept-Language: el-CY,en,*' -H 'Host: kh.google.com' --compressed 'https://kh.google.com/rt/earth/Copyrights/pb=1u1008'
+
+
+curl -H 'Proxy-Connection: keep-alive' -H 'Host: kh.google.com' -H 'User-Agent: GoogleEarth/7.3.6.10201(Windows;Microsoft Windows (6.2.9200.0);el;kml:2.2;client:Pro;type:default)' -X CONNECT 'https://kh.google.com'
+
+
+
+curl -H 'User-Agent: GoogleEarth/7.3.6.10201(Windows;Microsoft Windows (6.2.9200.0);el;kml:2.2;client:Pro;type:default)' -H 'Cookie: NID=528=LIfmr7X2PvhgXFNFVa26fPiH6jxedHfOiFDf5k9O13ZCP7uyhvFbUEmIZf3t1CqcOVUv1zN64iHPIIOVqIjoY0GcJQJwL2VEM4xBRLTz1THZMo42m7nuhTEXQSCjdXO5lVOrsCDwXNTNScUsRXqBOIOWUPI3-79yksV6jmyrZMqhiThTo3ijxwLtZdyPi9wvgJbCoFpEaX0A_-54ToNWa8Evao9MB95smjqgaJJqexEsoxC4cnflKtFX3VBedE37fA; __Secure-BUCKET=CBY; $Version="0"; SessionId=egPTzQADEAEAAQBAZcaEp6/YI6zSZxPtvFX404aPykSMOe4w0CAcBTICa4WpGf7YvhGQ2osgkqUQhSzogGkKkTgdKL+FmkLe2JQ9tA==' -H 'Accept-Language: el-CY,en,*' -H 'Host: kh.google.com' --compressed 'https://kh.google.com/flatfile?lf-0-icons/census_new_l.png&h=32'
+
+
+curl -H 'If-Modified-Since: Mon, 1 Dec 2025 18:17:03 UT' -H 'User-Agent: GoogleEarth/7.3.6.10201(Windows;Microsoft Windows (6.2.9200.0);el;kml:2.2;client:Pro;type:default)' -H 'Cookie: NID=528=LIfmr7X2PvhgXFNFVa26fPiH6jxedHfOiFDf5k9O13ZCP7uyhvFbUEmIZf3t1CqcOVUv1zN64iHPIIOVqIjoY0GcJQJwL2VEM4xBRLTz1THZMo42m7nuhTEXQSCjdXO5lVOrsCDwXNTNScUsRXqBOIOWUPI3-79yksV6jmyrZMqhiThTo3ijxwLtZdyPi9wvgJbCoFpEaX0A_-54ToNWa8Evao9MB95smjqgaJJqexEsoxC4cnflKtFX3VBedE37fA; __Secure-BUCKET=CBY' -H 'Accept-Language: el-CY,en,*' -H 'Host: khmdb.google.com' --compressed 'https://khmdb.google.com/dbRoot.v5?db=tm&hl=el&gl=cy&output=proto&cv=7.3.6.10201&ct=pro'
+
+
+curl -H 'User-Agent: GoogleEarth/7.3.6.10201(Windows;Microsoft Windows (6.2.9200.0);el;kml:2.2;client:Pro;type:default)' -H 'Cookie: NID=528=LIfmr7X2PvhgXFNFVa26fPiH6jxedHfOiFDf5k9O13ZCP7uyhvFbUEmIZf3t1CqcOVUv1zN64iHPIIOVqIjoY0GcJQJwL2VEM4xBRLTz1THZMo42m7nuhTEXQSCjdXO5lVOrsCDwXNTNScUsRXqBOIOWUPI3-79yksV6jmyrZMqhiThTo3ijxwLtZdyPi9wvgJbCoFpEaX0A_-54ToNWa8Evao9MB95smjqgaJJqexEsoxC4cnflKtFX3VBedE37fA; __Secure-BUCKET=CBY; $Version="0"; SessionId=egPTzQADEAEAAQBAZcaEp6/YI6zSZxPtvFX404aPykSMOe4w0CAcBTICa4WpGf7YvhGQ2osgkqUQhSzogGkKkTgdKL+FmkLe2JQ9tA==' -H 'Accept-Language: el-CY,en,*' -H 'Host: kh.google.com' --compressed 'https://kh.google.com/flatfile?lf-0-icons/1050_l.png&h=32'
+
+
+
+curl -H 'User-Agent: GoogleEarth/7.3.6.10201(Windows;Microsoft Windows (6.2.9200.0);el;kml:2.2;client:Pro;type:default)' -H 'Cookie: NID=528=LIfmr7X2PvhgXFNFVa26fPiH6jxedHfOiFDf5k9O13ZCP7uyhvFbUEmIZf3t1CqcOVUv1zN64iHPIIOVqIjoY0GcJQJwL2VEM4xBRLTz1THZMo42m7nuhTEXQSCjdXO5lVOrsCDwXNTNScUsRXqBOIOWUPI3-79yksV6jmyrZMqhiThTo3ijxwLtZdyPi9wvgJbCoFpEaX0A_-54ToNWa8Evao9MB95smjqgaJJqexEsoxC4cnflKtFX3VBedE37fA; __Secure-BUCKET=CBY; $Version="0"; SessionId=egPTzQADEAEAAQBAZcaEp6/YI6zSZxPtvFX404aPykSMOe4w0CAcBTICa4WpGf7YvhGQ2osgkqUQhSzogGkKkTgdKL+FmkLe2JQ9tA==' -H 'Accept-Language: el-CY,en,*' -H 'Host: kh.google.com' --compressed 'https://kh.google.com/flatfile?lf-0-icons/3d_buildings_new_l.png&h=32'
+
+
+
+curl -H 'User-Agent: GoogleEarth/7.3.6.10201(Windows;Microsoft Windows (6.2.9200.0);el;kml:2.2;client:Pro;type:default)' -H 'Cookie: NID=528=LIfmr7X2PvhgXFNFVa26fPiH6jxedHfOiFDf5k9O13ZCP7uyhvFbUEmIZf3t1CqcOVUv1zN64iHPIIOVqIjoY0GcJQJwL2VEM4xBRLTz1THZMo42m7nuhTEXQSCjdXO5lVOrsCDwXNTNScUsRXqBOIOWUPI3-79yksV6jmyrZMqhiThTo3ijxwLtZdyPi9wvgJbCoFpEaX0A_-54ToNWa8Evao9MB95smjqgaJJqexEsoxC4cnflKtFX3VBedE37fA; __Secure-BUCKET=CBY; $Version="0"; SessionId=egPTzQADEAEAAQBAZcaEp6/YI6zSZxPtvFX404aPykSMOe4w0CAcBTICa4WpGf7YvhGQ2osgkqUQhSzogGkKkTgdKL+FmkLe2JQ9tA==' -H 'Accept-Language: el-CY,en,*' -H 'Host: kh.google.com' --compressed 'https://kh.google.com/flatfile?lf-0-icons/panoramio_photo_square_l.png&h=32'
+
+
+
+curl -H 'User-Agent: GoogleEarth/7.3.6.10201(Windows;Microsoft Windows (6.2.9200.0);el;kml:2.2;client:Pro;type:default)' -H 'Cookie: NID=528=LIfmr7X2PvhgXFNFVa26fPiH6jxedHfOiFDf5k9O13ZCP7uyhvFbUEmIZf3t1CqcOVUv1zN64iHPIIOVqIjoY0GcJQJwL2VEM4xBRLTz1THZMo42m7nuhTEXQSCjdXO5lVOrsCDwXNTNScUsRXqBOIOWUPI3-79yksV6jmyrZMqhiThTo3ijxwLtZdyPi9wvgJbCoFpEaX0A_-54ToNWa8Evao9MB95smjqgaJJqexEsoxC4cnflKtFX3VBedE37fA; __Secure-BUCKET=CBY; $Version="0"; SessionId=egPTzQADEAEAAQBAZcaEp6/YI6zSZxPtvFX404aPykSMOe4w0CAcBTICa4WpGf7YvhGQ2osgkqUQhSzogGkKkTgdKL+FmkLe2JQ9tA==; State=1' -H 'Accept-Language: el-CY,en,*' -H 'Host: khmdb.google.com' --compressed 'https://khmdb.google.com/flatfile?db=tm&qp-0200231121100202-q.366'
+
+
