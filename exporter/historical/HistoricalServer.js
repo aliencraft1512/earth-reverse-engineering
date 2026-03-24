@@ -16,7 +16,7 @@ app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
 // --- Config ---
-const DBROOT_PATH = path.resolve(__dirname, '../test/dbRoot.v5');
+const DBROOT_PATH = path.resolve(__dirname, 'dbRoot.v5');
 const secretKey = fs.existsSync(DBROOT_PATH) ? fs.readFileSync(DBROOT_PATH) : null;
 const CACHE_DIR = path.join(__dirname, 'tile_cache');
 if (!fs.existsSync(CACHE_DIR)) fs.mkdirSync(CACHE_DIR, { recursive: true });
@@ -27,7 +27,9 @@ const REQUEST_HEADERS = {
 };
 
 const PROBE_TIMEOUT_MS = 15000;
-const BASE_URL = 'https://khmdb.google.com/flatfile?db=tm';
+//const BASE_URL = 'https://khmdb.google.com/flatfile?db=tm';
+const BASE_URL = 'https://cmpmap.com/flatfile?db=tm';
+
 
 // --- Decryption & Decoding Helpers ---
 
