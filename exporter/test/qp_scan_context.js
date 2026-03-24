@@ -1,58 +1,53 @@
 
 const fs = require('fs');
-
-function readVarint(buffer, offset) {
-  let result = 0n;
-  let shift = 0n;
-  let i = offset;
-  while (i < buffer.length) {
-    const b = BigInt(buffer[i++]);
-    result |= (b & 0x7fn) << shift;
-    if ((b & 0x80n) === 0n) return { value: Number(result), next: i };
-    shift += 7n;
-  }
-  return { value: Number(result), next: i, error: 'EOF' };
-}
+const path = require('path');
 
 function decodeDate(val) {
-    let year = val >> 9;
-    if (year < 200) year += 1920;
+    const year = (val >> 9) + 1920;
     const month = (val >> 5) & 0x0F;
     const day = val & 0x1F;
-    if (year < 1900 || year > 2100 || month < 1 || month > 12 || day < 1 || day > 31) return null;
     return `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
 }
 
-const data = fs.readFileSync('qp_decompressed.bin');
-let i = 0;
-while (i < data.length - 20) {
-    if (data[i] === 0x08) {
-        const { value: v1, next: n1 } = readVarint(data, i + 1);
-        const date = decodeDate(v1);
-        if (date === '2025-07-02') {
-            console.log(`Found 2025-07-02 at offset ${i}`);
-            // Print next 20 bytes
-            console.log('Context:', data.slice(i, i + 30).toString('hex'));
-            
-            // Scan next fields
-            let j = n1;
-            for(let k=0; k<5; k++) {
-                const { value: tagKey, next: nTag } = readVarint(data, j);
-                const tag = tagKey >> 3;
-                const type = tagKey & 7;
-                if (type === 0) {
-                    const { value: val, next: nVal } = readVarint(data, nTag);
-                    console.log(`  Tag ${tag}: ${val}`);
-                    j = nVal;
-                } else if (type === 2) {
-                    const { value: len, next: nLen } = readVarint(data, nTag);
-                    console.log(`  Tag ${tag}: [Length ${len}]`);
-                    j = nLen + len;
-                } else {
-                    break;
-                }
+function readVarint(buffer, offset) {
+    let result = 0;
+    let shift = 0;
+    let i = offset;
+    while (i < buffer.length) {
+        const b = buffer[i++];
+        result |= (b & 0x7f) << shift;
+        if ((b & 0x80) === 0) return { value: result >>> 0, next: i };
+        shift += 7;
+        if (shift > 56) return { value: 0, next: i, error: 'Too long' };
+    }
+    return { value: 0, next: i, error: 'EOF' };
+}
+
+const data = fs.readFileSync(path.join(__dirname, 'qp_decompressed.bin'));
+
+console.log("Scanning qp_decompressed.bin for (Date, iCode) patterns...");
+
+let count = 0;
+let lastDate = null;
+let lastVersion = null;
+
+for (let i = 0; i < data.length - 10; i++) {
+    // Look for Field 1 (wire 2) which is a message containing Date (Field 1, wire 0) and iCode (Field 2, wire 0)
+    // 0x0A [len] 0x08 [date_varint] 0x10 [version_varint]
+    if (data[i] === 0x0A && data[i + 2] === 0x08) {
+        const len = data[i + 1];
+        const { value: dateVal, next: afterDate } = readVarint(data, i + 3);
+        if (data[afterDate] === 0x10) {
+            const { value: versionVal, next: afterVersion } = readVarint(data, afterDate + 1);
+            const dateStr = decodeDate(dateVal);
+            console.log(`Found: Date=${dateStr} (${dateVal}), iCode=${versionVal} at offset ${i}`);
+            count++;
+            if (count > 50) {
+                console.log("... (stopping after 50 matches)");
+                break;
             }
         }
     }
-    i++;
 }
+
+console.log(`Total patterns found: ${count}`);

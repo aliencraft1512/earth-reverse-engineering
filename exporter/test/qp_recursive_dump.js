@@ -64,5 +64,5 @@ function dumpProtobuf(buffer, start = 0, end = buffer.length, prefix = '') {
     }
 }
 
-const data = fs.readFileSync('qp_cyprus.bin');
+const data = fs.readFileSync('qp_decompressed.bin');
 dumpProtobuf(data);
