@@ -1,0 +1,6638 @@
+{
+  "bounds": {
+    "north": 35.75,
+    "south": 34.4501,
+    "east": 34.75,
+    "west": 32.1505
+  },
+  "zoom": 17,
+  "minRefineLevel": 0,
+  "maxRefineLevel": 6,
+  "sampleGridSize": 3,
+  "requestDelayMs": 0,
+  "timeoutMs": 15000,
+  "invalidResponseSize": 114,
+  "refineOnMissing": true,
+  "neighborhoodOnly": false,
+  "candidateVersions": [
+    1,
+    3,
+    5,
+    6,
+    7,
+    8,
+    10,
+    15,
+    16,
+    17,
+    24,
+    30,
+    33,
+    37,
+    39,
+    40,
+    41,
+    43,
+    53,
+    54,
+    55,
+    61,
+    62,
+    63,
+    64,
+    65,
+    70,
+    73,
+    76,
+    77,
+    84,
+    85,
+    86,
+    89,
+    90,
+    91,
+    95,
+    96,
+    97,
+    98,
+    99,
+    100,
+    105,
+    108,
+    110,
+    112,
+    114,
+    115,
+    119,
+    120,
+    121,
+    122,
+    123,
+    125,
+    126,
+    128,
+    130,
+    134,
+    136,
+    137,
+    138,
+    140,
+    141,
+    142,
+    143,
+    144,
+    146,
+    148,
+    150,
+    158,
+    160,
+    161,
+    164,
+    165,
+    166,
+    169,
+    170,
+    172,
+    173,
+    176,
+    182,
+    186,
+    195,
+    196,
+    197,
+    200,
+    201,
+    212,
+    215,
+    216,
+    217,
+    218,
+    219,
+    220,
+    228,
+    232,
+    233,
+    240,
+    245,
+    246,
+    248,
+    249,
+    253,
+    254,
+    256,
+    257,
+    258,
+    261,
+    262,
+    264,
+    265,
+    266,
+    267,
+    269,
+    270,
+    271,
+    272,
+    273,
+    274,
+    275,
+    276,
+    277,
+    278,
+    279,
+    280,
+    281,
+    282,
+    285,
+    286,
+    287,
+    288,
+    291,
+    292,
+    293,
+    294,
+    295,
+    296,
+    297,
+    298,
+    299,
+    300,
+    301,
+    303,
+    304,
+    305,
+    306,
+    307,
+    308,
+    309,
+    316,
+    317,
+    318,
+    320,
+    321,
+    322,
+    323,
+    324,
+    331,
+    334,
+    335,
+    336,
+    339,
+    341,
+    342,
+    343,
+    344,
+    345,
+    346,
+    347,
+    348,
+    349,
+    350,
+    352,
+    353,
+    354,
+    356,
+    357,
+    358,
+    359,
+    360,
+    361,
+    362,
+    364,
+    365,
+    366
+  ],
+  "dates": [
+    {
+      "date": "1925-02-25",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fa59",
+      "versionHint": 3
+    },
+    {
+      "date": "1949-03-04",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "f3a64",
+      "versionHint": 354
+    },
+    {
+      "date": "1985-12-31",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "f839f",
+      "versionHint": 272
+    },
+    {
+      "date": "1989-08-22",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "f8b16",
+      "versionHint": 272
+    },
+    {
+      "date": "1994-04-04",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "f9484",
+      "versionHint": 272
+    },
+    {
+      "date": "1994-05-31",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "f94bf",
+      "versionHint": 5
+    },
+    {
+      "date": "1997-04-10",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "f9a8a",
+      "versionHint": 7
+    },
+    {
+      "date": "1997-12-31",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "f9b9f",
+      "versionHint": 6
+    },
+    {
+      "date": "2000-04-21",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fa095",
+      "versionHint": 10
+    },
+    {
+      "date": "2000-06-07",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fa0c7",
+      "versionHint": 10
+    },
+    {
+      "date": "2000-07-10",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fa0ea",
+      "versionHint": 10
+    },
+    {
+      "date": "2000-09-15",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fa12f",
+      "versionHint": 10
+    },
+    {
+      "date": "2001-02-12",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fa24c",
+      "versionHint": 10
+    },
+    {
+      "date": "2001-03-03",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fa263",
+      "versionHint": 10
+    },
+    {
+      "date": "2001-05-05",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fa2a5",
+      "versionHint": 15
+    },
+    {
+      "date": "2001-08-11",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fa30b",
+      "versionHint": 10
+    },
+    {
+      "date": "2001-09-12",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fa32c",
+      "versionHint": 349
+    },
+    {
+      "date": "2001-12-03",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fa383",
+      "versionHint": 349
+    },
+    {
+      "date": "2001-12-31",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fa39f",
+      "versionHint": 10
+    },
+    {
+      "date": "2002-02-05",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fa445",
+      "versionHint": 305
+    },
+    {
+      "date": "2002-03-08",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fa468",
+      "versionHint": 6
+    },
+    {
+      "date": "2002-05-04",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fa4a4",
+      "versionHint": 15
+    },
+    {
+      "date": "2002-06-08",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fa4c8",
+      "versionHint": 349
+    },
+    {
+      "date": "2002-06-10",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fa4ca",
+      "versionHint": 6
+    },
+    {
+      "date": "2002-07-05",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fa4e5",
+      "versionHint": 349
+    },
+    {
+      "date": "2002-08-28",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fa51c",
+      "versionHint": 6
+    },
+    {
+      "date": "2002-09-04",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fa524",
+      "versionHint": 349
+    },
+    {
+      "date": "2002-12-01",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fa581",
+      "versionHint": 7
+    },
+    {
+      "date": "2002-12-23",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fa597",
+      "versionHint": 8
+    },
+    {
+      "date": "2002-12-31",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fa59f",
+      "versionHint": 7
+    },
+    {
+      "date": "2003-03-09",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fa669",
+      "versionHint": 1
+    },
+    {
+      "date": "2003-04-14",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fa68e",
+      "versionHint": 6
+    },
+    {
+      "date": "2003-05-24",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fa6b8",
+      "versionHint": 6
+    },
+    {
+      "date": "2003-08-16",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fa710",
+      "versionHint": 6
+    },
+    {
+      "date": "2003-08-30",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fa71e",
+      "versionHint": 349
+    },
+    {
+      "date": "2003-09-04",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fa724",
+      "versionHint": 61
+    },
+    {
+      "date": "2003-09-07",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fa727",
+      "versionHint": 349
+    },
+    {
+      "date": "2003-09-09",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fa729",
+      "versionHint": 8
+    },
+    {
+      "date": "2003-09-10",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fa72a",
+      "versionHint": 349
+    },
+    {
+      "date": "2003-09-27",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fa73b",
+      "versionHint": 10
+    },
+    {
+      "date": "2003-10-28",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fa75c",
+      "versionHint": 6
+    },
+    {
+      "date": "2003-11-20",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fa774",
+      "versionHint": 8
+    },
+    {
+      "date": "2003-11-26",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fa77a",
+      "versionHint": 15
+    },
+    {
+      "date": "2003-12-15",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fa78f",
+      "versionHint": 10
+    },
+    {
+      "date": "2003-12-30",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fa79e",
+      "versionHint": 6
+    },
+    {
+      "date": "2003-12-31",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fa79f",
+      "versionHint": 3
+    },
+    {
+      "date": "2004-01-12",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fa82c",
+      "versionHint": 1
+    },
+    {
+      "date": "2004-01-20",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fa834",
+      "versionHint": 6
+    },
+    {
+      "date": "2004-02-14",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fa84e",
+      "versionHint": 6
+    },
+    {
+      "date": "2004-02-17",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fa851",
+      "versionHint": 1
+    },
+    {
+      "date": "2004-07-01",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fa8e1",
+      "versionHint": 6
+    },
+    {
+      "date": "2004-09-15",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fa92f",
+      "versionHint": 10
+    },
+    {
+      "date": "2004-11-14",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fa96e",
+      "versionHint": 10
+    },
+    {
+      "date": "2004-12-31",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fa99f",
+      "versionHint": 6
+    },
+    {
+      "date": "2005-01-01",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "faa21",
+      "versionHint": 349
+    },
+    {
+      "date": "2005-01-11",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "faa2b",
+      "versionHint": 349
+    },
+    {
+      "date": "2005-01-20",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "faa34",
+      "versionHint": 1
+    },
+    {
+      "date": "2005-01-30",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "faa3e",
+      "versionHint": 1
+    },
+    {
+      "date": "2005-02-20",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "faa54",
+      "versionHint": 10
+    },
+    {
+      "date": "2005-02-27",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "faa5b",
+      "versionHint": 40
+    },
+    {
+      "date": "2005-03-11",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "faa6b",
+      "versionHint": 6
+    },
+    {
+      "date": "2005-04-16",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "faa90",
+      "versionHint": 1
+    },
+    {
+      "date": "2005-06-25",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "faad9",
+      "versionHint": 6
+    },
+    {
+      "date": "2005-07-14",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "faaee",
+      "versionHint": 10
+    },
+    {
+      "date": "2005-08-05",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fab05",
+      "versionHint": 6
+    },
+    {
+      "date": "2005-08-23",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fab17",
+      "versionHint": 349
+    },
+    {
+      "date": "2005-08-28",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fab1c",
+      "versionHint": 349
+    },
+    {
+      "date": "2005-09-02",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fab22",
+      "versionHint": 6
+    },
+    {
+      "date": "2005-09-06",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fab26",
+      "versionHint": 349
+    },
+    {
+      "date": "2005-09-28",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fab3c",
+      "versionHint": 349
+    },
+    {
+      "date": "2005-11-16",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fab70",
+      "versionHint": 6
+    },
+    {
+      "date": "2005-12-01",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fab81",
+      "versionHint": 70
+    },
+    {
+      "date": "2005-12-31",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fab9f",
+      "versionHint": 349
+    },
+    {
+      "date": "2006-01-09",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fac29",
+      "versionHint": 7
+    },
+    {
+      "date": "2006-03-16",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fac70",
+      "versionHint": 3
+    },
+    {
+      "date": "2006-03-27",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fac7b",
+      "versionHint": 6
+    },
+    {
+      "date": "2006-07-05",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "face5",
+      "versionHint": 6
+    },
+    {
+      "date": "2006-08-13",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fad0d",
+      "versionHint": 7
+    },
+    {
+      "date": "2006-09-10",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fad2a",
+      "versionHint": 6
+    },
+    {
+      "date": "2006-10-31",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fad5f",
+      "versionHint": 64
+    },
+    {
+      "date": "2006-11-25",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fad79",
+      "versionHint": 349
+    },
+    {
+      "date": "2006-12-12",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fad8c",
+      "versionHint": 349
+    },
+    {
+      "date": "2006-12-31",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fad9f",
+      "versionHint": 54
+    },
+    {
+      "date": "2007-01-10",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fae2a",
+      "versionHint": 349
+    },
+    {
+      "date": "2007-01-22",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fae36",
+      "versionHint": 299
+    },
+    {
+      "date": "2007-02-09",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fae49",
+      "versionHint": 349
+    },
+    {
+      "date": "2007-02-17",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fae51",
+      "versionHint": 349
+    },
+    {
+      "date": "2007-07-02",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "faee2",
+      "versionHint": 6
+    },
+    {
+      "date": "2007-08-03",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "faf03",
+      "versionHint": 105
+    },
+    {
+      "date": "2007-10-08",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "faf48",
+      "versionHint": 37
+    },
+    {
+      "date": "2007-10-18",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "faf52",
+      "versionHint": 10
+    },
+    {
+      "date": "2007-12-31",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "faf9f",
+      "versionHint": 55
+    },
+    {
+      "date": "2008-02-03",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fb043",
+      "versionHint": 10
+    },
+    {
+      "date": "2008-02-21",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fb055",
+      "versionHint": 39
+    },
+    {
+      "date": "2008-04-23",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fb097",
+      "versionHint": 73
+    },
+    {
+      "date": "2008-04-30",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fb09e",
+      "versionHint": 41
+    },
+    {
+      "date": "2008-05-03",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fb0a3",
+      "versionHint": 84
+    },
+    {
+      "date": "2008-05-13",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fb0ad",
+      "versionHint": 15
+    },
+    {
+      "date": "2008-06-03",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fb0c3",
+      "versionHint": 86
+    },
+    {
+      "date": "2008-06-08",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fb0c8",
+      "versionHint": 10
+    },
+    {
+      "date": "2008-06-16",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fb0d0",
+      "versionHint": 33
+    },
+    {
+      "date": "2008-06-26",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fb0da",
+      "versionHint": 85
+    },
+    {
+      "date": "2008-07-28",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fb0fc",
+      "versionHint": 37
+    },
+    {
+      "date": "2008-08-26",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fb11a",
+      "versionHint": 53
+    },
+    {
+      "date": "2008-09-05",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fb125",
+      "versionHint": 24
+    },
+    {
+      "date": "2008-09-20",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fb134",
+      "versionHint": 65
+    },
+    {
+      "date": "2008-10-07",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fb147",
+      "versionHint": 99
+    },
+    {
+      "date": "2008-10-12",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fb14c",
+      "versionHint": 273
+    },
+    {
+      "date": "2009-01-14",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fb22e",
+      "versionHint": 30
+    },
+    {
+      "date": "2009-01-20",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fb234",
+      "versionHint": 40
+    },
+    {
+      "date": "2009-01-25",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fb239",
+      "versionHint": 63
+    },
+    {
+      "date": "2009-02-03",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fb243",
+      "versionHint": 16
+    },
+    {
+      "date": "2009-02-14",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fb24e",
+      "versionHint": 349
+    },
+    {
+      "date": "2009-03-18",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fb272",
+      "versionHint": 90
+    },
+    {
+      "date": "2009-03-22",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fb276",
+      "versionHint": 43
+    },
+    {
+      "date": "2009-03-31",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fb27f",
+      "versionHint": 24
+    },
+    {
+      "date": "2009-05-25",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fb2b9",
+      "versionHint": 96
+    },
+    {
+      "date": "2009-05-27",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fb2bb",
+      "versionHint": 349
+    },
+    {
+      "date": "2009-06-02",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fb2c2",
+      "versionHint": 295
+    },
+    {
+      "date": "2009-06-05",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fb2c5",
+      "versionHint": 96
+    },
+    {
+      "date": "2009-06-06",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fb2c6",
+      "versionHint": 349
+    },
+    {
+      "date": "2009-07-25",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fb2f9",
+      "versionHint": 281
+    },
+    {
+      "date": "2009-07-28",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fb2fc",
+      "versionHint": 281
+    },
+    {
+      "date": "2009-09-03",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fb323",
+      "versionHint": 288
+    },
+    {
+      "date": "2009-09-11",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fb32b",
+      "versionHint": 349
+    },
+    {
+      "date": "2009-10-13",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fb34d",
+      "versionHint": 281
+    },
+    {
+      "date": "2009-10-17",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fb351",
+      "versionHint": 295
+    },
+    {
+      "date": "2009-11-05",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fb365",
+      "versionHint": 295
+    },
+    {
+      "date": "2009-11-15",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fb36f",
+      "versionHint": 62
+    },
+    {
+      "date": "2009-12-29",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fb39d",
+      "versionHint": 170
+    },
+    {
+      "date": "2010-03-08",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fb468",
+      "versionHint": 70
+    },
+    {
+      "date": "2010-03-20",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fb474",
+      "versionHint": 349
+    },
+    {
+      "date": "2010-04-12",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fb48c",
+      "versionHint": 277
+    },
+    {
+      "date": "2010-05-30",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fb4be",
+      "versionHint": 288
+    },
+    {
+      "date": "2010-05-31",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fb4bf",
+      "versionHint": 100
+    },
+    {
+      "date": "2010-06-10",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fb4ca",
+      "versionHint": 323
+    },
+    {
+      "date": "2010-06-13",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fb4cd",
+      "versionHint": 323
+    },
+    {
+      "date": "2010-06-18",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fb4d2",
+      "versionHint": 91
+    },
+    {
+      "date": "2010-06-27",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fb4db",
+      "versionHint": 114
+    },
+    {
+      "date": "2010-06-29",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fb4dd",
+      "versionHint": 288
+    },
+    {
+      "date": "2010-07-02",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fb4e2",
+      "versionHint": 288
+    },
+    {
+      "date": "2010-07-13",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fb4ed",
+      "versionHint": 288
+    },
+    {
+      "date": "2010-07-30",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fb4fe",
+      "versionHint": 96
+    },
+    {
+      "date": "2010-08-23",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fb517",
+      "versionHint": 288
+    },
+    {
+      "date": "2010-08-27",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fb51b",
+      "versionHint": 277
+    },
+    {
+      "date": "2010-09-03",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fb523",
+      "versionHint": 288
+    },
+    {
+      "date": "2010-09-14",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fb52e",
+      "versionHint": 288
+    },
+    {
+      "date": "2010-09-21",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fb535",
+      "versionHint": 90
+    },
+    {
+      "date": "2010-10-10",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fb54a",
+      "versionHint": 277
+    },
+    {
+      "date": "2010-10-31",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fb55f",
+      "versionHint": 281
+    },
+    {
+      "date": "2010-12-31",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fb59f",
+      "versionHint": 85
+    },
+    {
+      "date": "2011-01-17",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fb631",
+      "versionHint": 281
+    },
+    {
+      "date": "2011-01-30",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fb63e",
+      "versionHint": 295
+    },
+    {
+      "date": "2011-02-14",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fb64e",
+      "versionHint": 89
+    },
+    {
+      "date": "2011-02-28",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fb65c",
+      "versionHint": 295
+    },
+    {
+      "date": "2011-03-08",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fb668",
+      "versionHint": 110
+    },
+    {
+      "date": "2011-03-19",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fb673",
+      "versionHint": 96
+    },
+    {
+      "date": "2011-03-30",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fb67e",
+      "versionHint": 279
+    },
+    {
+      "date": "2011-04-04",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fb684",
+      "versionHint": 100
+    },
+    {
+      "date": "2011-04-30",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fb69e",
+      "versionHint": 279
+    },
+    {
+      "date": "2011-05-10",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fb6aa",
+      "versionHint": 288
+    },
+    {
+      "date": "2011-05-17",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fb6b1",
+      "versionHint": 286
+    },
+    {
+      "date": "2011-05-30",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fb6be",
+      "versionHint": 279
+    },
+    {
+      "date": "2011-06-20",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fb6d4",
+      "versionHint": 288
+    },
+    {
+      "date": "2011-06-30",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fb6de",
+      "versionHint": 295
+    },
+    {
+      "date": "2011-07-01",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fb6e1",
+      "versionHint": 89
+    },
+    {
+      "date": "2011-07-02",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fb6e2",
+      "versionHint": 288
+    },
+    {
+      "date": "2011-07-13",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fb6ed",
+      "versionHint": 288
+    },
+    {
+      "date": "2011-07-19",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fb6f3",
+      "versionHint": 120
+    },
+    {
+      "date": "2011-07-30",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fb6fe",
+      "versionHint": 295
+    },
+    {
+      "date": "2011-08-03",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fb703",
+      "versionHint": 96
+    },
+    {
+      "date": "2011-08-14",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fb70e",
+      "versionHint": 119
+    },
+    {
+      "date": "2011-08-30",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fb71e",
+      "versionHint": 288
+    },
+    {
+      "date": "2011-09-01",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fb721",
+      "versionHint": 281
+    },
+    {
+      "date": "2011-09-04",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fb724",
+      "versionHint": 281
+    },
+    {
+      "date": "2011-09-26",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fb73a",
+      "versionHint": 323
+    },
+    {
+      "date": "2011-10-07",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fb747",
+      "versionHint": 90
+    },
+    {
+      "date": "2011-10-21",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fb755",
+      "versionHint": 288
+    },
+    {
+      "date": "2011-11-30",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fb77e",
+      "versionHint": 295
+    },
+    {
+      "date": "2011-12-14",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fb78e",
+      "versionHint": 323
+    },
+    {
+      "date": "2012-01-24",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fb838",
+      "versionHint": 323
+    },
+    {
+      "date": "2012-01-30",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fb83e",
+      "versionHint": 279
+    },
+    {
+      "date": "2012-02-13",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fb84d",
+      "versionHint": 120
+    },
+    {
+      "date": "2012-02-24",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fb858",
+      "versionHint": 281
+    },
+    {
+      "date": "2012-03-08",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fb868",
+      "versionHint": 323
+    },
+    {
+      "date": "2012-03-11",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fb86b",
+      "versionHint": 90
+    },
+    {
+      "date": "2012-03-28",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fb87c",
+      "versionHint": 97
+    },
+    {
+      "date": "2012-04-03",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fb883",
+      "versionHint": 281
+    },
+    {
+      "date": "2012-04-24",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fb898",
+      "versionHint": 91
+    },
+    {
+      "date": "2012-04-28",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fb89c",
+      "versionHint": 288
+    },
+    {
+      "date": "2012-04-30",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fb89e",
+      "versionHint": 279
+    },
+    {
+      "date": "2012-05-07",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fb8a7",
+      "versionHint": 288
+    },
+    {
+      "date": "2012-05-10",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fb8aa",
+      "versionHint": 288
+    },
+    {
+      "date": "2012-05-30",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fb8be",
+      "versionHint": 279
+    },
+    {
+      "date": "2012-06-04",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fb8c4",
+      "versionHint": 264
+    },
+    {
+      "date": "2012-06-24",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fb8d8",
+      "versionHint": 123
+    },
+    {
+      "date": "2012-06-30",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fb8de",
+      "versionHint": 295
+    },
+    {
+      "date": "2012-07-05",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fb8e5",
+      "versionHint": 288
+    },
+    {
+      "date": "2012-07-12",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fb8ec",
+      "versionHint": 288
+    },
+    {
+      "date": "2012-07-29",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fb8fd",
+      "versionHint": 288
+    },
+    {
+      "date": "2012-08-02",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fb902",
+      "versionHint": 90
+    },
+    {
+      "date": "2012-08-14",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fb90e",
+      "versionHint": 281
+    },
+    {
+      "date": "2012-08-28",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fb91c",
+      "versionHint": 125
+    },
+    {
+      "date": "2012-09-04",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fb924",
+      "versionHint": 112
+    },
+    {
+      "date": "2012-09-14",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fb92e",
+      "versionHint": 281
+    },
+    {
+      "date": "2012-09-20",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fb934",
+      "versionHint": 281
+    },
+    {
+      "date": "2012-09-24",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fb938",
+      "versionHint": 323
+    },
+    {
+      "date": "2012-09-30",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fb93e",
+      "versionHint": 295
+    },
+    {
+      "date": "2012-10-07",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fb947",
+      "versionHint": 281
+    },
+    {
+      "date": "2012-11-02",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fb962",
+      "versionHint": 98
+    },
+    {
+      "date": "2012-11-03",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fb963",
+      "versionHint": 98
+    },
+    {
+      "date": "2012-11-04",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fb964",
+      "versionHint": 95
+    },
+    {
+      "date": "2012-11-06",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fb966",
+      "versionHint": 99
+    },
+    {
+      "date": "2012-11-20",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fb974",
+      "versionHint": 323
+    },
+    {
+      "date": "2012-11-27",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fb97b",
+      "versionHint": 100
+    },
+    {
+      "date": "2012-12-05",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fb985",
+      "versionHint": 128
+    },
+    {
+      "date": "2012-12-21",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fb995",
+      "versionHint": 294
+    },
+    {
+      "date": "2012-12-30",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fb99e",
+      "versionHint": 295
+    },
+    {
+      "date": "2012-12-31",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fb99f",
+      "versionHint": 264
+    },
+    {
+      "date": "2013-01-01",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fba21",
+      "versionHint": 264
+    },
+    {
+      "date": "2013-01-15",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fba2f",
+      "versionHint": 99
+    },
+    {
+      "date": "2013-01-19",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fba33",
+      "versionHint": 281
+    },
+    {
+      "date": "2013-01-29",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fba3d",
+      "versionHint": 112
+    },
+    {
+      "date": "2013-01-30",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fba3e",
+      "versionHint": 279
+    },
+    {
+      "date": "2013-02-01",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fba41",
+      "versionHint": 114
+    },
+    {
+      "date": "2013-02-08",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fba48",
+      "versionHint": 281
+    },
+    {
+      "date": "2013-02-12",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fba4c",
+      "versionHint": 100
+    },
+    {
+      "date": "2013-02-23",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fba57",
+      "versionHint": 108
+    },
+    {
+      "date": "2013-02-28",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fba5c",
+      "versionHint": 279
+    },
+    {
+      "date": "2013-03-24",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fba78",
+      "versionHint": 281
+    },
+    {
+      "date": "2013-03-30",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fba7e",
+      "versionHint": 323
+    },
+    {
+      "date": "2013-04-17",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fba91",
+      "versionHint": 121
+    },
+    {
+      "date": "2013-04-29",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fba9d",
+      "versionHint": 288
+    },
+    {
+      "date": "2013-04-30",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fba9e",
+      "versionHint": 279
+    },
+    {
+      "date": "2013-05-02",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbaa2",
+      "versionHint": 318
+    },
+    {
+      "date": "2013-05-21",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbab5",
+      "versionHint": 288
+    },
+    {
+      "date": "2013-05-27",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbabb",
+      "versionHint": 130
+    },
+    {
+      "date": "2013-05-30",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbabe",
+      "versionHint": 295
+    },
+    {
+      "date": "2013-06-05",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbac5",
+      "versionHint": 119
+    },
+    {
+      "date": "2013-06-09",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbac9",
+      "versionHint": 288
+    },
+    {
+      "date": "2013-07-19",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbaf3",
+      "versionHint": 123
+    },
+    {
+      "date": "2013-07-26",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbafa",
+      "versionHint": 288
+    },
+    {
+      "date": "2013-07-30",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbafe",
+      "versionHint": 296
+    },
+    {
+      "date": "2013-08-01",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbb01",
+      "versionHint": 288
+    },
+    {
+      "date": "2013-08-07",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbb07",
+      "versionHint": 112
+    },
+    {
+      "date": "2013-08-08",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbb08",
+      "versionHint": 281
+    },
+    {
+      "date": "2013-08-12",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbb0c",
+      "versionHint": 125
+    },
+    {
+      "date": "2013-08-30",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbb1e",
+      "versionHint": 295
+    },
+    {
+      "date": "2013-09-13",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbb2d",
+      "versionHint": 143
+    },
+    {
+      "date": "2013-09-25",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbb39",
+      "versionHint": 281
+    },
+    {
+      "date": "2013-09-30",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbb3e",
+      "versionHint": 281
+    },
+    {
+      "date": "2013-10-06",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbb46",
+      "versionHint": 123
+    },
+    {
+      "date": "2013-10-07",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbb47",
+      "versionHint": 161
+    },
+    {
+      "date": "2013-10-12",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbb4c",
+      "versionHint": 281
+    },
+    {
+      "date": "2013-10-15",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbb4f",
+      "versionHint": 281
+    },
+    {
+      "date": "2013-10-17",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbb51",
+      "versionHint": 119
+    },
+    {
+      "date": "2013-10-23",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbb57",
+      "versionHint": 281
+    },
+    {
+      "date": "2013-10-24",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbb58",
+      "versionHint": 115
+    },
+    {
+      "date": "2013-10-30",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbb5e",
+      "versionHint": 295
+    },
+    {
+      "date": "2013-11-01",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbb61",
+      "versionHint": 119
+    },
+    {
+      "date": "2013-11-08",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbb68",
+      "versionHint": 115
+    },
+    {
+      "date": "2013-11-10",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbb6a",
+      "versionHint": 288
+    },
+    {
+      "date": "2013-12-07",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbb87",
+      "versionHint": 281
+    },
+    {
+      "date": "2013-12-09",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbb89",
+      "versionHint": 288
+    },
+    {
+      "date": "2013-12-21",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbb95",
+      "versionHint": 119
+    },
+    {
+      "date": "2013-12-24",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbb98",
+      "versionHint": 282
+    },
+    {
+      "date": "2013-12-28",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbb9c",
+      "versionHint": 215
+    },
+    {
+      "date": "2013-12-30",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbb9e",
+      "versionHint": 279
+    },
+    {
+      "date": "2014-01-11",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbc2b",
+      "versionHint": 281
+    },
+    {
+      "date": "2014-01-19",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbc33",
+      "versionHint": 119
+    },
+    {
+      "date": "2014-01-29",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbc3d",
+      "versionHint": 281
+    },
+    {
+      "date": "2014-01-30",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbc3e",
+      "versionHint": 288
+    },
+    {
+      "date": "2014-02-05",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbc45",
+      "versionHint": 288
+    },
+    {
+      "date": "2014-02-13",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbc4d",
+      "versionHint": 288
+    },
+    {
+      "date": "2014-02-19",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbc53",
+      "versionHint": 119
+    },
+    {
+      "date": "2014-02-21",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbc55",
+      "versionHint": 119
+    },
+    {
+      "date": "2014-02-22",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbc56",
+      "versionHint": 119
+    },
+    {
+      "date": "2014-02-24",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbc58",
+      "versionHint": 318
+    },
+    {
+      "date": "2014-03-04",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbc64",
+      "versionHint": 281
+    },
+    {
+      "date": "2014-03-05",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbc65",
+      "versionHint": 120
+    },
+    {
+      "date": "2014-03-10",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbc6a",
+      "versionHint": 115
+    },
+    {
+      "date": "2014-03-15",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbc6f",
+      "versionHint": 282
+    },
+    {
+      "date": "2014-03-16",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbc70",
+      "versionHint": 141
+    },
+    {
+      "date": "2014-03-21",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbc75",
+      "versionHint": 288
+    },
+    {
+      "date": "2014-03-30",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbc7e",
+      "versionHint": 279
+    },
+    {
+      "date": "2014-04-06",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbc86",
+      "versionHint": 119
+    },
+    {
+      "date": "2014-04-09",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbc89",
+      "versionHint": 318
+    },
+    {
+      "date": "2014-04-12",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbc8c",
+      "versionHint": 288
+    },
+    {
+      "date": "2014-04-14",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbc8e",
+      "versionHint": 264
+    },
+    {
+      "date": "2014-04-20",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbc94",
+      "versionHint": 288
+    },
+    {
+      "date": "2014-04-24",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbc98",
+      "versionHint": 128
+    },
+    {
+      "date": "2014-04-25",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbc99",
+      "versionHint": 140
+    },
+    {
+      "date": "2014-04-27",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbc9b",
+      "versionHint": 281
+    },
+    {
+      "date": "2014-04-30",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbc9e",
+      "versionHint": 279
+    },
+    {
+      "date": "2014-05-24",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbcb8",
+      "versionHint": 281
+    },
+    {
+      "date": "2014-05-30",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbcbe",
+      "versionHint": 279
+    },
+    {
+      "date": "2014-06-02",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbcc2",
+      "versionHint": 140
+    },
+    {
+      "date": "2014-06-13",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbccd",
+      "versionHint": 281
+    },
+    {
+      "date": "2014-06-20",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbcd4",
+      "versionHint": 136
+    },
+    {
+      "date": "2014-06-30",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbcde",
+      "versionHint": 279
+    },
+    {
+      "date": "2014-07-01",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbce1",
+      "versionHint": 119
+    },
+    {
+      "date": "2014-07-02",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbce2",
+      "versionHint": 318
+    },
+    {
+      "date": "2014-07-04",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbce4",
+      "versionHint": 119
+    },
+    {
+      "date": "2014-07-05",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbce5",
+      "versionHint": 318
+    },
+    {
+      "date": "2014-07-10",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbcea",
+      "versionHint": 281
+    },
+    {
+      "date": "2014-07-13",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbced",
+      "versionHint": 288
+    },
+    {
+      "date": "2014-07-30",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbcfe",
+      "versionHint": 295
+    },
+    {
+      "date": "2014-08-01",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbd01",
+      "versionHint": 125
+    },
+    {
+      "date": "2014-08-20",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbd14",
+      "versionHint": 318
+    },
+    {
+      "date": "2014-08-25",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbd19",
+      "versionHint": 288
+    },
+    {
+      "date": "2014-08-30",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbd1e",
+      "versionHint": 295
+    },
+    {
+      "date": "2014-08-31",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbd1f",
+      "versionHint": 288
+    },
+    {
+      "date": "2014-09-13",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbd2d",
+      "versionHint": 264
+    },
+    {
+      "date": "2014-09-15",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbd2f",
+      "versionHint": 281
+    },
+    {
+      "date": "2014-09-25",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbd39",
+      "versionHint": 318
+    },
+    {
+      "date": "2014-09-30",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbd3e",
+      "versionHint": 295
+    },
+    {
+      "date": "2014-10-07",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbd47",
+      "versionHint": 288
+    },
+    {
+      "date": "2014-10-12",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbd4c",
+      "versionHint": 130
+    },
+    {
+      "date": "2014-10-30",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbd5e",
+      "versionHint": 281
+    },
+    {
+      "date": "2014-11-08",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbd68",
+      "versionHint": 288
+    },
+    {
+      "date": "2014-11-22",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbd76",
+      "versionHint": 281
+    },
+    {
+      "date": "2014-11-30",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbd7e",
+      "versionHint": 295
+    },
+    {
+      "date": "2014-12-01",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbd81",
+      "versionHint": 288
+    },
+    {
+      "date": "2014-12-19",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbd93",
+      "versionHint": 281
+    },
+    {
+      "date": "2014-12-27",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbd9b",
+      "versionHint": 281
+    },
+    {
+      "date": "2014-12-30",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbd9e",
+      "versionHint": 279
+    },
+    {
+      "date": "2014-12-31",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbd9f",
+      "versionHint": 295
+    },
+    {
+      "date": "2015-01-03",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbe23",
+      "versionHint": 264
+    },
+    {
+      "date": "2015-01-04",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbe24",
+      "versionHint": 281
+    },
+    {
+      "date": "2015-01-06",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbe26",
+      "versionHint": 294
+    },
+    {
+      "date": "2015-01-13",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbe2d",
+      "versionHint": 281
+    },
+    {
+      "date": "2015-01-14",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbe2e",
+      "versionHint": 281
+    },
+    {
+      "date": "2015-01-15",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbe2f",
+      "versionHint": 281
+    },
+    {
+      "date": "2015-01-17",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbe31",
+      "versionHint": 258
+    },
+    {
+      "date": "2015-01-24",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbe38",
+      "versionHint": 288
+    },
+    {
+      "date": "2015-01-26",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbe3a",
+      "versionHint": 281
+    },
+    {
+      "date": "2015-01-30",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbe3e",
+      "versionHint": 279
+    },
+    {
+      "date": "2015-01-31",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbe3f",
+      "versionHint": 281
+    },
+    {
+      "date": "2015-02-01",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbe41",
+      "versionHint": 281
+    },
+    {
+      "date": "2015-02-05",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbe45",
+      "versionHint": 288
+    },
+    {
+      "date": "2015-02-06",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbe46",
+      "versionHint": 281
+    },
+    {
+      "date": "2015-02-11",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbe4b",
+      "versionHint": 281
+    },
+    {
+      "date": "2015-02-14",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbe4e",
+      "versionHint": 281
+    },
+    {
+      "date": "2015-02-16",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbe50",
+      "versionHint": 288
+    },
+    {
+      "date": "2015-02-20",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbe54",
+      "versionHint": 318
+    },
+    {
+      "date": "2015-02-22",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbe56",
+      "versionHint": 281
+    },
+    {
+      "date": "2015-02-26",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbe5a",
+      "versionHint": 281
+    },
+    {
+      "date": "2015-02-27",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbe5b",
+      "versionHint": 288
+    },
+    {
+      "date": "2015-02-28",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbe5c",
+      "versionHint": 279
+    },
+    {
+      "date": "2015-03-01",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbe61",
+      "versionHint": 288
+    },
+    {
+      "date": "2015-03-02",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbe62",
+      "versionHint": 281
+    },
+    {
+      "date": "2015-03-03",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbe63",
+      "versionHint": 281
+    },
+    {
+      "date": "2015-03-11",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbe6b",
+      "versionHint": 281
+    },
+    {
+      "date": "2015-03-14",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbe6e",
+      "versionHint": 288
+    },
+    {
+      "date": "2015-03-22",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbe76",
+      "versionHint": 126
+    },
+    {
+      "date": "2015-03-23",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbe77",
+      "versionHint": 270
+    },
+    {
+      "date": "2015-03-24",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbe78",
+      "versionHint": 144
+    },
+    {
+      "date": "2015-03-30",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbe7e",
+      "versionHint": 279
+    },
+    {
+      "date": "2015-04-05",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbe85",
+      "versionHint": 288
+    },
+    {
+      "date": "2015-04-10",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbe8a",
+      "versionHint": 128
+    },
+    {
+      "date": "2015-04-13",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbe8d",
+      "versionHint": 288
+    },
+    {
+      "date": "2015-04-21",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbe95",
+      "versionHint": 288
+    },
+    {
+      "date": "2015-04-24",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbe98",
+      "versionHint": 288
+    },
+    {
+      "date": "2015-04-30",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbe9e",
+      "versionHint": 279
+    },
+    {
+      "date": "2015-05-04",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbea4",
+      "versionHint": 281
+    },
+    {
+      "date": "2015-05-07",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbea7",
+      "versionHint": 138
+    },
+    {
+      "date": "2015-05-13",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbead",
+      "versionHint": 143
+    },
+    {
+      "date": "2015-05-25",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbeb9",
+      "versionHint": 281
+    },
+    {
+      "date": "2015-05-26",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbeba",
+      "versionHint": 288
+    },
+    {
+      "date": "2015-05-27",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbebb",
+      "versionHint": 143
+    },
+    {
+      "date": "2015-05-30",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbebe",
+      "versionHint": 295
+    },
+    {
+      "date": "2015-06-04",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbec4",
+      "versionHint": 161
+    },
+    {
+      "date": "2015-06-27",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbedb",
+      "versionHint": 281
+    },
+    {
+      "date": "2015-06-30",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbede",
+      "versionHint": 295
+    },
+    {
+      "date": "2015-07-20",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbef4",
+      "versionHint": 288
+    },
+    {
+      "date": "2015-07-25",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbef9",
+      "versionHint": 281
+    },
+    {
+      "date": "2015-07-27",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbefb",
+      "versionHint": 281
+    },
+    {
+      "date": "2015-07-30",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbefe",
+      "versionHint": 279
+    },
+    {
+      "date": "2015-08-17",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbf11",
+      "versionHint": 281
+    },
+    {
+      "date": "2015-08-29",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbf1d",
+      "versionHint": 318
+    },
+    {
+      "date": "2015-08-30",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbf1e",
+      "versionHint": 295
+    },
+    {
+      "date": "2015-09-01",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbf21",
+      "versionHint": 134
+    },
+    {
+      "date": "2015-09-07",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbf27",
+      "versionHint": 160
+    },
+    {
+      "date": "2015-09-08",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbf28",
+      "versionHint": 281
+    },
+    {
+      "date": "2015-09-11",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbf2b",
+      "versionHint": 281
+    },
+    {
+      "date": "2015-09-14",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbf2e",
+      "versionHint": 318
+    },
+    {
+      "date": "2015-09-17",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbf31",
+      "versionHint": 281
+    },
+    {
+      "date": "2015-09-25",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbf39",
+      "versionHint": 281
+    },
+    {
+      "date": "2015-09-30",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbf3e",
+      "versionHint": 295
+    },
+    {
+      "date": "2015-10-08",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbf48",
+      "versionHint": 141
+    },
+    {
+      "date": "2015-10-15",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbf4f",
+      "versionHint": 232
+    },
+    {
+      "date": "2015-10-22",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbf56",
+      "versionHint": 318
+    },
+    {
+      "date": "2015-10-29",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbf5d",
+      "versionHint": 318
+    },
+    {
+      "date": "2015-10-30",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbf5e",
+      "versionHint": 279
+    },
+    {
+      "date": "2015-10-31",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbf5f",
+      "versionHint": 137
+    },
+    {
+      "date": "2015-11-04",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbf64",
+      "versionHint": 318
+    },
+    {
+      "date": "2015-11-07",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbf67",
+      "versionHint": 143
+    },
+    {
+      "date": "2015-11-10",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbf6a",
+      "versionHint": 318
+    },
+    {
+      "date": "2015-11-11",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbf6b",
+      "versionHint": 142
+    },
+    {
+      "date": "2015-11-23",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbf77",
+      "versionHint": 318
+    },
+    {
+      "date": "2015-11-26",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbf7a",
+      "versionHint": 142
+    },
+    {
+      "date": "2015-11-27",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbf7b",
+      "versionHint": 146
+    },
+    {
+      "date": "2015-11-29",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbf7d",
+      "versionHint": 142
+    },
+    {
+      "date": "2015-11-30",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbf7e",
+      "versionHint": 279
+    },
+    {
+      "date": "2015-12-02",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbf82",
+      "versionHint": 318
+    },
+    {
+      "date": "2015-12-03",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbf83",
+      "versionHint": 264
+    },
+    {
+      "date": "2015-12-06",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbf86",
+      "versionHint": 318
+    },
+    {
+      "date": "2015-12-07",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbf87",
+      "versionHint": 288
+    },
+    {
+      "date": "2015-12-08",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbf88",
+      "versionHint": 264
+    },
+    {
+      "date": "2015-12-15",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbf8f",
+      "versionHint": 264
+    },
+    {
+      "date": "2015-12-18",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbf92",
+      "versionHint": 318
+    },
+    {
+      "date": "2015-12-21",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fbf95",
+      "versionHint": 281
+    },
+    {
+      "date": "2016-01-09",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc029",
+      "versionHint": 288
+    },
+    {
+      "date": "2016-01-10",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc02a",
+      "versionHint": 165
+    },
+    {
+      "date": "2016-01-23",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc037",
+      "versionHint": 264
+    },
+    {
+      "date": "2016-01-25",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc039",
+      "versionHint": 294
+    },
+    {
+      "date": "2016-01-26",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc03a",
+      "versionHint": 144
+    },
+    {
+      "date": "2016-01-27",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc03b",
+      "versionHint": 281
+    },
+    {
+      "date": "2016-01-30",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc03e",
+      "versionHint": 279
+    },
+    {
+      "date": "2016-01-31",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc03f",
+      "versionHint": 295
+    },
+    {
+      "date": "2016-02-03",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc043",
+      "versionHint": 158
+    },
+    {
+      "date": "2016-02-08",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc048",
+      "versionHint": 288
+    },
+    {
+      "date": "2016-02-11",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc04b",
+      "versionHint": 264
+    },
+    {
+      "date": "2016-02-15",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc04f",
+      "versionHint": 146
+    },
+    {
+      "date": "2016-02-16",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc050",
+      "versionHint": 144
+    },
+    {
+      "date": "2016-02-17",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc051",
+      "versionHint": 142
+    },
+    {
+      "date": "2016-02-19",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc053",
+      "versionHint": 146
+    },
+    {
+      "date": "2016-02-23",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc057",
+      "versionHint": 281
+    },
+    {
+      "date": "2016-02-27",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc05b",
+      "versionHint": 318
+    },
+    {
+      "date": "2016-02-29",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc05d",
+      "versionHint": 279
+    },
+    {
+      "date": "2016-03-03",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc063",
+      "versionHint": 318
+    },
+    {
+      "date": "2016-03-13",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc06d",
+      "versionHint": 281
+    },
+    {
+      "date": "2016-03-15",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc06f",
+      "versionHint": 318
+    },
+    {
+      "date": "2016-03-20",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc074",
+      "versionHint": 288
+    },
+    {
+      "date": "2016-03-28",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc07c",
+      "versionHint": 318
+    },
+    {
+      "date": "2016-03-29",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc07d",
+      "versionHint": 144
+    },
+    {
+      "date": "2016-03-30",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc07e",
+      "versionHint": 279
+    },
+    {
+      "date": "2016-03-31",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc07f",
+      "versionHint": 264
+    },
+    {
+      "date": "2016-04-04",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc084",
+      "versionHint": 288
+    },
+    {
+      "date": "2016-04-05",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc085",
+      "versionHint": 288
+    },
+    {
+      "date": "2016-04-20",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc094",
+      "versionHint": 169
+    },
+    {
+      "date": "2016-04-21",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc095",
+      "versionHint": 165
+    },
+    {
+      "date": "2016-04-24",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc098",
+      "versionHint": 288
+    },
+    {
+      "date": "2016-04-27",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc09b",
+      "versionHint": 288
+    },
+    {
+      "date": "2016-04-28",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc09c",
+      "versionHint": 288
+    },
+    {
+      "date": "2016-04-30",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc09e",
+      "versionHint": 279
+    },
+    {
+      "date": "2016-05-04",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc0a4",
+      "versionHint": 281
+    },
+    {
+      "date": "2016-05-11",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc0ab",
+      "versionHint": 288
+    },
+    {
+      "date": "2016-05-16",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc0b0",
+      "versionHint": 288
+    },
+    {
+      "date": "2016-05-30",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc0be",
+      "versionHint": 279
+    },
+    {
+      "date": "2016-05-31",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc0bf",
+      "versionHint": 295
+    },
+    {
+      "date": "2016-06-06",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc0c6",
+      "versionHint": 288
+    },
+    {
+      "date": "2016-06-07",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc0c7",
+      "versionHint": 288
+    },
+    {
+      "date": "2016-06-09",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc0c9",
+      "versionHint": 270
+    },
+    {
+      "date": "2016-06-22",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc0d6",
+      "versionHint": 288
+    },
+    {
+      "date": "2016-06-25",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc0d9",
+      "versionHint": 160
+    },
+    {
+      "date": "2016-06-26",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc0da",
+      "versionHint": 201
+    },
+    {
+      "date": "2016-06-30",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc0de",
+      "versionHint": 295
+    },
+    {
+      "date": "2016-07-05",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc0e5",
+      "versionHint": 281
+    },
+    {
+      "date": "2016-07-08",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc0e8",
+      "versionHint": 288
+    },
+    {
+      "date": "2016-07-15",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc0ef",
+      "versionHint": 281
+    },
+    {
+      "date": "2016-07-16",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc0f0",
+      "versionHint": 281
+    },
+    {
+      "date": "2016-07-17",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc0f1",
+      "versionHint": 161
+    },
+    {
+      "date": "2016-07-19",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc0f3",
+      "versionHint": 281
+    },
+    {
+      "date": "2016-07-22",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc0f6",
+      "versionHint": 281
+    },
+    {
+      "date": "2016-07-23",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc0f7",
+      "versionHint": 288
+    },
+    {
+      "date": "2016-07-25",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc0f9",
+      "versionHint": 281
+    },
+    {
+      "date": "2016-07-30",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc0fe",
+      "versionHint": 295
+    },
+    {
+      "date": "2016-08-02",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc102",
+      "versionHint": 281
+    },
+    {
+      "date": "2016-08-03",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc103",
+      "versionHint": 288
+    },
+    {
+      "date": "2016-08-18",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc112",
+      "versionHint": 281
+    },
+    {
+      "date": "2016-08-21",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc115",
+      "versionHint": 318
+    },
+    {
+      "date": "2016-08-22",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc116",
+      "versionHint": 281
+    },
+    {
+      "date": "2016-08-26",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc11a",
+      "versionHint": 318
+    },
+    {
+      "date": "2016-08-29",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc11d",
+      "versionHint": 288
+    },
+    {
+      "date": "2016-08-30",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc11e",
+      "versionHint": 295
+    },
+    {
+      "date": "2016-09-08",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc128",
+      "versionHint": 281
+    },
+    {
+      "date": "2016-09-13",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc12d",
+      "versionHint": 288
+    },
+    {
+      "date": "2016-09-17",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc131",
+      "versionHint": 318
+    },
+    {
+      "date": "2016-09-21",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc135",
+      "versionHint": 288
+    },
+    {
+      "date": "2016-09-24",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc138",
+      "versionHint": 288
+    },
+    {
+      "date": "2016-09-25",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc139",
+      "versionHint": 288
+    },
+    {
+      "date": "2016-09-28",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc13c",
+      "versionHint": 288
+    },
+    {
+      "date": "2016-09-30",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc13e",
+      "versionHint": 295
+    },
+    {
+      "date": "2016-10-02",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc142",
+      "versionHint": 219
+    },
+    {
+      "date": "2016-10-14",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc14e",
+      "versionHint": 288
+    },
+    {
+      "date": "2016-10-16",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc150",
+      "versionHint": 281
+    },
+    {
+      "date": "2016-10-19",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc153",
+      "versionHint": 212
+    },
+    {
+      "date": "2016-10-21",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc155",
+      "versionHint": 288
+    },
+    {
+      "date": "2016-10-24",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc158",
+      "versionHint": 281
+    },
+    {
+      "date": "2016-10-30",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc15e",
+      "versionHint": 295
+    },
+    {
+      "date": "2016-11-08",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc168",
+      "versionHint": 166
+    },
+    {
+      "date": "2016-11-09",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc169",
+      "versionHint": 318
+    },
+    {
+      "date": "2016-11-10",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc16a",
+      "versionHint": 270
+    },
+    {
+      "date": "2016-11-15",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc16f",
+      "versionHint": 318
+    },
+    {
+      "date": "2016-11-28",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc17c",
+      "versionHint": 288
+    },
+    {
+      "date": "2016-11-30",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc17e",
+      "versionHint": 279
+    },
+    {
+      "date": "2016-12-02",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc182",
+      "versionHint": 200
+    },
+    {
+      "date": "2016-12-09",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc189",
+      "versionHint": 173
+    },
+    {
+      "date": "2016-12-13",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc18d",
+      "versionHint": 166
+    },
+    {
+      "date": "2016-12-15",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc18f",
+      "versionHint": 318
+    },
+    {
+      "date": "2016-12-30",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc19e",
+      "versionHint": 279
+    },
+    {
+      "date": "2017-01-03",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc223",
+      "versionHint": 281
+    },
+    {
+      "date": "2017-01-04",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc224",
+      "versionHint": 196
+    },
+    {
+      "date": "2017-01-08",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc228",
+      "versionHint": 281
+    },
+    {
+      "date": "2017-01-12",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc22c",
+      "versionHint": 281
+    },
+    {
+      "date": "2017-01-28",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc23c",
+      "versionHint": 288
+    },
+    {
+      "date": "2017-01-30",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc23e",
+      "versionHint": 279
+    },
+    {
+      "date": "2017-01-31",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc23f",
+      "versionHint": 264
+    },
+    {
+      "date": "2017-02-09",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc249",
+      "versionHint": 288
+    },
+    {
+      "date": "2017-02-12",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc24c",
+      "versionHint": 219
+    },
+    {
+      "date": "2017-02-21",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc255",
+      "versionHint": 264
+    },
+    {
+      "date": "2017-02-23",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc257",
+      "versionHint": 288
+    },
+    {
+      "date": "2017-02-25",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc259",
+      "versionHint": 318
+    },
+    {
+      "date": "2017-02-28",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc25c",
+      "versionHint": 279
+    },
+    {
+      "date": "2017-03-02",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc262",
+      "versionHint": 182
+    },
+    {
+      "date": "2017-03-06",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc266",
+      "versionHint": 288
+    },
+    {
+      "date": "2017-03-12",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc26c",
+      "versionHint": 318
+    },
+    {
+      "date": "2017-03-19",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc273",
+      "versionHint": 182
+    },
+    {
+      "date": "2017-03-25",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc279",
+      "versionHint": 288
+    },
+    {
+      "date": "2017-03-28",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc27c",
+      "versionHint": 218
+    },
+    {
+      "date": "2017-03-30",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc27e",
+      "versionHint": 279
+    },
+    {
+      "date": "2017-04-06",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc286",
+      "versionHint": 288
+    },
+    {
+      "date": "2017-04-08",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc288",
+      "versionHint": 200
+    },
+    {
+      "date": "2017-04-09",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc289",
+      "versionHint": 318
+    },
+    {
+      "date": "2017-04-11",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc28b",
+      "versionHint": 288
+    },
+    {
+      "date": "2017-04-16",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc290",
+      "versionHint": 281
+    },
+    {
+      "date": "2017-04-20",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc294",
+      "versionHint": 281
+    },
+    {
+      "date": "2017-04-22",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc296",
+      "versionHint": 288
+    },
+    {
+      "date": "2017-04-29",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc29d",
+      "versionHint": 281
+    },
+    {
+      "date": "2017-04-30",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc29e",
+      "versionHint": 279
+    },
+    {
+      "date": "2017-05-03",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc2a3",
+      "versionHint": 288
+    },
+    {
+      "date": "2017-05-07",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc2a7",
+      "versionHint": 318
+    },
+    {
+      "date": "2017-05-10",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc2aa",
+      "versionHint": 197
+    },
+    {
+      "date": "2017-05-11",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc2ab",
+      "versionHint": 288
+    },
+    {
+      "date": "2017-05-14",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc2ae",
+      "versionHint": 176
+    },
+    {
+      "date": "2017-05-15",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc2af",
+      "versionHint": 197
+    },
+    {
+      "date": "2017-05-16",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc2b0",
+      "versionHint": 228
+    },
+    {
+      "date": "2017-05-25",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc2b9",
+      "versionHint": 281
+    },
+    {
+      "date": "2017-05-30",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc2be",
+      "versionHint": 295
+    },
+    {
+      "date": "2017-06-09",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc2c9",
+      "versionHint": 240
+    },
+    {
+      "date": "2017-06-12",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc2cc",
+      "versionHint": 288
+    },
+    {
+      "date": "2017-06-15",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc2cf",
+      "versionHint": 212
+    },
+    {
+      "date": "2017-06-30",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc2de",
+      "versionHint": 295
+    },
+    {
+      "date": "2017-07-15",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc2ef",
+      "versionHint": 288
+    },
+    {
+      "date": "2017-07-20",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc2f4",
+      "versionHint": 281
+    },
+    {
+      "date": "2017-07-21",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc2f5",
+      "versionHint": 288
+    },
+    {
+      "date": "2017-07-23",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc2f7",
+      "versionHint": 217
+    },
+    {
+      "date": "2017-07-30",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc2fe",
+      "versionHint": 295
+    },
+    {
+      "date": "2017-08-02",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc302",
+      "versionHint": 292
+    },
+    {
+      "date": "2017-08-08",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc308",
+      "versionHint": 288
+    },
+    {
+      "date": "2017-08-27",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc31b",
+      "versionHint": 288
+    },
+    {
+      "date": "2017-08-30",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc31e",
+      "versionHint": 295
+    },
+    {
+      "date": "2017-09-04",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc324",
+      "versionHint": 292
+    },
+    {
+      "date": "2017-09-05",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc325",
+      "versionHint": 281
+    },
+    {
+      "date": "2017-09-15",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc32f",
+      "versionHint": 288
+    },
+    {
+      "date": "2017-09-20",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc334",
+      "versionHint": 212
+    },
+    {
+      "date": "2017-09-28",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc33c",
+      "versionHint": 215
+    },
+    {
+      "date": "2017-09-30",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc33e",
+      "versionHint": 295
+    },
+    {
+      "date": "2017-10-07",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc347",
+      "versionHint": 216
+    },
+    {
+      "date": "2017-10-17",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc351",
+      "versionHint": 281
+    },
+    {
+      "date": "2017-10-21",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc355",
+      "versionHint": 288
+    },
+    {
+      "date": "2017-10-26",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc35a",
+      "versionHint": 195
+    },
+    {
+      "date": "2017-10-27",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc35b",
+      "versionHint": 186
+    },
+    {
+      "date": "2017-11-04",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc364",
+      "versionHint": 228
+    },
+    {
+      "date": "2017-11-10",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc36a",
+      "versionHint": 293
+    },
+    {
+      "date": "2017-11-14",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc36e",
+      "versionHint": 288
+    },
+    {
+      "date": "2017-11-23",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc377",
+      "versionHint": 212
+    },
+    {
+      "date": "2017-11-28",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc37c",
+      "versionHint": 293
+    },
+    {
+      "date": "2017-11-30",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc37e",
+      "versionHint": 279
+    },
+    {
+      "date": "2017-12-03",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc383",
+      "versionHint": 288
+    },
+    {
+      "date": "2017-12-04",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc384",
+      "versionHint": 233
+    },
+    {
+      "date": "2017-12-09",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc389",
+      "versionHint": 233
+    },
+    {
+      "date": "2017-12-12",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc38c",
+      "versionHint": 281
+    },
+    {
+      "date": "2017-12-13",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc38d",
+      "versionHint": 318
+    },
+    {
+      "date": "2017-12-25",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc399",
+      "versionHint": 281
+    },
+    {
+      "date": "2017-12-27",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc39b",
+      "versionHint": 281
+    },
+    {
+      "date": "2017-12-28",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc39c",
+      "versionHint": 281
+    },
+    {
+      "date": "2017-12-29",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc39d",
+      "versionHint": 281
+    },
+    {
+      "date": "2017-12-30",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc39e",
+      "versionHint": 279
+    },
+    {
+      "date": "2018-01-08",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc428",
+      "versionHint": 288
+    },
+    {
+      "date": "2018-01-11",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc42b",
+      "versionHint": 246
+    },
+    {
+      "date": "2018-01-13",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc42d",
+      "versionHint": 294
+    },
+    {
+      "date": "2018-01-24",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc438",
+      "versionHint": 294
+    },
+    {
+      "date": "2018-01-27",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc43b",
+      "versionHint": 288
+    },
+    {
+      "date": "2018-01-30",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc43e",
+      "versionHint": 264
+    },
+    {
+      "date": "2018-02-05",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc445",
+      "versionHint": 294
+    },
+    {
+      "date": "2018-02-28",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc45c",
+      "versionHint": 233
+    },
+    {
+      "date": "2018-03-03",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc463",
+      "versionHint": 288
+    },
+    {
+      "date": "2018-03-11",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc46b",
+      "versionHint": 288
+    },
+    {
+      "date": "2018-03-15",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc46f",
+      "versionHint": 248
+    },
+    {
+      "date": "2018-03-21",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc475",
+      "versionHint": 288
+    },
+    {
+      "date": "2018-03-25",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc479",
+      "versionHint": 257
+    },
+    {
+      "date": "2018-03-26",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc47a",
+      "versionHint": 257
+    },
+    {
+      "date": "2018-03-30",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc47e",
+      "versionHint": 295
+    },
+    {
+      "date": "2018-03-31",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc47f",
+      "versionHint": 264
+    },
+    {
+      "date": "2018-04-03",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc483",
+      "versionHint": 288
+    },
+    {
+      "date": "2018-04-05",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc485",
+      "versionHint": 288
+    },
+    {
+      "date": "2018-04-06",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc486",
+      "versionHint": 288
+    },
+    {
+      "date": "2018-04-15",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc48f",
+      "versionHint": 288
+    },
+    {
+      "date": "2018-04-16",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc490",
+      "versionHint": 288
+    },
+    {
+      "date": "2018-04-18",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc492",
+      "versionHint": 288
+    },
+    {
+      "date": "2018-04-19",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc493",
+      "versionHint": 318
+    },
+    {
+      "date": "2018-04-23",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc497",
+      "versionHint": 281
+    },
+    {
+      "date": "2018-04-30",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc49e",
+      "versionHint": 295
+    },
+    {
+      "date": "2018-05-01",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc4a1",
+      "versionHint": 288
+    },
+    {
+      "date": "2018-05-02",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc4a2",
+      "versionHint": 288
+    },
+    {
+      "date": "2018-05-05",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc4a5",
+      "versionHint": 288
+    },
+    {
+      "date": "2018-05-06",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc4a6",
+      "versionHint": 275
+    },
+    {
+      "date": "2018-05-07",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc4a7",
+      "versionHint": 248
+    },
+    {
+      "date": "2018-05-08",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc4a8",
+      "versionHint": 272
+    },
+    {
+      "date": "2018-05-11",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc4ab",
+      "versionHint": 288
+    },
+    {
+      "date": "2018-05-14",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc4ae",
+      "versionHint": 281
+    },
+    {
+      "date": "2018-05-15",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc4af",
+      "versionHint": 233
+    },
+    {
+      "date": "2018-05-18",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc4b2",
+      "versionHint": 288
+    },
+    {
+      "date": "2018-05-24",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc4b8",
+      "versionHint": 245
+    },
+    {
+      "date": "2018-06-04",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc4c4",
+      "versionHint": 288
+    },
+    {
+      "date": "2018-06-09",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc4c9",
+      "versionHint": 220
+    },
+    {
+      "date": "2018-06-10",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc4ca",
+      "versionHint": 288
+    },
+    {
+      "date": "2018-06-13",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc4cd",
+      "versionHint": 281
+    },
+    {
+      "date": "2018-06-16",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc4d0",
+      "versionHint": 256
+    },
+    {
+      "date": "2018-06-25",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc4d9",
+      "versionHint": 288
+    },
+    {
+      "date": "2018-06-26",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc4da",
+      "versionHint": 233
+    },
+    {
+      "date": "2018-07-08",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc4e8",
+      "versionHint": 281
+    },
+    {
+      "date": "2018-07-13",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc4ed",
+      "versionHint": 248
+    },
+    {
+      "date": "2018-07-15",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc4ef",
+      "versionHint": 288
+    },
+    {
+      "date": "2018-07-30",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc4fe",
+      "versionHint": 295
+    },
+    {
+      "date": "2018-08-02",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc502",
+      "versionHint": 281
+    },
+    {
+      "date": "2018-08-06",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc506",
+      "versionHint": 288
+    },
+    {
+      "date": "2018-08-13",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc50d",
+      "versionHint": 305
+    },
+    {
+      "date": "2018-08-15",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc50f",
+      "versionHint": 288
+    },
+    {
+      "date": "2018-08-18",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc512",
+      "versionHint": 288
+    },
+    {
+      "date": "2018-08-30",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc51e",
+      "versionHint": 288
+    },
+    {
+      "date": "2018-09-03",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc523",
+      "versionHint": 288
+    },
+    {
+      "date": "2018-09-18",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc532",
+      "versionHint": 281
+    },
+    {
+      "date": "2018-09-23",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc537",
+      "versionHint": 288
+    },
+    {
+      "date": "2018-09-27",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc53b",
+      "versionHint": 274
+    },
+    {
+      "date": "2018-09-30",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc53e",
+      "versionHint": 306
+    },
+    {
+      "date": "2018-10-01",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc541",
+      "versionHint": 288
+    },
+    {
+      "date": "2018-10-02",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc542",
+      "versionHint": 293
+    },
+    {
+      "date": "2018-10-26",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc55a",
+      "versionHint": 288
+    },
+    {
+      "date": "2018-10-27",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc55b",
+      "versionHint": 293
+    },
+    {
+      "date": "2018-10-28",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc55c",
+      "versionHint": 240
+    },
+    {
+      "date": "2018-10-30",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc55e",
+      "versionHint": 295
+    },
+    {
+      "date": "2018-11-07",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc567",
+      "versionHint": 288
+    },
+    {
+      "date": "2018-11-12",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc56c",
+      "versionHint": 281
+    },
+    {
+      "date": "2018-11-25",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc579",
+      "versionHint": 318
+    },
+    {
+      "date": "2018-11-26",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc57a",
+      "versionHint": 288
+    },
+    {
+      "date": "2018-11-30",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc57e",
+      "versionHint": 279
+    },
+    {
+      "date": "2018-12-01",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc581",
+      "versionHint": 240
+    },
+    {
+      "date": "2018-12-10",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc58a",
+      "versionHint": 293
+    },
+    {
+      "date": "2018-12-11",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc58b",
+      "versionHint": 288
+    },
+    {
+      "date": "2018-12-13",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc58d",
+      "versionHint": 288
+    },
+    {
+      "date": "2018-12-16",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc590",
+      "versionHint": 281
+    },
+    {
+      "date": "2018-12-18",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc592",
+      "versionHint": 288
+    },
+    {
+      "date": "2018-12-24",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc598",
+      "versionHint": 264
+    },
+    {
+      "date": "2018-12-28",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc59c",
+      "versionHint": 294
+    },
+    {
+      "date": "2018-12-30",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc59e",
+      "versionHint": 295
+    },
+    {
+      "date": "2019-01-01",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc621",
+      "versionHint": 240
+    },
+    {
+      "date": "2019-01-13",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc62d",
+      "versionHint": 281
+    },
+    {
+      "date": "2019-01-23",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc637",
+      "versionHint": 288
+    },
+    {
+      "date": "2019-01-25",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc639",
+      "versionHint": 281
+    },
+    {
+      "date": "2019-02-01",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc641",
+      "versionHint": 281
+    },
+    {
+      "date": "2019-02-05",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc645",
+      "versionHint": 288
+    },
+    {
+      "date": "2019-02-07",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc647",
+      "versionHint": 281
+    },
+    {
+      "date": "2019-02-19",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc653",
+      "versionHint": 264
+    },
+    {
+      "date": "2019-02-26",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc65a",
+      "versionHint": 281
+    },
+    {
+      "date": "2019-02-27",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc65b",
+      "versionHint": 288
+    },
+    {
+      "date": "2019-02-28",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc65c",
+      "versionHint": 279
+    },
+    {
+      "date": "2019-03-06",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc666",
+      "versionHint": 342
+    },
+    {
+      "date": "2019-03-09",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc669",
+      "versionHint": 271
+    },
+    {
+      "date": "2019-03-14",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc66e",
+      "versionHint": 288
+    },
+    {
+      "date": "2019-03-17",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc671",
+      "versionHint": 281
+    },
+    {
+      "date": "2019-03-21",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc675",
+      "versionHint": 288
+    },
+    {
+      "date": "2019-03-30",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc67e",
+      "versionHint": 279
+    },
+    {
+      "date": "2019-04-11",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc68b",
+      "versionHint": 262
+    },
+    {
+      "date": "2019-04-12",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc68c",
+      "versionHint": 288
+    },
+    {
+      "date": "2019-04-26",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc69a",
+      "versionHint": 282
+    },
+    {
+      "date": "2019-04-27",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc69b",
+      "versionHint": 342
+    },
+    {
+      "date": "2019-04-30",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc69e",
+      "versionHint": 279
+    },
+    {
+      "date": "2019-05-03",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc6a3",
+      "versionHint": 266
+    },
+    {
+      "date": "2019-05-07",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc6a7",
+      "versionHint": 288
+    },
+    {
+      "date": "2019-05-09",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc6a9",
+      "versionHint": 288
+    },
+    {
+      "date": "2019-05-12",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc6ac",
+      "versionHint": 288
+    },
+    {
+      "date": "2019-05-18",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc6b2",
+      "versionHint": 288
+    },
+    {
+      "date": "2019-05-24",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc6b8",
+      "versionHint": 254
+    },
+    {
+      "date": "2019-05-25",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc6b9",
+      "versionHint": 278
+    },
+    {
+      "date": "2019-06-11",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc6cb",
+      "versionHint": 288
+    },
+    {
+      "date": "2019-06-16",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc6d0",
+      "versionHint": 288
+    },
+    {
+      "date": "2019-06-23",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc6d7",
+      "versionHint": 288
+    },
+    {
+      "date": "2019-06-26",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc6da",
+      "versionHint": 266
+    },
+    {
+      "date": "2019-06-27",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc6db",
+      "versionHint": 264
+    },
+    {
+      "date": "2019-06-29",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc6dd",
+      "versionHint": 256
+    },
+    {
+      "date": "2019-06-30",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc6de",
+      "versionHint": 288
+    },
+    {
+      "date": "2019-07-05",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc6e5",
+      "versionHint": 288
+    },
+    {
+      "date": "2019-07-08",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc6e8",
+      "versionHint": 288
+    },
+    {
+      "date": "2019-07-17",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc6f1",
+      "versionHint": 304
+    },
+    {
+      "date": "2019-07-21",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc6f5",
+      "versionHint": 282
+    },
+    {
+      "date": "2019-07-27",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc6fb",
+      "versionHint": 288
+    },
+    {
+      "date": "2019-07-28",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc6fc",
+      "versionHint": 278
+    },
+    {
+      "date": "2019-08-05",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc705",
+      "versionHint": 288
+    },
+    {
+      "date": "2019-08-06",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc706",
+      "versionHint": 262
+    },
+    {
+      "date": "2019-08-10",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc70a",
+      "versionHint": 288
+    },
+    {
+      "date": "2019-08-12",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc70c",
+      "versionHint": 288
+    },
+    {
+      "date": "2019-08-13",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc70d",
+      "versionHint": 288
+    },
+    {
+      "date": "2019-08-15",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc70f",
+      "versionHint": 288
+    },
+    {
+      "date": "2019-08-18",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc712",
+      "versionHint": 288
+    },
+    {
+      "date": "2019-08-22",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc716",
+      "versionHint": 258
+    },
+    {
+      "date": "2019-08-26",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc71a",
+      "versionHint": 288
+    },
+    {
+      "date": "2019-08-30",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc71e",
+      "versionHint": 256
+    },
+    {
+      "date": "2019-08-31",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc71f",
+      "versionHint": 288
+    },
+    {
+      "date": "2019-09-09",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc729",
+      "versionHint": 288
+    },
+    {
+      "date": "2019-09-12",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc72c",
+      "versionHint": 288
+    },
+    {
+      "date": "2019-09-15",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc72f",
+      "versionHint": 266
+    },
+    {
+      "date": "2019-09-18",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc732",
+      "versionHint": 318
+    },
+    {
+      "date": "2019-09-19",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc733",
+      "versionHint": 269
+    },
+    {
+      "date": "2019-09-24",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc738",
+      "versionHint": 282
+    },
+    {
+      "date": "2019-09-30",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc73e",
+      "versionHint": 288
+    },
+    {
+      "date": "2019-10-30",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc75e",
+      "versionHint": 288
+    },
+    {
+      "date": "2019-11-04",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc764",
+      "versionHint": 264
+    },
+    {
+      "date": "2019-11-09",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc769",
+      "versionHint": 288
+    },
+    {
+      "date": "2019-11-18",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc772",
+      "versionHint": 288
+    },
+    {
+      "date": "2019-11-21",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc775",
+      "versionHint": 318
+    },
+    {
+      "date": "2019-11-24",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc778",
+      "versionHint": 288
+    },
+    {
+      "date": "2019-11-27",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc77b",
+      "versionHint": 262
+    },
+    {
+      "date": "2019-11-29",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc77d",
+      "versionHint": 262
+    },
+    {
+      "date": "2019-11-30",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc77e",
+      "versionHint": 295
+    },
+    {
+      "date": "2019-12-02",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc782",
+      "versionHint": 288
+    },
+    {
+      "date": "2019-12-09",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc789",
+      "versionHint": 288
+    },
+    {
+      "date": "2019-12-15",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc78f",
+      "versionHint": 264
+    },
+    {
+      "date": "2019-12-20",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc794",
+      "versionHint": 288
+    },
+    {
+      "date": "2019-12-21",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc795",
+      "versionHint": 288
+    },
+    {
+      "date": "2019-12-27",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc79b",
+      "versionHint": 282
+    },
+    {
+      "date": "2019-12-31",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc79f",
+      "versionHint": 288
+    },
+    {
+      "date": "2020-01-01",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc821",
+      "versionHint": 288
+    },
+    {
+      "date": "2020-01-03",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc823",
+      "versionHint": 264
+    },
+    {
+      "date": "2020-01-04",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc824",
+      "versionHint": 279
+    },
+    {
+      "date": "2020-01-14",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc82e",
+      "versionHint": 264
+    },
+    {
+      "date": "2020-01-18",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc832",
+      "versionHint": 264
+    },
+    {
+      "date": "2020-01-25",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc839",
+      "versionHint": 264
+    },
+    {
+      "date": "2020-01-27",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc83b",
+      "versionHint": 288
+    },
+    {
+      "date": "2020-01-29",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc83d",
+      "versionHint": 318
+    },
+    {
+      "date": "2020-01-31",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc83f",
+      "versionHint": 264
+    },
+    {
+      "date": "2020-02-03",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc843",
+      "versionHint": 274
+    },
+    {
+      "date": "2020-02-04",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc844",
+      "versionHint": 294
+    },
+    {
+      "date": "2020-02-08",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc848",
+      "versionHint": 285
+    },
+    {
+      "date": "2020-02-17",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc851",
+      "versionHint": 288
+    },
+    {
+      "date": "2020-02-23",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc857",
+      "versionHint": 264
+    },
+    {
+      "date": "2020-02-25",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc859",
+      "versionHint": 267
+    },
+    {
+      "date": "2020-02-29",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc85d",
+      "versionHint": 279
+    },
+    {
+      "date": "2020-03-01",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc861",
+      "versionHint": 288
+    },
+    {
+      "date": "2020-03-06",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc866",
+      "versionHint": 264
+    },
+    {
+      "date": "2020-03-19",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc873",
+      "versionHint": 318
+    },
+    {
+      "date": "2020-03-22",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc876",
+      "versionHint": 267
+    },
+    {
+      "date": "2020-03-26",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc87a",
+      "versionHint": 266
+    },
+    {
+      "date": "2020-03-27",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc87b",
+      "versionHint": 264
+    },
+    {
+      "date": "2020-03-28",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc87c",
+      "versionHint": 264
+    },
+    {
+      "date": "2020-03-29",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc87d",
+      "versionHint": 266
+    },
+    {
+      "date": "2020-03-30",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc87e",
+      "versionHint": 279
+    },
+    {
+      "date": "2020-04-02",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc882",
+      "versionHint": 288
+    },
+    {
+      "date": "2020-04-04",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc884",
+      "versionHint": 266
+    },
+    {
+      "date": "2020-04-05",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc885",
+      "versionHint": 274
+    },
+    {
+      "date": "2020-04-06",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc886",
+      "versionHint": 264
+    },
+    {
+      "date": "2020-04-08",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc888",
+      "versionHint": 266
+    },
+    {
+      "date": "2020-04-10",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc88a",
+      "versionHint": 266
+    },
+    {
+      "date": "2020-04-11",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc88b",
+      "versionHint": 317
+    },
+    {
+      "date": "2020-04-12",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc88c",
+      "versionHint": 266
+    },
+    {
+      "date": "2020-04-13",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc88d",
+      "versionHint": 288
+    },
+    {
+      "date": "2020-04-14",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc88e",
+      "versionHint": 266
+    },
+    {
+      "date": "2020-04-15",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc88f",
+      "versionHint": 265
+    },
+    {
+      "date": "2020-04-18",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc892",
+      "versionHint": 318
+    },
+    {
+      "date": "2020-04-28",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc89c",
+      "versionHint": 270
+    },
+    {
+      "date": "2020-04-29",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc89d",
+      "versionHint": 318
+    },
+    {
+      "date": "2020-05-02",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc8a2",
+      "versionHint": 288
+    },
+    {
+      "date": "2020-05-09",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc8a9",
+      "versionHint": 288
+    },
+    {
+      "date": "2020-05-10",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc8aa",
+      "versionHint": 288
+    },
+    {
+      "date": "2020-05-13",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc8ad",
+      "versionHint": 288
+    },
+    {
+      "date": "2020-05-16",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc8b0",
+      "versionHint": 288
+    },
+    {
+      "date": "2020-05-21",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc8b5",
+      "versionHint": 288
+    },
+    {
+      "date": "2020-05-26",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc8ba",
+      "versionHint": 267
+    },
+    {
+      "date": "2020-06-06",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc8c6",
+      "versionHint": 274
+    },
+    {
+      "date": "2020-06-09",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc8c9",
+      "versionHint": 288
+    },
+    {
+      "date": "2020-06-10",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc8ca",
+      "versionHint": 282
+    },
+    {
+      "date": "2020-06-20",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc8d4",
+      "versionHint": 288
+    },
+    {
+      "date": "2020-06-28",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc8dc",
+      "versionHint": 288
+    },
+    {
+      "date": "2020-06-29",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc8dd",
+      "versionHint": 282
+    },
+    {
+      "date": "2020-07-05",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc8e5",
+      "versionHint": 270
+    },
+    {
+      "date": "2020-07-09",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc8e9",
+      "versionHint": 288
+    },
+    {
+      "date": "2020-07-17",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc8f1",
+      "versionHint": 288
+    },
+    {
+      "date": "2020-07-24",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc8f8",
+      "versionHint": 282
+    },
+    {
+      "date": "2020-08-11",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc90b",
+      "versionHint": 269
+    },
+    {
+      "date": "2020-08-16",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc910",
+      "versionHint": 288
+    },
+    {
+      "date": "2020-08-17",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc911",
+      "versionHint": 285
+    },
+    {
+      "date": "2020-08-25",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc919",
+      "versionHint": 282
+    },
+    {
+      "date": "2020-08-31",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc91f",
+      "versionHint": 288
+    },
+    {
+      "date": "2020-09-12",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc92c",
+      "versionHint": 288
+    },
+    {
+      "date": "2020-09-18",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc932",
+      "versionHint": 270
+    },
+    {
+      "date": "2020-09-23",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc937",
+      "versionHint": 288
+    },
+    {
+      "date": "2020-09-24",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc938",
+      "versionHint": 288
+    },
+    {
+      "date": "2020-10-01",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc941",
+      "versionHint": 288
+    },
+    {
+      "date": "2020-10-04",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc944",
+      "versionHint": 271
+    },
+    {
+      "date": "2020-10-07",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc947",
+      "versionHint": 276
+    },
+    {
+      "date": "2020-10-08",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc948",
+      "versionHint": 288
+    },
+    {
+      "date": "2020-10-14",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc94e",
+      "versionHint": 352
+    },
+    {
+      "date": "2020-10-16",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc950",
+      "versionHint": 291
+    },
+    {
+      "date": "2020-10-21",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc955",
+      "versionHint": 271
+    },
+    {
+      "date": "2020-10-28",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc95c",
+      "versionHint": 288
+    },
+    {
+      "date": "2020-10-29",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc95d",
+      "versionHint": 274
+    },
+    {
+      "date": "2020-10-30",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc95e",
+      "versionHint": 296
+    },
+    {
+      "date": "2020-10-31",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc95f",
+      "versionHint": 288
+    },
+    {
+      "date": "2020-11-12",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc96c",
+      "versionHint": 288
+    },
+    {
+      "date": "2020-11-27",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc97b",
+      "versionHint": 288
+    },
+    {
+      "date": "2020-11-28",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc97c",
+      "versionHint": 282
+    },
+    {
+      "date": "2020-11-30",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc97e",
+      "versionHint": 296
+    },
+    {
+      "date": "2020-12-05",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc985",
+      "versionHint": 318
+    },
+    {
+      "date": "2020-12-16",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc990",
+      "versionHint": 276
+    },
+    {
+      "date": "2020-12-20",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc994",
+      "versionHint": 288
+    },
+    {
+      "date": "2020-12-22",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc996",
+      "versionHint": 318
+    },
+    {
+      "date": "2020-12-24",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc998",
+      "versionHint": 288
+    },
+    {
+      "date": "2020-12-26",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc99a",
+      "versionHint": 288
+    },
+    {
+      "date": "2020-12-31",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fc99f",
+      "versionHint": 272
+    },
+    {
+      "date": "2021-01-03",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fca23",
+      "versionHint": 288
+    },
+    {
+      "date": "2021-01-04",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fca24",
+      "versionHint": 288
+    },
+    {
+      "date": "2021-01-14",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fca2e",
+      "versionHint": 273
+    },
+    {
+      "date": "2021-01-23",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fca37",
+      "versionHint": 288
+    },
+    {
+      "date": "2021-01-29",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fca3d",
+      "versionHint": 294
+    },
+    {
+      "date": "2021-01-30",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fca3e",
+      "versionHint": 279
+    },
+    {
+      "date": "2021-02-02",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fca42",
+      "versionHint": 288
+    },
+    {
+      "date": "2021-02-09",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fca49",
+      "versionHint": 346
+    },
+    {
+      "date": "2021-02-10",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fca4a",
+      "versionHint": 288
+    },
+    {
+      "date": "2021-02-11",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fca4b",
+      "versionHint": 288
+    },
+    {
+      "date": "2021-02-13",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fca4d",
+      "versionHint": 288
+    },
+    {
+      "date": "2021-02-14",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fca4e",
+      "versionHint": 298
+    },
+    {
+      "date": "2021-02-21",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fca55",
+      "versionHint": 274
+    },
+    {
+      "date": "2021-02-27",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fca5b",
+      "versionHint": 288
+    },
+    {
+      "date": "2021-02-28",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fca5c",
+      "versionHint": 279
+    },
+    {
+      "date": "2021-03-05",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fca65",
+      "versionHint": 288
+    },
+    {
+      "date": "2021-03-21",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fca75",
+      "versionHint": 288
+    },
+    {
+      "date": "2021-03-28",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fca7c",
+      "versionHint": 317
+    },
+    {
+      "date": "2021-03-30",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fca7e",
+      "versionHint": 279
+    },
+    {
+      "date": "2021-03-31",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fca7f",
+      "versionHint": 298
+    },
+    {
+      "date": "2021-04-03",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fca83",
+      "versionHint": 318
+    },
+    {
+      "date": "2021-04-06",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fca86",
+      "versionHint": 288
+    },
+    {
+      "date": "2021-04-07",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fca87",
+      "versionHint": 342
+    },
+    {
+      "date": "2021-04-16",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fca90",
+      "versionHint": 288
+    },
+    {
+      "date": "2021-04-17",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fca91",
+      "versionHint": 318
+    },
+    {
+      "date": "2021-04-19",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fca93",
+      "versionHint": 278
+    },
+    {
+      "date": "2021-04-20",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fca94",
+      "versionHint": 282
+    },
+    {
+      "date": "2021-04-22",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fca96",
+      "versionHint": 288
+    },
+    {
+      "date": "2021-04-25",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fca99",
+      "versionHint": 288
+    },
+    {
+      "date": "2021-04-28",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fca9c",
+      "versionHint": 288
+    },
+    {
+      "date": "2021-04-30",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fca9e",
+      "versionHint": 282
+    },
+    {
+      "date": "2021-05-06",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fcaa6",
+      "versionHint": 318
+    },
+    {
+      "date": "2021-05-14",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fcaae",
+      "versionHint": 288
+    },
+    {
+      "date": "2021-05-17",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fcab1",
+      "versionHint": 288
+    },
+    {
+      "date": "2021-05-20",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fcab4",
+      "versionHint": 288
+    },
+    {
+      "date": "2021-05-23",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fcab7",
+      "versionHint": 275
+    },
+    {
+      "date": "2021-05-27",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fcabb",
+      "versionHint": 342
+    },
+    {
+      "date": "2021-06-05",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fcac5",
+      "versionHint": 288
+    },
+    {
+      "date": "2021-06-12",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fcacc",
+      "versionHint": 288
+    },
+    {
+      "date": "2021-06-22",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fcad6",
+      "versionHint": 288
+    },
+    {
+      "date": "2021-06-23",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fcad7",
+      "versionHint": 276
+    },
+    {
+      "date": "2021-06-27",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fcadb",
+      "versionHint": 288
+    },
+    {
+      "date": "2021-06-29",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fcadd",
+      "versionHint": 342
+    },
+    {
+      "date": "2021-06-30",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fcade",
+      "versionHint": 295
+    },
+    {
+      "date": "2021-07-19",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fcaf3",
+      "versionHint": 288
+    },
+    {
+      "date": "2021-07-30",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fcafe",
+      "versionHint": 295
+    },
+    {
+      "date": "2021-08-01",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fcb01",
+      "versionHint": 277
+    },
+    {
+      "date": "2021-08-02",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fcb02",
+      "versionHint": 297
+    },
+    {
+      "date": "2021-08-07",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fcb07",
+      "versionHint": 277
+    },
+    {
+      "date": "2021-08-09",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fcb09",
+      "versionHint": 277
+    },
+    {
+      "date": "2021-08-10",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fcb0a",
+      "versionHint": 288
+    },
+    {
+      "date": "2021-08-21",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fcb15",
+      "versionHint": 277
+    },
+    {
+      "date": "2021-08-23",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fcb17",
+      "versionHint": 277
+    },
+    {
+      "date": "2021-08-24",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fcb18",
+      "versionHint": 277
+    },
+    {
+      "date": "2021-08-30",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fcb1e",
+      "versionHint": 321
+    },
+    {
+      "date": "2021-08-31",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fcb1f",
+      "versionHint": 321
+    },
+    {
+      "date": "2021-09-01",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fcb21",
+      "versionHint": 280
+    },
+    {
+      "date": "2021-09-04",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fcb24",
+      "versionHint": 280
+    },
+    {
+      "date": "2021-09-05",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fcb25",
+      "versionHint": 280
+    },
+    {
+      "date": "2021-09-07",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fcb27",
+      "versionHint": 277
+    },
+    {
+      "date": "2021-09-11",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fcb2b",
+      "versionHint": 277
+    },
+    {
+      "date": "2021-09-22",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fcb36",
+      "versionHint": 278
+    },
+    {
+      "date": "2021-09-23",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fcb37",
+      "versionHint": 278
+    },
+    {
+      "date": "2021-09-25",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fcb39",
+      "versionHint": 278
+    },
+    {
+      "date": "2021-09-30",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fcb3e",
+      "versionHint": 321
+    },
+    {
+      "date": "2021-10-02",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fcb42",
+      "versionHint": 278
+    },
+    {
+      "date": "2021-10-14",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fcb4e",
+      "versionHint": 294
+    },
+    {
+      "date": "2021-10-15",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fcb4f",
+      "versionHint": 279
+    },
+    {
+      "date": "2021-10-16",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fcb50",
+      "versionHint": 279
+    },
+    {
+      "date": "2021-10-23",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fcb57",
+      "versionHint": 280
+    },
+    {
+      "date": "2021-10-27",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fcb5b",
+      "versionHint": 342
+    },
+    {
+      "date": "2021-10-30",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fcb5e",
+      "versionHint": 281
+    },
+    {
+      "date": "2021-11-02",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fcb62",
+      "versionHint": 280
+    },
+    {
+      "date": "2021-11-03",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fcb63",
+      "versionHint": 280
+    },
+    {
+      "date": "2021-11-04",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fcb64",
+      "versionHint": 280
+    },
+    {
+      "date": "2021-11-06",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fcb66",
+      "versionHint": 280
+    },
+    {
+      "date": "2021-11-09",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fcb69",
+      "versionHint": 280
+    },
+    {
+      "date": "2021-11-22",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fcb76",
+      "versionHint": 281
+    },
+    {
+      "date": "2021-11-23",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fcb77",
+      "versionHint": 281
+    },
+    {
+      "date": "2021-11-30",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fcb7e",
+      "versionHint": 305
+    },
+    {
+      "date": "2021-12-06",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fcb86",
+      "versionHint": 300
+    },
+    {
+      "date": "2021-12-07",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fcb87",
+      "versionHint": 334
+    },
+    {
+      "date": "2021-12-12",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fcb8c",
+      "versionHint": 300
+    },
+    {
+      "date": "2021-12-13",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fcb8d",
+      "versionHint": 345
+    },
+    {
+      "date": "2021-12-17",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fcb91",
+      "versionHint": 300
+    },
+    {
+      "date": "2021-12-21",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fcb95",
+      "versionHint": 345
+    },
+    {
+      "date": "2021-12-30",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fcb9e",
+      "versionHint": 342
+    },
+    {
+      "date": "2022-01-15",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fcc2f",
+      "versionHint": 342
+    },
+    {
+      "date": "2022-01-19",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fcc33",
+      "versionHint": 342
+    },
+    {
+      "date": "2022-01-30",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fcc3e",
+      "versionHint": 304
+    },
+    {
+      "date": "2022-02-07",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fcc47",
+      "versionHint": 317
+    },
+    {
+      "date": "2022-02-10",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fcc4a",
+      "versionHint": 304
+    },
+    {
+      "date": "2022-02-11",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fcc4b",
+      "versionHint": 317
+    },
+    {
+      "date": "2022-02-12",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fcc4c",
+      "versionHint": 304
+    },
+    {
+      "date": "2022-02-15",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fcc4f",
+      "versionHint": 318
+    },
+    {
+      "date": "2022-02-18",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fcc52",
+      "versionHint": 304
+    },
+    {
+      "date": "2022-02-19",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fcc53",
+      "versionHint": 342
+    },
+    {
+      "date": "2022-02-20",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fcc54",
+      "versionHint": 304
+    },
+    {
+      "date": "2022-02-26",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fcc5a",
+      "versionHint": 345
+    },
+    {
+      "date": "2022-02-27",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fcc5b",
+      "versionHint": 318
+    },
+    {
+      "date": "2022-02-28",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fcc5c",
+      "versionHint": 342
+    },
+    {
+      "date": "2022-03-04",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fcc64",
+      "versionHint": 318
+    },
+    {
+      "date": "2022-03-07",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fcc67",
+      "versionHint": 342
+    },
+    {
+      "date": "2022-03-08",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fcc68",
+      "versionHint": 342
+    },
+    {
+      "date": "2022-03-10",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fcc6a",
+      "versionHint": 365
+    },
+    {
+      "date": "2022-03-12",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fcc6c",
+      "versionHint": 342
+    },
+    {
+      "date": "2022-03-17",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fcc71",
+      "versionHint": 317
+    },
+    {
+      "date": "2022-03-20",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fcc74",
+      "versionHint": 304
+    },
+    {
+      "date": "2022-03-25",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fcc79",
+      "versionHint": 304
+    },
+    {
+      "date": "2022-03-30",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fcc7e",
+      "versionHint": 304
+    },
+    {
+      "date": "2022-03-31",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fcc7f",
+      "versionHint": 304
+    },
+    {
+      "date": "2022-04-02",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fcc82",
+      "versionHint": 342
+    },
+    {
+      "date": "2022-04-03",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fcc83",
+      "versionHint": 318
+    },
+    {
+      "date": "2022-04-16",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fcc90",
+      "versionHint": 304
+    },
+    {
+      "date": "2022-04-19",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fcc93",
+      "versionHint": 304
+    },
+    {
+      "date": "2022-04-23",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fcc97",
+      "versionHint": 342
+    },
+    {
+      "date": "2022-04-25",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fcc99",
+      "versionHint": 304
+    },
+    {
+      "date": "2022-04-30",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fcc9e",
+      "versionHint": 342
+    },
+    {
+      "date": "2022-05-05",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fcca5",
+      "versionHint": 345
+    },
+    {
+      "date": "2022-05-06",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fcca6",
+      "versionHint": 305
+    },
+    {
+      "date": "2022-05-09",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fcca9",
+      "versionHint": 316
+    },
+    {
+      "date": "2022-05-13",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fccad",
+      "versionHint": 305
+    },
+    {
+      "date": "2022-05-17",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fccb1",
+      "versionHint": 305
+    },
+    {
+      "date": "2022-05-20",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fccb4",
+      "versionHint": 342
+    },
+    {
+      "date": "2022-05-21",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fccb5",
+      "versionHint": 305
+    },
+    {
+      "date": "2022-05-25",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fccb9",
+      "versionHint": 305
+    },
+    {
+      "date": "2022-05-30",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fccbe",
+      "versionHint": 321
+    },
+    {
+      "date": "2022-06-01",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fccc1",
+      "versionHint": 350
+    },
+    {
+      "date": "2022-06-02",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fccc2",
+      "versionHint": 305
+    },
+    {
+      "date": "2022-06-11",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fcccb",
+      "versionHint": 347
+    },
+    {
+      "date": "2022-06-14",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fccce",
+      "versionHint": 305
+    },
+    {
+      "date": "2022-06-20",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fccd4",
+      "versionHint": 342
+    },
+    {
+      "date": "2022-06-27",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fccdb",
+      "versionHint": 305
+    },
+    {
+      "date": "2022-06-30",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fccde",
+      "versionHint": 318
+    },
+    {
+      "date": "2022-07-05",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fcce5",
+      "versionHint": 305
+    },
+    {
+      "date": "2022-07-16",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fccf0",
+      "versionHint": 342
+    },
+    {
+      "date": "2022-07-21",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fccf5",
+      "versionHint": 342
+    },
+    {
+      "date": "2022-07-22",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fccf6",
+      "versionHint": 305
+    },
+    {
+      "date": "2022-07-28",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fccfc",
+      "versionHint": 334
+    },
+    {
+      "date": "2022-07-30",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fccfe",
+      "versionHint": 321
+    },
+    {
+      "date": "2022-08-10",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fcd0a",
+      "versionHint": 296
+    },
+    {
+      "date": "2022-08-16",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fcd10",
+      "versionHint": 342
+    },
+    {
+      "date": "2022-08-18",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fcd12",
+      "versionHint": 297
+    },
+    {
+      "date": "2022-08-22",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fcd16",
+      "versionHint": 297
+    },
+    {
+      "date": "2022-08-24",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fcd18",
+      "versionHint": 345
+    },
+    {
+      "date": "2022-08-28",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fcd1c",
+      "versionHint": 298
+    },
+    {
+      "date": "2022-08-30",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fcd1e",
+      "versionHint": 303
+    },
+    {
+      "date": "2022-09-01",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fcd21",
+      "versionHint": 299
+    },
+    {
+      "date": "2022-09-03",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fcd23",
+      "versionHint": 336
+    },
+    {
+      "date": "2022-09-04",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fcd24",
+      "versionHint": 299
+    },
+    {
+      "date": "2022-09-08",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fcd28",
+      "versionHint": 334
+    },
+    {
+      "date": "2022-09-09",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fcd29",
+      "versionHint": 298
+    },
+    {
+      "date": "2022-09-10",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fcd2a",
+      "versionHint": 299
+    },
+    {
+      "date": "2022-09-12",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fcd2c",
+      "versionHint": 301
+    },
+    {
+      "date": "2022-09-16",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fcd30",
+      "versionHint": 303
+    },
+    {
+      "date": "2022-09-17",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fcd31",
+      "versionHint": 345
+    },
+    {
+      "date": "2022-09-20",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fcd34",
+      "versionHint": 346
+    },
+    {
+      "date": "2022-09-23",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fcd37",
+      "versionHint": 304
+    },
+    {
+      "date": "2022-09-24",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fcd38",
+      "versionHint": 350
+    },
+    {
+      "date": "2022-09-29",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fcd3d",
+      "versionHint": 334
+    },
+    {
+      "date": "2022-09-30",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fcd3e",
+      "versionHint": 318
+    },
+    {
+      "date": "2022-10-01",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fcd41",
+      "versionHint": 305
+    },
+    {
+      "date": "2022-10-10",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fcd4a",
+      "versionHint": 366
+    },
+    {
+      "date": "2022-10-23",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fcd57",
+      "versionHint": 306
+    },
+    {
+      "date": "2022-10-28",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fcd5c",
+      "versionHint": 307
+    },
+    {
+      "date": "2022-10-29",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fcd5d",
+      "versionHint": 305
+    },
+    {
+      "date": "2022-11-07",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fcd67",
+      "versionHint": 307
+    },
+    {
+      "date": "2022-11-08",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fcd68",
+      "versionHint": 308
+    },
+    {
+      "date": "2022-11-09",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fcd69",
+      "versionHint": 334
+    },
+    {
+      "date": "2022-11-14",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fcd6e",
+      "versionHint": 307
+    },
+    {
+      "date": "2022-11-17",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fcd71",
+      "versionHint": 307
+    },
+    {
+      "date": "2022-11-30",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fcd7e",
+      "versionHint": 321
+    },
+    {
+      "date": "2022-12-06",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fcd86",
+      "versionHint": 309
+    },
+    {
+      "date": "2022-12-18",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fcd92",
+      "versionHint": 307
+    },
+    {
+      "date": "2022-12-30",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fcd9e",
+      "versionHint": 334
+    },
+    {
+      "date": "2023-01-10",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fce2a",
+      "versionHint": 334
+    },
+    {
+      "date": "2023-01-30",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fce3e",
+      "versionHint": 321
+    },
+    {
+      "date": "2023-03-05",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fce65",
+      "versionHint": 316
+    },
+    {
+      "date": "2023-03-15",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fce6f",
+      "versionHint": 324
+    },
+    {
+      "date": "2023-04-13",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fce8d",
+      "versionHint": 318
+    },
+    {
+      "date": "2023-04-14",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fce8e",
+      "versionHint": 318
+    },
+    {
+      "date": "2023-04-19",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fce93",
+      "versionHint": 318
+    },
+    {
+      "date": "2023-04-30",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fce9e",
+      "versionHint": 335
+    },
+    {
+      "date": "2023-05-04",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fcea4",
+      "versionHint": 346
+    },
+    {
+      "date": "2023-05-09",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fcea9",
+      "versionHint": 350
+    },
+    {
+      "date": "2023-05-12",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fceac",
+      "versionHint": 318
+    },
+    {
+      "date": "2023-05-14",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fceae",
+      "versionHint": 318
+    },
+    {
+      "date": "2023-05-16",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fceb0",
+      "versionHint": 318
+    },
+    {
+      "date": "2023-06-04",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fcec4",
+      "versionHint": 324
+    },
+    {
+      "date": "2023-06-17",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fced1",
+      "versionHint": 321
+    },
+    {
+      "date": "2023-06-18",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fced2",
+      "versionHint": 365
+    },
+    {
+      "date": "2023-06-21",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fced5",
+      "versionHint": 321
+    },
+    {
+      "date": "2023-06-30",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fcede",
+      "versionHint": 346
+    },
+    {
+      "date": "2023-07-01",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fcee1",
+      "versionHint": 343
+    },
+    {
+      "date": "2023-10-02",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fcf42",
+      "versionHint": 352
+    },
+    {
+      "date": "2023-10-13",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fcf4d",
+      "versionHint": 343
+    },
+    {
+      "date": "2023-11-17",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fcf71",
+      "versionHint": 344
+    },
+    {
+      "date": "2023-12-01",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fcf81",
+      "versionHint": 348
+    },
+    {
+      "date": "2023-12-30",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fcf9e",
+      "versionHint": 346
+    },
+    {
+      "date": "2024-02-09",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fd049",
+      "versionHint": 346
+    },
+    {
+      "date": "2024-02-12",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fd04c",
+      "versionHint": 347
+    },
+    {
+      "date": "2024-02-14",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fd04e",
+      "versionHint": 341
+    },
+    {
+      "date": "2024-02-15",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fd04f",
+      "versionHint": 341
+    },
+    {
+      "date": "2024-02-23",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fd057",
+      "versionHint": 348
+    },
+    {
+      "date": "2024-02-29",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fd05d",
+      "versionHint": 339
+    },
+    {
+      "date": "2024-03-10",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fd06a",
+      "versionHint": 343
+    },
+    {
+      "date": "2024-03-30",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fd07e",
+      "versionHint": 359
+    },
+    {
+      "date": "2024-04-06",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fd086",
+      "versionHint": 344
+    },
+    {
+      "date": "2024-04-12",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fd08c",
+      "versionHint": 359
+    },
+    {
+      "date": "2024-04-13",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fd08d",
+      "versionHint": 357
+    },
+    {
+      "date": "2024-04-14",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fd08e",
+      "versionHint": 347
+    },
+    {
+      "date": "2024-04-26",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fd09a",
+      "versionHint": 344
+    },
+    {
+      "date": "2024-05-15",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fd0af",
+      "versionHint": 345
+    },
+    {
+      "date": "2024-05-30",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fd0be",
+      "versionHint": 350
+    },
+    {
+      "date": "2024-06-02",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fd0c2",
+      "versionHint": 364
+    },
+    {
+      "date": "2024-06-04",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fd0c4",
+      "versionHint": 346
+    },
+    {
+      "date": "2024-06-10",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fd0ca",
+      "versionHint": 350
+    },
+    {
+      "date": "2024-06-20",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fd0d4",
+      "versionHint": 350
+    },
+    {
+      "date": "2024-08-07",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fd107",
+      "versionHint": 350
+    },
+    {
+      "date": "2024-09-01",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fd121",
+      "versionHint": 361
+    },
+    {
+      "date": "2024-09-24",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fd138",
+      "versionHint": 349
+    },
+    {
+      "date": "2024-09-25",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fd139",
+      "versionHint": 349
+    },
+    {
+      "date": "2024-10-10",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fd14a",
+      "versionHint": 350
+    },
+    {
+      "date": "2024-10-11",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fd14b",
+      "versionHint": 350
+    },
+    {
+      "date": "2024-10-21",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fd155",
+      "versionHint": 350
+    },
+    {
+      "date": "2024-10-22",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fd156",
+      "versionHint": 366
+    },
+    {
+      "date": "2024-10-26",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fd15a",
+      "versionHint": 365
+    },
+    {
+      "date": "2024-11-21",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fd175",
+      "versionHint": 360
+    },
+    {
+      "date": "2024-12-30",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fd19e",
+      "versionHint": 361
+    },
+    {
+      "date": "2025-02-16",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fd250",
+      "versionHint": 356
+    },
+    {
+      "date": "2025-02-28",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fd25c",
+      "versionHint": 358
+    },
+    {
+      "date": "2025-03-05",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fd265",
+      "versionHint": 365
+    },
+    {
+      "date": "2025-03-07",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fd267",
+      "versionHint": 357
+    },
+    {
+      "date": "2025-03-08",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fd268",
+      "versionHint": 357
+    },
+    {
+      "date": "2025-03-11",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fd26b",
+      "versionHint": 358
+    },
+    {
+      "date": "2025-03-18",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fd272",
+      "versionHint": 360
+    },
+    {
+      "date": "2025-03-25",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fd279",
+      "versionHint": 365
+    },
+    {
+      "date": "2025-03-29",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fd27d",
+      "versionHint": 360
+    },
+    {
+      "date": "2025-04-06",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fd286",
+      "versionHint": 359
+    },
+    {
+      "date": "2025-04-12",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fd28c",
+      "versionHint": 359
+    },
+    {
+      "date": "2025-05-06",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fd2a6",
+      "versionHint": 360
+    },
+    {
+      "date": "2025-05-20",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fd2b4",
+      "versionHint": 360
+    },
+    {
+      "date": "2025-05-24",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fd2b8",
+      "versionHint": 360
+    },
+    {
+      "date": "2025-06-09",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fd2c9",
+      "versionHint": 361
+    },
+    {
+      "date": "2025-06-30",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fd2de",
+      "versionHint": 362
+    },
+    {
+      "date": "2025-07-02",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fd2e2",
+      "versionHint": 362
+    },
+    {
+      "date": "2025-07-28",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fd2fc",
+      "versionHint": 366
+    },
+    {
+      "date": "2025-08-13",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fd30d",
+      "versionHint": 364
+    },
+    {
+      "date": "2025-09-11",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fd32b",
+      "versionHint": 365
+    },
+    {
+      "date": "2025-11-07",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fd367",
+      "versionHint": 366
+    },
+    {
+      "date": "2025-11-10",
+      "base_url": "https://cmpmap.com.com/flatfile?db=tm",
+      "fToken": "fd36a",
+      "versionHint": 366
+    }
+  ]
+}

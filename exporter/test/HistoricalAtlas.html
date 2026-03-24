@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Historical Imagery Atlas - Deep Scan Native</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <style>
+        body { margin: 0; padding: 0; background: #000; color: #fff; font-family: 'Segoe UI', sans-serif; }
+        #map { height: 100vh; width: 100%; background: #050505; }
+        #controls { 
+            position: absolute; top: 10px; left: 50px; right: 10px; z-index: 1000;
+            padding: 15px; background: rgba(10, 10, 10, 0.95); border: 1px solid #00ff00;
+            border-radius: 8px; box-shadow: 0 0 20px rgba(0,255,0,0.4);
+        }
+        .date-slider { width: 100%; height: 30px; cursor: pointer; accent-color: #00ff00; margin: 10px 0; }
+        #current-date { font-weight: bold; font-size: 1.8em; color: #00ff00; text-shadow: 0 0 10px rgba(0,255,0,0.5); }
+        .info { font-size: 0.9em; color: #888; margin-left: 10px; }
+        .status-box { float: right; font-weight: bold; font-family: monospace; }
+        .status-online { color: #00ff00; }
+        .status-busy { color: #ffff00; }
+    </style>
+</head>
+<body>
+    <div id="controls">
+        <div style="display: flex; justify-content: space-between; align-items: baseline;">
+            <div>
+                <span id="current-date">READY</span>
+                <span id="entry-info" class="info"></span>
+            </div>
+            <div class="status-box">
+                ENGINE: <span id="status" class="status-online">CONNECTED</span>
+            </div>
+        </div>
+        <input type="range" id="slider" class="date-slider" min="0" max="0" step="1" value="0" disabled>
+    </div>
+    
+    <div id="map"></div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+        const SERVER_URL = 'http://localhost:3001';
+
+        // DEFAULT EPSG:3857 for normal Leaflet Basemaps
+        const map = L.map('map', {
+            center: [35.1264, 33.4299],
+            zoom: 13, // Start a bit zoomed out so you see something first
+            maxZoom: 22
+        });
+
+        // Use standard Web Mercator Basemaps
+        const esriSatellite = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+            attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EBP, and the GIS User Community',
+            maxZoom: 22
+        }).addTo(map);
+
+        const osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors',
+            maxZoom: 19
+        });
+
+        L.control.layers({
+            "Esri Satellite (Native 4326)": esriSatellite,
+            "OpenStreetMap (Distorted)": osm
+        }).addTo(map);
+
+        let historicalLayer = null;
+        let availableDates = [];
+
+        const HistoricalLayer = L.TileLayer.extend({
+            getTileUrl: function(coords) {
+                const nw = this._map.unproject(coords.multiplyBy(256), coords.z);
+                const se = this._map.unproject(coords.add([1, 1]).multiplyBy(256), coords.z);
+                const path = getPathCode((nw.lat + se.lat) / 2, (nw.lng + se.lng) / 2, coords.z);
+                const url = `${SERVER_URL}/tile?path=${path}&i=${this.options.i}&f=${this.options.f}`;
+                return url;
+            }
+        });
+
+        function getPathCode(lat, lon, zoom) {
+            const ValidBoundRc = [-180, 180, 180, -180];
+            let out = '0'; 
+            for (let i = 0; i < zoom; i++) {
+                const geoSize = 360 / Math.pow(2, i);
+                const col = Math.floor((lon - ValidBoundRc[0]) / geoSize);
+                const row = Math.floor((lat - ValidBoundRc[3]) / geoSize);
+                if (row % 2 !== 0 && col % 2 !== 0) out += '2';
+                else if (row % 2 !== 0 && col % 2 === 0) out += '3';
+                else if (row % 2 === 0 && col % 2 === 0) out += '0';
+                else out += '1';
+            }
+            return out;
+        }
+
+        async function discoverDates() {
+            const b = map.getBounds();
+            const statusEl = document.getElementById('status');
+            statusEl.innerText = "SCANNING";
+            statusEl.className = "status-busy";
+            
+            try {
+                const res = await fetch(`${SERVER_URL}/discover`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        bounds: {
+                            ne: { lat: b.getNorthEast().lat, lon: b.getNorthEast().lng },
+                            sw: { lat: b.getSouthWest().lat, lon: b.getSouthWest().lng }
+                        }
+                    })
+                });
+                
+                const data = await res.json();
+                availableDates = data;
+                statusEl.innerText = "CONNECTED";
+                statusEl.className = "status-online";
+                
+                const slider = document.getElementById('slider');
+                if (availableDates.length > 0) {
+                    slider.max = availableDates.length - 1;
+                    slider.disabled = false;
+                    updateSlider(0);
+                } else {
+                    slider.disabled = true;
+                    document.getElementById('current-date').innerText = "NO DATA";
+                }
+            } catch (err) {
+                statusEl.innerText = "OFFLINE";
+            }
+        }
+
+        function updateSlider(index) {
+            index = parseInt(index);
+            if (!availableDates[index]) return;
+            const entry = availableDates[index];
+            document.getElementById('current-date').innerText = entry.date;
+            document.getElementById('entry-info').innerText = `(V:${entry.iCode})`;
+            
+            if (historicalLayer) map.removeLayer(historicalLayer);
+            historicalLayer = new HistoricalLayer('', {
+                i: entry.iCode, f: entry.fToken, tileSize: 256, maxZoom: 22
+            }).addTo(map);
+        }
+
+        map.on('moveend', discoverDates);
+        document.getElementById('slider').oninput = (e) => updateSlider(e.target.value);
+        window.onload = discoverDates;
+    </script>
+</body>
+</html>

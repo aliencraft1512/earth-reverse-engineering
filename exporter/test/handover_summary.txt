@@ -1,0 +1,837 @@
+
+
+
+
+
+
+6. separate raw observed evidence from inferred candidates and confirmed wins
+
+CURRENT STATE YOU SHOULD ASSUME
+- server_second.js is the main working backend in this handover set
+- index.php is the current frontend and uses a hardcoded date list
+- dbRoot.v5 is the current key material used by decryptTile()
+- cyprus_sources_from_submissions.txt is the strongest raw Cyprus evidence file
+- cyprus_list_points_txt.txt is a manual place-based Cyprus notebook with candidate URLs
+- historical_sources*.txt are broader chronology/source pools
+- reverse_search.txt is speculative and useful for brute-force candidate generation, but not proof
+
+CRITICAL KNOWN FACTS
+1. TILE ADDRESSING
+The row/col path is generated from lat/lon/zoom using the existing tile math in server_second.js.
+Do not invent new spatial addressing logic. Reuse the existing implementation exactly.
+
+2. DATE TOKEN ENCODING IS MOSTLY SOLVED
+The hex token / fToken is a packed date using a 1920 offset.
+
+Encode:
+code = ((year - 1920) << 9) | (month << 5) | day
+fToken = "f" + code.toString(16)
+
+Decode:
+year  = (code >> 9) + 1920
+month = (code >> 5) & 0x0f
+day   = code & 0x1f
+
+Do not treat hex_code values as opaque constants.
+Implement both encode and decode and use them to validate mappings and source files.
+
+3. DECRYPTION IS IMPLEMENTED BUT MUST BE VERIFIED
+server_second.js already contains decryptTile() using dbRoot.v5.
+Do not invent a new decrypt algorithm before testing the existing one.
+You must verify it on real encrypted flatfile payloads.
+
+4. THE MAIN UNKNOWN IS VERSION / DATASET FAMILY
+The i.xxx segment is the key remaining unknown.
+Treat version selection as the main reverse-engineering and probing target.
+Do not assume the first matching version from a source line is correct.
+Probe it.
+
+NON-NEGOTIABLE RULES
+- Probe first, then trust
+- Do not conflate source evidence with confirmed availability
+- Do not treat version numbers alone as chronology
+- Do not claim a tile/date/version works unless you have:
+  1. HTTP success
+  2. decrypt success
+  3. image success
+- Save raw encrypted payloads for successful probes
+- Validate date token consistency everywhere
+- Keep exact logs for every attempted candidate
+
+EVIDENCE PRIORITY
+Use this order of trust:
+
+1. confirmed live win for the exact candidate URL
+2. cyprus_sources_from_submissions.txt
+3. cyprus_list_points_txt.txt
+4. historical_sources.txt
+5. historical_sources_merged.txt and historical_sources_merged (1).txt
+6. historical_sources_forchatgpt.txt
+7. reverse_search.txt
+
+INTERPRETATION OF THE FILES
+- server_second.js is the current backend baseline, but it still uses hardcoded dateVersionMapping and should be treated as legacy-operational, not final architecture
+- index.php is a temporary UI and should not drive backend design decisions
+- cyprus_sources_from_submissions.txt is the main raw Cyprus chronology/evidence corpus
+- cyprus_list_points_txt.txt is a place anchor file for known Cyprus points and candidate URLs
+- reverse_search.txt is a brute-force candidate pool and should be treated as speculative
+- package.json may point to a file not present in this handover set; do not rely on missing files
+
+WHAT YOU MUST REVERSE ENGINEER
+You must explicitly attack the version problem.
+
+For a fixed point/date:
+- compute rowColInfoStr
+- derive the date token from the date
+- hold rowColInfoStr and fToken fixed initially
+- sweep candidate i.xxx values from the source pools
+- probe real URLs
+- download encrypted bytes on promising responses
+- run decryptTile()
+- validate the image
+- store the winner tuple
+
+Treat version as an empirical variable, not a hardcoded truth.
+
+THREE LEVELS OF SUCCESS
+You must log these separately:
+
+1. probe_success
+- server returned bytes / plausible HTTP success
+
+2. decrypt_success
+- decryptTile() ran and produced output bytes
+
+3. image_success
+- decrypted bytes are genuinely a decodable image, ideally a valid JPEG
+
+A candidate is not solved unless all three are known.
+
+FIRST DELIVERABLES
+Create these scripts first:
+
+1. validate_tokens.js
+Purpose:
+- parse the dated source files
+- extract line dates and fTokens
+- decode the token using the 1920 rule
+- compare decoded date vs written date
+- flag mismatches, suspicious duplicates, malformed lines
+
+2. decrypt_check.js
+Purpose:
+- load dbRoot.v5
+- decrypt a provided encrypted flatfile payload using the exact decryptTile() logic from server_second.js
+- verify output using raw image checks
+- save both encrypted and decrypted outputs
+- test image validity without depending only on sharp
+
+3. probe_point.js
+Purpose:
+- accept lat, lon, zoom, and optional date/version constraints
+- compute rowColInfoStr using the existing server logic
+- generate candidate URLs from the raw source pools
+- probe candidates
+- optionally download successful encrypted responses
+- pass them to decrypt_check.js
+- emit structured logs
+
+4. source_audit.js
+Purpose:
+- normalize all source lists into one evidence table
+- compare cyprus_sources_from_submissions.txt, cyprus_list_points_txt.txt, historical_sources*.txt, and reverse_search.txt
+- identify duplicates, gaps, contradictions, version clusters, and date-token inconsistencies
+
+5. build_cyprus_observed_chronology.js
+Purpose:
+- derive a clean Cyprus chronology map from the raw files only
+- group by place and/or coarse regional pattern if supported by the observed row/col prefixes
+- output dates_by_year, versions_by_year, first_date, last_date, counts, and supporting sample lines
+
+PROBING STRATEGY
+Use this workflow:
+
+Step 1:
+Choose a known Cyprus anchor point from cyprus_list_points_txt.txt.
+
+Step 2:
+Compute rowColInfoStr using the exact logic already present in server_second.js.
+
+Step 3:
+Choose a target date:
+- first from cyprus_sources_from_submissions.txt
+- then from cyprus_list_points_txt.txt
+- then from historical_sources*.txt
+- only then from reverse_search.txt
+
+Step 4:
+Generate fToken from the date using the 1920-offset encode function.
+Also decode any existing token found in a source line and verify it matches.
+
+Step 5:
+Collect candidate versions for that place/date from all local source pools.
+
+Step 6:
+Probe candidates systematically, not randomly.
+For each point/date:
+- keep date fixed
+- keep token fixed
+- keep rowColInfoStr fixed
+- sweep i.xxx candidates
+
+Step 7:
+For any promising response:
+- save encrypted bytes
+- run decryptTile()
+- validate the output image
+- store the result with full metadata
+
+Step 8:
+Repeat around the target:
+- exact tile
+- immediate neighboring tiles
+- optionally one zoom step up/down
+This is necessary because the current available-dates logic samples only center plus neighbors and can miss edge cases.
+
+WHAT TO RETIRE OR REDUCE
+You should plan to reduce dependence on:
+- hardcoded dateVersionMapping in server_second.js
+- hardcoded date arrays in index.php
+
+But do not redesign the UI first.
+Stabilize the backend first.
+
+LOGGING SCHEMA
+For every attempted candidate, record:
+
+{
+  "lat": ...,
+  "lon": ...,
+  "zoom": ...,
+  "rowColInfoStr": "...",
+  "date": "YYYY-MM-DD",
+  "fToken": "...",
+  "version": "i.xxx",
+  "source_pool": "...",
+  "probe_success": true/false,
+  "http_status": ...,
+  "bytes_received": ...,
+  "decrypt_success": true/false,
+  "image_success": true/false,
+  "image_format": "...",
+  "notes": "..."
+}
+
+IMPORTANT AUDIT TASKS
+- Audit the hardcoded dateVersionMapping entries against the 1920-offset token logic
+- Detect reused or contradictory hex_code values across different written dates
+- Compare the same token across multiple versions to identify likely version families
+- Identify which versions dominate which chronology windows
+- Identify whether some versions are place-specific, date-specific, or broadly island-wide
+
+SUCCESS CRITERIA
+The work is successful when you can show:
+
+1. a verified decrypt path using dbRoot.v5 and real encrypted flatfile payloads
+2. a token validator proving the 1920 date logic across the local corpora
+3. a probe harness that systematically tests candidate versions
+4. a clean source-derived Cyprus chronology artifact built from raw files only
+5. a clear separation between:
+   - observed evidence
+   - inferred candidates
+   - confirmed live wins
+
+FINAL ARCHITECTURE TO AIM FOR
+raw source lines -> token validation -> candidate generation -> live probe -> save encrypted payload -> decrypt -> image validation -> winner table -> UI
+
+Do not skip the winner table.
+That table is the bridge from reverse engineering to a stable production chronology engine.
+
+Your first report back must include:
+- what in server_second.js is confirmed working
+- what in server_second.js is legacy/hardcoded and should be retired
+- whether decryptTile() is valid on real payloads
+- whether the 1920 token logic matches the source files
+- which i.xxx families appear strongest for the first tested Cyprus anchor points
+- what contradictions or bad mappings you found\
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+You are taking over a historical imagery protocol/debugging project for khmdb.google.com, which is owned by the user.
+
+Start ONLY from these files:
+- server_second.js
+- index.php
+- cyprus_list_points_txt.txt
+- cyprus_sources_from_submissions.txt
+- historical_sources.txt
+- historical_sources_merged.txt
+- historical_sources_merged (1).txt
+- historical_sources_forchatgpt.txt
+- reverse_search.txt
+- package.json
+- dbRoot.v5
+
+Do not rely on any other previously generated JSON chronology/index files unless they are reattached later.
+
+OBJECTIVE
+Turn the current setup into a probe-first, evidence-driven system for historical imagery retrieval and validation.
+
+CORE FACTS
+1. rowColInfoStr generation already exists in the current code. Reuse it exactly.
+2. The hex token / fToken is a packed date using a 1920 offset:
+   - encode: ((year - 1920) << 9) | (month << 5) | day
+   - decode:
+     year  = (code >> 9) + 1920
+     month = (code >> 5) & 0x0f
+     day   = code & 0x1f
+3. decryptTile() already exists and uses dbRoot.v5.
+4. The main remaining unknown is the version segment: i.xxx
+
+IMPORTANT
+Do not treat i.xxx as solved.
+Reverse engineer it by probing.
+For a fixed point/date:
+- compute rowColInfoStr
+- derive fToken from the date
+- keep rowColInfoStr and fToken fixed
+- sweep candidate i.xxx values from the local source files
+- probe
+- download encrypted bytes on promising responses
+- decrypt
+- validate image
+- store winner tuple
+
+TRUST ORDER
+1. confirmed live win for exact candidate URL
+2. cyprus_sources_from_submissions.txt
+3. cyprus_list_points_txt.txt
+4. historical_sources.txt
+5. historical_sources_merged.txt / historical_sources_merged (1).txt
+6. historical_sources_forchatgpt.txt
+7. reverse_search.txt
+
+RULES
+- Probe first, then trust
+- Do not claim a tile/date/version works unless all 3 are true:
+  1. probe_success
+  2. decrypt_success
+  3. image_success
+- Save raw encrypted payloads for successful probes
+- Validate date/token consistency everywhere
+- Do not redesign the UI first
+- Do not rely long-term on hardcoded dateVersionMapping
+- Keep logs for every candidate
+
+FIRST TASKS
+1. Build validate_tokens.js
+   - parse all dated source files
+   - extract date + fToken
+   - decode token
+   - compare decoded date vs written date
+   - flag mismatches, duplicates, suspicious mappings
+
+2. Build decrypt_check.js
+   - load dbRoot.v5
+   - run the exact decryptTile() logic from server_second.js
+   - test on real encrypted flatfile payloads
+   - save encrypted + decrypted outputs
+   - validate image without relying only on sharp
+
+3. Build probe_point.js
+   - input: lat, lon, zoom, optional date/version
+   - compute rowColInfoStr using existing code logic
+   - build candidate URLs from local source pools
+   - probe candidates
+   - download promising encrypted payloads
+   - run decrypt_check.js
+   - emit structured logs
+
+4. Build source_audit.js
+   - normalize all source files into one evidence table
+   - compare Cyprus-specific and global source lists
+   - identify duplicates, gaps, contradictions, version clusters
+
+5. Build build_cyprus_observed_chronology.js
+   - derive chronology from raw source files only
+   - output dates_by_year, versions_by_year, first_date, last_date, counts
+
+PROBING METHOD
+For each anchor point:
+1. choose point from cyprus_list_points_txt.txt
+2. compute rowColInfoStr
+3. choose date from cyprus_sources_from_submissions.txt first
+4. derive fToken from date
+5. collect candidate i.xxx values from all local source pools
+6. probe systematically
+7. for any promising response:
+   - save encrypted bytes
+   - decrypt with dbRoot.v5
+   - validate image
+   - record exact winner tuple
+8. also test immediate neighboring tiles and optionally one zoom step up/down
+
+LOG FORMAT
+For every candidate, record:
+{
+  "lat": ...,
+  "lon": ...,
+  "zoom": ...,
+  "rowColInfoStr": "...",
+  "date": "YYYY-MM-DD",
+  "fToken": "...",
+  "version": "i.xxx",
+  "source_pool": "...",
+  "probe_success": true/false,
+  "http_status": ...,
+  "bytes_received": ...,
+  "decrypt_success": true/false,
+  "image_success": true/false,
+  "image_format": "...",
+  "notes": "..."
+}
+
+WHAT TO REPORT BACK FIRST
+- what in server_second.js is confirmed working
+- what in server_second.js is legacy/hardcoded and should be retired
+- whether decryptTile() works on real payloads
+- whether 1920 token logic matches the local source files
+- which i.xxx families appear strongest for the first tested Cyprus anchor points
+- any contradictory mappings or reused suspicious tokens
+
+TARGET ARCHITECTURE
+raw source lines -> token validation -> candidate generation -> live probe -> save encrypted payload -> decrypt -> image validation -> winner table -> UI
+
+
+
+
+
+
+
+
+
+
+
+Handover summary
+
+The current handover set already contains enough to continue the reverse-engineering effort without the earlier generated JSON layers.
+
+server_second.js is the main executable evidence in this set. It contains the tile math, a hardcoded dateVersionMapping, the decryptTile() routine using dbRoot.v5, a /tiles endpoint that downloads flatfiles and decrypts them, and a /available-dates endpoint that probes a small set of center-neighbor tiles to decide which dates are available. It fetches encrypted tile bytes with a Google Earth-like user agent, decrypts them, and writes them to cache via sharp(...).jpeg().toFile(...).
+
+index.php is the matching frontend in this handover set. It uses a hardcoded date array, shows a slider only from zoom 17+, and calls POST http://localhost:3000/tiles with {date, bounds, zoom}. So in this upload set, the UI is still date-driven and static; it is not discovering dates dynamically first.
+
+The strongest Cyprus evidence files in this upload are the raw text corpora, not any generated regional summary. cyprus_sources_from_submissions.txt is a dated list of observed Cyprus flatfile URLs spanning at least from 2002-12-23 into 2022, with many explicit f1-...-i.xxx-fxxxx patterns. cyprus_list_points_txt.txt is a place-based notebook with named Cyprus locations and manually collected candidate URLs, including both qp-...-q.366 and f1-...-i.xxx-fxxxx patterns.
+
+The global source files are also useful. historical_sources.txt is a dated flatfile corpus with observed entries such as 2009-01-20 ... i.40-fb234. historical_sources_merged.txt and historical_sources_merged (1).txt are broader chronological corpora extending back into 2002–2005, and historical_sources_forchatgpt.txt is a smaller later-period subset with entries from 2020–2024. These should be treated as source pools for candidate generation and chronology hints, not as proof of exact Cyprus tile availability.
+
+reverse_search.txt should be treated as a brute-force candidate list. It contains many flatfile URL variants, but unlike the dated source lists, it should not be treated as trusted chronology until probe success confirms it.
+
+What the next agent should assume
+
+The next agent should assume that the current working base is server_second.js + index.php + the raw source lists. The agent should not assume any generated Cyprus chronology JSONs exist or are correct, because they are not part of this handover package.
+
+The agent should also assume that decryption is intended to be done with dbRoot.v5, because server_second.js directly reads that file and applies decryptTile() before saving the image. The exact XOR stepping logic is already in the file, so the job is not to invent a new decryption routine, but to verify and operationalize the one already present.
+
+What each file is for
+server_second.js
+
+This is the core server file in the current handover. It already contains:
+
+the tile grid math,
+getRowColInfoStr(...),
+the hardcoded dateVersionMapping,
+decryptTile(...),
+POST /tiles,
+POST /available-dates,
+tile caching,
+and the Google Earth-like request headers used for fetching.
+index.php
+
+This is the current frontend that talks to the local server. It has:
+
+a fixed date slider,
+zoom-gated display,
+and calls to /tiles only.
+cyprus_sources_from_submissions.txt
+
+This is the most important raw Cyprus chronology/evidence file in this handover. It is already date-labeled and contains many observed Cyprus flatfile URLs. It includes early years like 2002-12-23 and later blocks such as June and September 2022.
+
+cyprus_list_points_txt.txt
+
+This is a manual Cyprus probe notebook. It maps named places to coordinates and candidate URLs. It is especially useful for choosing known anchor points to probe first.
+
+historical_sources.txt
+
+This is a wider dated source list and can be used as fallback candidate material when Cyprus-specific evidence is thin.
+
+historical_sources_merged.txt and historical_sources_merged (1).txt
+
+These are broader merged chronological corpora that go further back than the Cyprus-specific file. They are useful for discovering global date/version patterns and verifying whether a token/version family existed at all in a given period.
+
+historical_sources_forchatgpt.txt
+
+This is a smaller curated source subset centered on later years, especially 2020–2024. It can help rank later-period candidates quickly.
+
+reverse_search.txt
+
+This is a candidate-generation scratchpad. Use it as a search pool, not as confirmed evidence.
+
+dbRoot.v5
+
+This is the key file used by the decryption routine referenced in server_second.js. The agent must use this file directly, not replace it.
+
+What the next agent must do first
+1. Verify the existing decryption path
+
+The agent must take the decryptTile() routine from server_second.js and test it directly against at least one real encrypted flatfile response using the uploaded dbRoot.v5. The goal is to confirm that the existing code path truly produces a valid JPEG for this dataset, rather than assuming it works because the function exists.
+
+2. Build a probe-first workflow
+
+The current /available-dates logic only checks the center tile and four neighbors for each date in the hardcoded map. That is a useful seed, but too limited. The next agent should keep the same tile math and request headers, but replace the hardcoded chronology dependence with a probe-first strategy driven by the raw text corpora.
+
+3. Use the raw Cyprus files before the global files
+
+For Cyprus, candidate generation should start from:
+
+cyprus_list_points_txt.txt
+cyprus_sources_from_submissions.txt
+then the wider historical_sources*.txt files
+and only then reverse_search.txt as a speculative pool.
+Proposed actions for the agent
+Action A — Create a standalone decrypt test
+
+Create a script that:
+
+reads dbRoot.v5,
+accepts one downloaded flatfile binary,
+runs the exact decryptTile() logic from server_second.js,
+checks for JPEG validity,
+writes the result to disk,
+logs whether the output decodes correctly.
+Action B — Create a standalone probe script
+
+Create a script that:
+
+accepts lat, lon, zoom,
+computes rowColInfoStr using the same logic as server_second.js,
+builds candidate URLs from the raw source files,
+probes them with the same request headers,
+records success/failure,
+and optionally downloads one successful encrypted tile for decryption testing.
+Action C — Replace hardcoded chronology with source-derived chronology
+
+The current server depends on dateVersionMapping. The next agent should generate a fresh chronology map from:
+
+cyprus_sources_from_submissions.txt,
+cyprus_list_points_txt.txt,
+and then optionally enrich with the historical_sources*.txt files.
+That chronology map should be generated by code, not maintained manually.
+Action D — Keep the current frontend simple for now
+
+Do not redesign index.php first. Keep it as the viewer while the backend is repaired. Once probing works, the agent can replace the hardcoded date list in index.php with a dynamic /available-dates call.
+
+Action E — Diff the three source pools
+
+The agent should diff:
+
+historical_sources.txt
+historical_sources_merged.txt
+historical_sources_merged (1).txt
+historical_sources_forchatgpt.txt
+
+The goal is to identify:
+
+duplicates,
+date coverage gaps,
+version-family continuity,
+and which file is best as the fallback corpus.
+Paste-ready handover for the agent
+Start only from these files:
+- server_second.js
+- index.php
+- cyprus_list_points_txt.txt
+- cyprus_sources_from_submissions.txt
+- historical_sources.txt
+- historical_sources_merged.txt
+- historical_sources_merged (1).txt
+- historical_sources_forchatgpt.txt
+- reverse_search.txt
+- package.json
+- dbRoot.v5
+
+Do not rely on any generated Cyprus JSON chronology/index files unless they are reattached later.
+
+Your first objective is to verify the current decrypt pipeline from server_second.js using dbRoot.v5 on a real encrypted flatfile response. Do not invent a new decrypt algorithm; test the existing one.
+
+Your second objective is to build a probe-first workflow. Keep the tile math and request style from server_second.js, but stop depending on the hardcoded dateVersionMapping as the long-term chronology source.
+
+Use evidence priority in this order:
+1. Successful live probe for the exact candidate URL
+2. cyprus_sources_from_submissions.txt
+3. cyprus_list_points_txt.txt
+4. historical_sources.txt / historical_sources_merged*.txt / historical_sources_forchatgpt.txt
+5. reverse_search.txt
+
+Immediate tasks:
+1. Make a standalone decrypt test script
+2. Make a standalone point probe script
+3. Generate a source-derived Cyprus chronology map from the raw text files
+4. Replace the hardcoded dateVersionMapping with generated candidate data
+5. Keep index.php as the frontend until the backend is stable
+
+Rules:
+- Probe first, then trust
+- Decrypt real downloaded tiles, not mock buffers
+- Treat reverse_search.txt as speculative only
+- Treat cyprus_sources_from_submissions.txt as the main raw Cyprus evidence file
+- Do not claim coverage for a tile/date unless a live probe succeeds
+Short strategic note
+
+The next agent should think in this order:
+
+raw source lines -> candidate URL build -> live probe -> download encrypted flatfile -> decrypt with dbRoot.v5 -> validate JPEG -> cache winner
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+The agent must explicitly know that the flatfile fToken / hex_code is tied to a 1920-offset date encoding.
+
+The confirmed rule is:
+
+code = ((year - 1920) << 9) | (month << 5) | day
+fToken = "f" + code.toString(16)
+
+and decoding is:
+
+year  = (code >> 9) + 1920
+month = (code >> 5) & 0x0f
+day   = code & 0x1f
+
+That is shown directly in the attached code that defines encodeFTokenFromDate() and decodeDateFromFToken().
+
+Why that matters for this handover
+
+In the latest upload set, server_second.js does not decode the token explicitly — it stores precomputed values like:
+
+fc70a
+fc8b5
+fcd21
+
+inside dateVersionMapping.
+
+So the next agent must not treat those as opaque magic strings. They are date tokens, and the 1920-offset rule is what lets the agent:
+
+verify whether a token matches a date,
+generate new candidate tokens from raw dates,
+and detect bad chronology in the source lists.
+
+That is especially important because index.php is still driven by a hardcoded date list, while server_second.js is driven by hardcoded {date → version + hex_code} entries.
+
+The missing instruction for the agent
+
+Add this to the handover:
+
+The hex_code / fToken is not arbitrary. It is a date encoding built on a 1920 offset.
+The agent must implement both:
+
+encodeFTokenFromDate(dateStr)
+decodeDateFromFToken(fToken)
+
+and use them to validate all source lists, hardcoded mappings, and live probe results.
+A candidate URL is stronger if:
+
+the date in the source line,
+the decoded fToken,
+and the selected chronology bucket
+all agree.
+Corrected proposed actions
+Add this as a first-class task
+
+Create a small validator script that:
+
+parses every dated source line,
+extracts fToken / hex_code,
+decodes it using the 1920-offset rule,
+compares it to the date written on the line,
+flags mismatches.
+Use the 1920 rule in candidate generation
+
+When probing new Cyprus dates, the agent should not only reuse existing hex_codes from server_second.js; it should also be able to generate the token directly from the date using the 1920-offset encoding.
+
+Paste-ready correction for the handover
+Critical chronology rule:
+The flatfile hex token (hex_code / fToken) is a packed date using a 1920 offset.
+
+Encode:
+code = ((year - 1920) << 9) | (month << 5) | day
+fToken = "f" + code.toString(16)
+
+Decode:
+year  = (code >> 9) + 1920
+month = (code >> 5) & 0x0f
+day   = code & 0x1f
+
+Do not treat hex_code values as opaque constants.
+Implement encode/decode and use them to:
+1. validate server_second.js hardcoded mappings,
+2. validate cyprus_sources_from_submissions.txt and historical_sources*.txt,
+3. generate candidate flatfile URLs for probing,
+4. detect chronology mismatches in source data.
+The short correction
+
+So yes — the handover should explicitly say:
+
+decryption key path = dbRoot.v5 XOR routine
+chronology token path = fToken / hex_code packed with a 1920 date offset
+
+
+
+
+
+
+
+
+
+
+
+
+The date token is mostly known because of the 1920-offset packing rule.
+The decrypt path is mostly known because server_second.js already has decryptTile() using dbRoot.v5.
+The big remaining unknown is often the version segment (i.xxx) — meaning: which version family is valid for a given date, place, and row/col path. server_second.js itself hardcodes date → {version, hex_code} pairs, which is a sign that the current system still treats version as something that must be discovered or supplied externally.
+
+And yes, the uploaded files themselves show that version must be probed / reverse-engineered, not assumed:
+
+reverse_search.txt is basically a brute-force matrix of the same f1-... paths and fTokens with many different i.xxx candidates, which is exactly what version probing looks like.
+cyprus_sources_from_submissions.txt shows that even in Cyprus, nearby patterns are not always one single version family forever; for example 2011-08-14 appears with the same date token family but with both i.108 and i.119, while many nearby 2011 entries are i.288.
+cyprus_list_points_txt.txt shows the same area carrying multiple candidate versions across chronology, and even the same token appearing with different versions in older lines, like fbb58 appearing as i.115 and i.119.
+The same point notebook also shows that for current-era places like Nicosia, Larnaca, Limassol, Cape Greco, etc., there are many candidate i.xxx values for different fTokens, which means the agent should treat version as a search dimension, not a fixed lookup.
+So the handover should say this plainly
+
+Do not assume i.xxx from the first matching source line.
+
+The fToken is date-derived, but the version is still an empirical variable that may need to be probed.
+
+The agent must reverse-engineer version behavior by testing candidate i.xxx values against real URLs and confirming with decrypt + image validation.
+
+What else I would tell him
+1. Probe with one variable held constant
+
+He should test systematically, not randomly.
+
+For a target place/tile:
+
+keep date fixed
+derive fToken from the date
+keep rowColInfoStr fixed at first
+then sweep candidate i.xxx values
+
+Only after that should he vary row/col suffix length or neighboring tile paths.
+
+2. Treat version as the main unknown
+
+The working model should be:
+
+known enough: date -> fToken
+known enough: decryptTile(buffer, dbRoot.v5)
+known enough: rowColInfoStr generation
+unknown enough: which i.xxx actually works here
+3. Use the uploaded files as version pools
+
+He should source candidate versions from:
+
+cyprus_sources_from_submissions.txt
+cyprus_list_points_txt.txt
+historical_sources*.txt
+reverse_search.txt as brute-force fallback
+4. Record winners by exact tuple
+
+Every success should be stored as:
+
+{ place/tile, rowColInfoStr, date, fToken, version, status, decrypt_ok, jpeg_ok }
+
+because the goal is to move from guessing to a real empirical winner table.
+
+5. Decrypt every 200/206 candidate
+
+A URL is not “solved” just because it returned bytes.
+He must:
+
+download encrypted bytes
+run decryptTile()
+verify JPEG validity
+
+because a wrong version or wrong path can still return bytes that decrypt to garbage.
+
+Paste-ready addition for the agent
+Critical reverse-engineering instruction:
+
+The date token (fToken / hex_code) is mostly known via the 1920-offset packing rule.
+The decrypt routine is mostly known via decryptTile() with dbRoot.v5.
+
+The main unknown that still needs active reverse engineering is the version segment: i.xxx.
+
+Do not assume version from one source line.
+Treat version as a probe dimension.
+
+Your probing strategy should be:
+1. choose target point / tile
+2. compute rowColInfoStr
+3. choose date
+4. derive fToken from date
+5. sweep candidate i.xxx versions from the uploaded source files
+6. probe URL
+7. if response is 200/206, download encrypted bytes
+8. decrypt with dbRoot.v5
+9. validate JPEG
+10. store winner tuple
+
+Use evidence for this instruction from the uploaded files:
+- server_second.js hardcodes date -> version + hex_code
+- reverse_search.txt brute-forces many i.xxx combinations
+- cyprus_sources_from_submissions.txt shows multiple version families in Cyprus chronology
+- cyprus_list_points_txt.txt shows candidate version clusters by place and date
+
+Therefore:
+version is not solved; it must be reverse-engineered by probing.
+
+
+
+
+Do not assume a probe failed just because /available-dates returned nothing; version i.xxx remains the main unknown, hardcoded mappings may contain chronology issues, and every promising candidate must be validated at three levels: HTTP bytes received, decrypt output produced, and JPEG successfully decoded.

@@ -1,0 +1,33 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Google Earth 3D Model Exporter</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="style.css">
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/OBJLoader.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+</head>
+<body>
+    <div id="ui">
+        <h1>3D Model Exporter</h1>
+        <div id="map"></div>
+        <div class="input-group">
+            <input type="text" id="lat" placeholder="Latitude" value="37.4208">
+            <input type="text" id="lon" placeholder="Longitude" value="-122.0841">
+            <input type="number" id="zoom" placeholder="Zoom (e.g. 19)" value="19">
+            <button id="exportBtn">Export & View</button>
+        </div>
+        <div id="status">Ready</div>
+        <div id="exportsList">
+            <h3>Recent Exports</h3>
+            <ul id="list"></ul>
+        </div>
+    </div>
+    <div id="canvas-container"></div>
+    <script src="app.js"></script>
+</body>
+</html>
+

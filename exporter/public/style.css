@@ -1,0 +1,36 @@
+
+body { margin: 0; font-family: sans-serif; overflow: hidden; background: #1a1a1a; color: white; display: flex; }
+#ui { 
+    width: 400px; 
+    height: 100vh; 
+    background: rgba(0,0,0,0.9); 
+    padding: 20px; 
+    box-sizing: border-box; 
+    overflow-y: auto; 
+    box-shadow: 2px 0 10px rgba(0,0,0,0.5);
+    z-index: 1000;
+}
+#map { 
+    height: 300px; 
+    width: 100%; 
+    border-radius: 8px; 
+    margin-bottom: 20px; 
+    border: 1px solid #444;
+}
+.input-group { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
+input, button { padding: 10px; border-radius: 4px; border: 1px solid #444; background: #222; color: white; }
+button { background: #007bff; border: none; cursor: pointer; font-weight: bold; }
+button:hover { background: #0056b3; }
+#status { margin: 10px 0; font-size: 0.9em; color: #aaa; background: #111; padding: 10px; border-radius: 4px; }
+#exportsList { margin-top: 20px; border-top: 1px solid #333; padding-top: 10px; }
+#list { list-style: none; padding: 0; font-size: 0.8em; }
+#list li { 
+    padding: 8px; 
+    border-bottom: 1px solid #222; 
+    cursor: pointer; 
+    color: #007bff; 
+    word-break: break-all;
+}
+#list li:hover { background: #222; text-decoration: underline; }
+#canvas-container { flex-grow: 1; height: 100vh; position: relative; }
+
