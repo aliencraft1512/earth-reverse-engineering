@@ -162,6 +162,7 @@ test('frontend smoke: bounds refresh, list scroll, selection, and tile responses
     );
 
     const verificationText = await page.locator('#verificationSummary').textContent();
+    assert.match(verificationText || '', /Catalog response/i);
     assert.match(verificationText || '', /Parser modes/i);
 
     const pathCards = page.locator('#pathDebugList details');

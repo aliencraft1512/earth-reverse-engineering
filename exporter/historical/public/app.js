@@ -3,6 +3,7 @@ let historicalLayer = null;
 let currentCatalog = null;
 let selectedEntryId = null;
 let requestNonce = 0;
+let catalogAbortController = null;
 
 const DEFAULT_CENTER = [35.1723, 33.3667];
 const DEFAULT_ZOOM = 15;
@@ -86,6 +87,7 @@ function renderVerification(catalog) {
 
   const lines = [
     `Catalog zoom ${catalog.zoom}`,
+    `Catalog response ${catalog.timing?.durationMs ?? 'n/a'} ms  |  cache ${catalog.timing?.cacheStatus || 'n/a'}`,
     `Visible paths ${catalog.verification.resolvedPathCount}/${catalog.verification.requestedPathCount}`,
     `Ancestor fallbacks ${catalog.verification.ancestorFallbackCount}`,
     `Parser modes ${parserModes || 'n/a'}`,
@@ -260,6 +262,8 @@ async function updateCatalogForCurrentBounds() {
   const zoom = getCatalogZoom();
   const bounds = getBoundsPayload();
   setStatus(`Verifying historical metadata for the current bounds at zoom ${zoom}...`);
+  catalogAbortController?.abort();
+  catalogAbortController = new AbortController();
 
   try {
     const response = await fetch('/api/catalog', {
@@ -267,6 +271,7 @@ async function updateCatalogForCurrentBounds() {
       headers: {
         'Content-Type': 'application/json',
       },
+      signal: catalogAbortController.signal,
       body: JSON.stringify({ bounds, zoom }),
     });
     const catalog = await response.json();
@@ -278,6 +283,8 @@ async function updateCatalogForCurrentBounds() {
     if (currentRequest !== requestNonce) {
       return;
     }
+
+    catalogAbortController = null;
 
     currentCatalog = catalog;
     const previousSelection = selectedEntryId;
@@ -292,7 +299,7 @@ async function updateCatalogForCurrentBounds() {
       setStatus('The previously selected historical entry is not valid for the current bounds.', 'warn');
     } else {
       setStatus(
-        `Verified ${catalog.verification.resolvedPathCount}/${catalog.verification.requestedPathCount} visible paths and found ${catalog.entries.length} unique entries.`,
+        `Verified ${catalog.verification.resolvedPathCount}/${catalog.verification.requestedPathCount} visible paths and found ${catalog.entries.length} unique entries in ${catalog.timing?.durationMs ?? 'n/a'} ms.`,
         'ok'
       );
     }
@@ -307,6 +314,11 @@ async function updateCatalogForCurrentBounds() {
       return;
     }
 
+    if (error.name === 'AbortError') {
+      return;
+    }
+
+    catalogAbortController = null;
     setStatus(`Error verifying historical metadata: ${error.message}`, 'error');
     document.getElementById('verificationSummary').innerHTML = '';
     document.getElementById('pathDebugList').innerHTML = '';

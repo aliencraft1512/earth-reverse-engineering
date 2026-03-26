@@ -303,8 +303,7 @@ app.get('/api/tile/:z/:x/:y', async (req, res) => {
 });
 
 app.post('/api/clear-caches', (req, res) => {
-  historicalCatalog.metadataCache.clear();
-  historicalCatalog.boundsCatalogCache.clear();
+  historicalCatalog.clearCaches();
   res.json({ ok: true });
 });
 
