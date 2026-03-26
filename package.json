@@ -1,5 +1,8 @@
 {
   "dependencies": {
     "jimp": "^1.6.0"
+  },
+  "scripts": {
+    "test": "node --test exporter/historical/test/*.test.js"
   }
 }
