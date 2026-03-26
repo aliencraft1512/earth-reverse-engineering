@@ -4,5 +4,8 @@
   },
   "scripts": {
     "test": "node --test exporter/historical/test/*.test.js"
+  },
+  "devDependencies": {
+    "playwright": "^1.58.2"
   }
 }

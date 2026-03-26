@@ -188,6 +188,19 @@ app.post('/api/catalog', async (req, res) => {
   }
 });
 
+app.post('/api/catalog-debug', async (req, res) => {
+  try {
+    const { bounds: rawBounds, zoom: rawZoom } = req.body || {};
+    const bounds = normalizeBounds(rawBounds);
+    const zoom = normalizeCatalogZoom(rawZoom);
+    const catalog = await historicalCatalog.buildBoundsCatalog(bounds, zoom);
+
+    res.json(catalog);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+});
+
 app.get('/api/dates', async (req, res) => {
   try {
     let bounds = null;

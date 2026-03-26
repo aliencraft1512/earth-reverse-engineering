@@ -37,8 +37,12 @@ function buildViewportSummary({ bounds, zoom, cells }) {
   const entriesById = new Map();
   let resolvedPathCount = 0;
   let ancestorFallbackCount = 0;
+  const parserModes = {};
 
   for (const cell of cells) {
+    const parserMode = cell.metadata.parser?.mode || 'none';
+    parserModes[parserMode] = (parserModes[parserMode] || 0) + 1;
+
     if (!cell.metadata.entries.length) {
       continue;
     }
@@ -92,8 +96,10 @@ function buildViewportSummary({ bounds, zoom, cells }) {
     paths: cells.map(cell => ({
       path: cell.path,
       sourcePath: cell.metadata.sourcePath,
+      packetUrl: cell.metadata.url,
       bounds: cell.bounds,
       entryCount: cell.metadata.entries.length,
+      parser: cell.metadata.parser,
       entries: cell.metadata.entries,
     })),
     verification: {
@@ -101,6 +107,7 @@ function buildViewportSummary({ bounds, zoom, cells }) {
       resolvedPathCount,
       ancestorFallbackCount,
       unresolvedPathCount: cells.length - resolvedPathCount,
+      parserModes,
     },
   };
 }
@@ -173,6 +180,7 @@ class HistoricalCatalog {
             sourcePath,
             url: packet.url,
             entries: packet.entries,
+            parser: packet.parser,
           };
         }
       } catch (error) {
@@ -184,6 +192,10 @@ class HistoricalCatalog {
       requestedPath: pathCode,
       sourcePath: null,
       entries: [],
+      parser: {
+        mode: 'none',
+        acceptedCount: 0,
+      },
     };
   }
 

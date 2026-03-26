@@ -15,7 +15,8 @@
         body {
             margin: 0;
             display: flex;
-            min-height: 100vh;
+            height: 100vh;
+            overflow: hidden;
             background: #eef2f7;
             color: #162133;
         }
@@ -30,8 +31,12 @@
             background: linear-gradient(180deg, #fbfcfe 0%, #eef3f8 100%);
             border-left: 1px solid #d6deea;
             padding: 18px;
-            overflow-y: auto;
             box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            height: 100vh;
+            overflow: hidden;
         }
 
         h1 {
@@ -44,8 +49,13 @@
             border: 1px solid #d6deea;
             border-radius: 10px;
             padding: 12px;
-            margin-bottom: 12px;
             box-shadow: 0 10px 28px rgba(20, 35, 60, 0.05);
+        }
+
+        .scroll-panel {
+            display: flex;
+            flex-direction: column;
+            min-height: 0;
         }
 
         #status {
@@ -72,12 +82,75 @@
             color: #4a5b72;
         }
 
+        .path-debug-card {
+            border: 1px solid #d3dceb;
+            border-radius: 8px;
+            background: #f8fbff;
+            margin-top: 8px;
+            padding: 8px 10px;
+        }
+
+        .path-debug-summary {
+            cursor: pointer;
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: #24364f;
+        }
+
+        .path-debug-line,
+        .path-debug-tuple,
+        .path-debug-more,
+        .path-debug-empty,
+        .path-debug-tuples-label {
+            font-size: 0.76rem;
+            line-height: 1.45;
+            color: #50627a;
+            margin-top: 6px;
+            overflow-wrap: anywhere;
+        }
+
+        .path-debug-tuples-label {
+            font-weight: 600;
+            color: #24364f;
+        }
+
+        .path-debug-tuples {
+            display: grid;
+            gap: 4px;
+        }
+
         .toggle-row {
             display: flex;
             align-items: center;
             gap: 8px;
             margin-bottom: 8px;
             font-size: 0.9rem;
+        }
+
+        #entriesPanel {
+            flex: 1 1 40%;
+        }
+
+        #pathDebugPanel {
+            flex: 1 1 45%;
+        }
+
+        #dateList,
+        #pathDebugList {
+            min-height: 0;
+            overflow-y: auto;
+            overscroll-behavior: contain;
+            padding-right: 4px;
+        }
+
+        #dateList {
+            display: flex;
+            flex-direction: column;
+            min-height: 220px;
+        }
+
+        #pathDebugList {
+            min-height: 180px;
         }
 
         .date-item {
@@ -123,6 +196,9 @@
         @media (max-width: 900px) {
             body {
                 flex-direction: column;
+                height: auto;
+                min-height: 100vh;
+                overflow: auto;
             }
 
             #sidebar {
@@ -130,10 +206,17 @@
                 min-height: 42vh;
                 border-left: 0;
                 border-top: 1px solid #d6deea;
+                height: auto;
+                overflow: visible;
             }
 
             #map {
                 min-height: 58vh;
+            }
+
+            #dateList,
+            #pathDebugList {
+                max-height: 38vh;
             }
         }
     </style>
@@ -156,9 +239,13 @@
             <strong>Verification</strong>
             <div id="verificationSummary"></div>
         </div>
-        <div class="panel">
+        <div class="panel scroll-panel" id="entriesPanel">
             <strong>Visible Entries</strong>
             <div id="dateList"></div>
+        </div>
+        <div class="panel scroll-panel" id="pathDebugPanel">
+            <strong>Visible Paths Debug</strong>
+            <div id="pathDebugList"></div>
         </div>
     </aside>
     <script src="selection.js"></script>

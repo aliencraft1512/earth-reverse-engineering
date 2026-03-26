@@ -24,6 +24,17 @@ function initMap() {
     refreshHistoricalLayer();
   });
 
+  for (const elementId of ['sidebar', 'dateList', 'pathDebugList']) {
+    const element = document.getElementById(elementId);
+
+    if (!element || !L.DomEvent) {
+      continue;
+    }
+
+    L.DomEvent.disableClickPropagation(element);
+    L.DomEvent.disableScrollPropagation(element);
+  }
+
   map.on('moveend', updateCatalogForCurrentBounds);
   updateCatalogForCurrentBounds();
 }
@@ -51,6 +62,13 @@ function getSelectedEntry() {
   return currentCatalog.entries.find(entry => makeEntryId(entry) === selectedEntryId) || null;
 }
 
+window.__historicalDebug = {
+  getCatalog: () => currentCatalog,
+  getMap: () => map,
+  getRequestNonce: () => requestNonce,
+  getSelectedEntry: () => getSelectedEntry(),
+};
+
 function setStatus(message, tone = 'neutral') {
   const status = document.getElementById('status');
   status.innerText = message;
@@ -60,6 +78,9 @@ function setStatus(message, tone = 'neutral') {
 function renderVerification(catalog) {
   const summary = document.getElementById('verificationSummary');
   const bounds = catalog.bounds;
+  const parserModes = Object.entries(catalog.verification.parserModes || {})
+    .map(([mode, count]) => `${mode}:${count}`)
+    .join(', ');
 
   summary.innerHTML = '';
 
@@ -67,6 +88,7 @@ function renderVerification(catalog) {
     `Catalog zoom ${catalog.zoom}`,
     `Visible paths ${catalog.verification.resolvedPathCount}/${catalog.verification.requestedPathCount}`,
     `Ancestor fallbacks ${catalog.verification.ancestorFallbackCount}`,
+    `Parser modes ${parserModes || 'n/a'}`,
     `Bounds ${bounds.south.toFixed(4)}, ${bounds.west.toFixed(4)} -> ${bounds.north.toFixed(4)}, ${bounds.east.toFixed(4)}`,
   ];
 
@@ -75,6 +97,66 @@ function renderVerification(catalog) {
     div.className = 'verification-line';
     div.innerText = line;
     summary.appendChild(div);
+  }
+}
+
+function renderPathDebug(catalog) {
+  const container = document.getElementById('pathDebugList');
+  container.innerHTML = '';
+
+  if (!catalog.paths.length) {
+    container.innerHTML = '<div class="path-debug-empty">No visible paths were cataloged for the current bounds.</div>';
+    return;
+  }
+
+  for (const pathInfo of catalog.paths) {
+    const card = document.createElement('details');
+    card.className = 'path-debug-card';
+
+    const summary = document.createElement('summary');
+    summary.className = 'path-debug-summary';
+    summary.innerText = `${pathInfo.path}  |  ${pathInfo.parser?.mode || 'none'}  |  ${pathInfo.entryCount} tuples`;
+    card.appendChild(summary);
+
+    const rows = [
+      `Source path: ${pathInfo.sourcePath || 'none'}`,
+      `Packet: ${pathInfo.packetUrl || 'unavailable'}`,
+      `Bounds: ${pathInfo.bounds.south.toFixed(4)}, ${pathInfo.bounds.west.toFixed(4)} -> ${pathInfo.bounds.north.toFixed(4)}, ${pathInfo.bounds.east.toFixed(4)}`,
+      `Parser accepted: ${pathInfo.parser?.acceptedCount ?? 0}`,
+    ];
+
+    for (const row of rows) {
+      const div = document.createElement('div');
+      div.className = 'path-debug-line';
+      div.innerText = row;
+      card.appendChild(div);
+    }
+
+    const tupleHeader = document.createElement('div');
+    tupleHeader.className = 'path-debug-tuples-label';
+    tupleHeader.innerText = 'Accepted tuples';
+    card.appendChild(tupleHeader);
+
+    const tupleList = document.createElement('div');
+    tupleList.className = 'path-debug-tuples';
+    const sampleEntries = pathInfo.entries.slice(0, 8);
+
+    for (const entry of sampleEntries) {
+      const tuple = document.createElement('div');
+      tuple.className = 'path-debug-tuple';
+      tuple.innerText = `${entry.date}  |  i.${entry.iCode}  |  ${entry.fToken}  |  ${entry.parser}`;
+      tupleList.appendChild(tuple);
+    }
+
+    if (pathInfo.entries.length > sampleEntries.length) {
+      const overflow = document.createElement('div');
+      overflow.className = 'path-debug-more';
+      overflow.innerText = `+${pathInfo.entries.length - sampleEntries.length} more tuples`;
+      tupleList.appendChild(overflow);
+    }
+
+    card.appendChild(tupleList);
+    container.appendChild(card);
   }
 }
 
@@ -202,6 +284,7 @@ async function updateCatalogForCurrentBounds() {
     selectedEntryId = reconcileSelection(selectedEntryId, catalog.entries);
 
     renderVerification(catalog);
+    renderPathDebug(catalog);
     renderDateList(catalog.entries);
 
     if (previousSelection && !selectedEntryId) {
@@ -226,5 +309,6 @@ async function updateCatalogForCurrentBounds() {
 
     setStatus(`Error verifying historical metadata: ${error.message}`, 'error');
     document.getElementById('verificationSummary').innerHTML = '';
+    document.getElementById('pathDebugList').innerHTML = '';
   }
 }
