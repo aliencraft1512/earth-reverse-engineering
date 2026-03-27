@@ -1,0 +1,215 @@
+{
+  "generatedAt": "2026-03-27T16:57:22.650Z",
+  "seed": 20260327,
+  "limit": 6,
+  "baseUrl": "http://127.0.0.1:62893",
+  "summary": {
+    "targetCount": 6,
+    "targetsWithEntries": 0,
+    "targetsWithRenderedOverlays": 0,
+    "targetsWithMetadataErrors": 6,
+    "parserModes": {
+      "error": 114
+    }
+  },
+  "results": [
+    {
+      "label": "Reykjavik",
+      "center": [
+        64.1466,
+        -21.9426
+      ],
+      "zoom": 15,
+      "statusText": "Live metadata fetch failed for all visible paths: fetch failed",
+      "selectionText": "Pick a date to load historical imagery for the current map view.",
+      "renderSummary": "No historical imagery loaded.",
+      "catalogEntryCount": 0,
+      "requestedPathCount": 15,
+      "resolvedPathCount": 0,
+      "unresolvedPathCount": 15,
+      "parserModes": {
+        "error": 15
+      },
+      "metadataErrorCount": 15,
+      "metadataErrorSample": "fetch failed",
+      "oldestDate": null,
+      "newestDate": null,
+      "selectedEntry": null,
+      "overlayCount": 0,
+      "downloadLogCount": 0,
+      "downloadStatusCounts": {},
+      "firstPath": {
+        "path": "0312133033113303",
+        "sourcePath": null,
+        "packetUrl": null,
+        "parserMode": "error",
+        "entryCount": 0
+      }
+    },
+    {
+      "label": "New York",
+      "center": [
+        40.7128,
+        -74.006
+      ],
+      "zoom": 15,
+      "statusText": "Live metadata fetch failed for all visible paths: fetch failed",
+      "selectionText": "Pick a date to load historical imagery for the current map view.",
+      "renderSummary": "No historical imagery loaded.",
+      "catalogEntryCount": 0,
+      "requestedPathCount": 20,
+      "resolvedPathCount": 0,
+      "unresolvedPathCount": 20,
+      "parserModes": {
+        "error": 20
+      },
+      "metadataErrorCount": 20,
+      "metadataErrorSample": "fetch failed",
+      "oldestDate": null,
+      "newestDate": null,
+      "selectedEntry": null,
+      "overlayCount": 0,
+      "downloadLogCount": 0,
+      "downloadStatusCounts": {},
+      "firstPath": {
+        "path": "0310323113232101",
+        "sourcePath": null,
+        "packetUrl": null,
+        "parserMode": "error",
+        "entryCount": 0
+      }
+    },
+    {
+      "label": "Buenos Aires",
+      "center": [
+        -34.6037,
+        -58.3816
+      ],
+      "zoom": 15,
+      "statusText": "Live metadata fetch failed for all visible paths: fetch failed",
+      "selectionText": "Pick a date to load historical imagery for the current map view.",
+      "renderSummary": "No historical imagery loaded.",
+      "catalogEntryCount": 0,
+      "requestedPathCount": 24,
+      "resolvedPathCount": 0,
+      "unresolvedPathCount": 24,
+      "parserModes": {
+        "error": 24
+      },
+      "metadataErrorCount": 24,
+      "metadataErrorSample": "fetch failed",
+      "oldestDate": null,
+      "newestDate": null,
+      "selectedEntry": null,
+      "overlayCount": 0,
+      "downloadLogCount": 0,
+      "downloadStatusCounts": {},
+      "firstPath": {
+        "path": "0023102230221011",
+        "sourcePath": null,
+        "packetUrl": null,
+        "parserMode": "error",
+        "entryCount": 0
+      }
+    },
+    {
+      "label": "Cairo",
+      "center": [
+        30.0444,
+        31.2357
+      ],
+      "zoom": 15,
+      "statusText": "Live metadata fetch failed for all visible paths: fetch failed",
+      "selectionText": "Pick a date to load historical imagery for the current map view.",
+      "renderSummary": "No historical imagery loaded.",
+      "catalogEntryCount": 0,
+      "requestedPathCount": 20,
+      "resolvedPathCount": 0,
+      "unresolvedPathCount": 20,
+      "parserModes": {
+        "error": 20
+      },
+      "metadataErrorCount": 20,
+      "metadataErrorSample": "fetch failed",
+      "oldestDate": null,
+      "newestDate": null,
+      "selectedEntry": null,
+      "overlayCount": 0,
+      "downloadLogCount": 0,
+      "downloadStatusCounts": {},
+      "firstPath": {
+        "path": "0200202130312302",
+        "sourcePath": null,
+        "packetUrl": null,
+        "parserMode": "error",
+        "entryCount": 0
+      }
+    },
+    {
+      "label": "Rio",
+      "center": [
+        -22.9068,
+        -43.1729
+      ],
+      "zoom": 15,
+      "statusText": "Live metadata fetch failed for all visible paths: fetch failed",
+      "selectionText": "Pick a date to load historical imagery for the current map view.",
+      "renderSummary": "No historical imagery loaded.",
+      "catalogEntryCount": 0,
+      "requestedPathCount": 20,
+      "resolvedPathCount": 0,
+      "unresolvedPathCount": 20,
+      "parserModes": {
+        "error": 20
+      },
+      "metadataErrorCount": 20,
+      "metadataErrorSample": "fetch failed",
+      "oldestDate": null,
+      "newestDate": null,
+      "selectedEntry": null,
+      "overlayCount": 0,
+      "downloadLogCount": 0,
+      "downloadStatusCounts": {},
+      "firstPath": {
+        "path": "0022033323133103",
+        "sourcePath": null,
+        "packetUrl": null,
+        "parserMode": "error",
+        "entryCount": 0
+      }
+    },
+    {
+      "label": "London",
+      "center": [
+        51.5074,
+        -0.1278
+      ],
+      "zoom": 15,
+      "statusText": "Live metadata fetch failed for all visible paths: fetch failed",
+      "selectionText": "Pick a date to load historical imagery for the current map view.",
+      "renderSummary": "No historical imagery loaded.",
+      "catalogEntryCount": 0,
+      "requestedPathCount": 15,
+      "resolvedPathCount": 0,
+      "unresolvedPathCount": 15,
+      "parserModes": {
+        "error": 15
+      },
+      "metadataErrorCount": 15,
+      "metadataErrorSample": "fetch failed",
+      "oldestDate": null,
+      "newestDate": null,
+      "selectedEntry": null,
+      "overlayCount": 0,
+      "downloadLogCount": 0,
+      "downloadStatusCounts": {},
+      "firstPath": {
+        "path": "0312112112113323",
+        "sourcePath": null,
+        "packetUrl": null,
+        "parserMode": "error",
+        "entryCount": 0
+      }
+    }
+  ]
+}

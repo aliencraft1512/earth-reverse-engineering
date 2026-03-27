@@ -8,6 +8,7 @@ const { buildPathCellsForBounds, normalizeBounds } = require('./pathUtils');
 const DEFAULT_ROOT_VERSION = 366;
 const DEFAULT_MIN_METADATA_PATH_LENGTH = 6;
 const DEFAULT_METADATA_CONCURRENCY = 6;
+const DEFAULT_DUPLICATE_SIGNATURE_CONCURRENCY = 3;
 
 function hashObject(value) {
   return crypto.createHash('md5').update(JSON.stringify(value)).digest('hex');
@@ -78,16 +79,10 @@ function getUniqueSortedValues(values) {
   return [...new Set(values)].sort();
 }
 
-function annotateDuplicateEntries(entries) {
+function buildDuplicateCoverageGroups(entries) {
   const groups = new Map();
-
   for (const entry of entries) {
-    const key = JSON.stringify({
-      date: entry.date,
-      fToken: entry.fToken,
-      paths: getUniqueSortedValues(entry.paths),
-      sourcePaths: getUniqueSortedValues(entry.sourcePaths),
-    });
+    const key = getDuplicateCoverageKey(entry);
 
     if (!groups.has(key)) {
       groups.set(key, []);
@@ -95,6 +90,54 @@ function annotateDuplicateEntries(entries) {
 
     groups.get(key).push(entry);
   }
+
+  return groups;
+}
+
+function getDuplicateCoverageKey(entry) {
+  return JSON.stringify({
+    date: entry.date,
+    fToken: entry.fToken,
+    paths: getUniqueSortedValues(entry.paths),
+    sourcePaths: getUniqueSortedValues(entry.sourcePaths),
+  });
+}
+
+function getDuplicateSignatureGroupKey(group) {
+  if (!group.length) {
+    return '[]';
+  }
+
+  return JSON.stringify({
+    coverage: getDuplicateCoverageKey(group[0]),
+    versions: group.map(entry => entry.iCode).sort((left, right) => right - left),
+  });
+}
+
+function countDuplicateModes(entries) {
+  const duplicateModes = {};
+
+  for (const entry of entries) {
+    const mode = entry.duplicateCandidate?.mode;
+
+    if (!mode) {
+      continue;
+    }
+
+    duplicateModes[mode] = (duplicateModes[mode] || 0) + 1;
+  }
+
+  return duplicateModes;
+}
+
+function updateDuplicateVerification(summary) {
+  summary.verification.duplicateCandidateCount = summary.entries.filter(entry => entry.duplicateCandidate).length;
+  summary.verification.duplicateModes = countDuplicateModes(summary.entries);
+  return summary;
+}
+
+function annotateDuplicateEntries(entries) {
+  const groups = buildDuplicateCoverageGroups(entries);
 
   for (const group of groups.values()) {
     if (group.length < 2) {
@@ -111,6 +154,91 @@ function annotateDuplicateEntries(entries) {
       };
     }
   }
+
+  return entries;
+}
+
+function applyDuplicateSignatureResult(group, duplicateResult) {
+  for (const entry of group) {
+    const candidate = duplicateResult.get(entry.id);
+
+    if (candidate) {
+      entry.duplicateCandidate = { ...candidate };
+      continue;
+    }
+
+    delete entry.duplicateCandidate;
+  }
+}
+
+async function refineDuplicateEntriesWithSignatures(
+  entries,
+  resolveEntrySignature,
+  options = {}
+) {
+  if (typeof resolveEntrySignature !== 'function') {
+    return entries;
+  }
+
+  const groups = [...buildDuplicateCoverageGroups(entries).values()].filter(group => group.length > 1);
+  const concurrency = options.signatureConcurrency || DEFAULT_DUPLICATE_SIGNATURE_CONCURRENCY;
+
+  await mapWithConcurrency(groups, concurrency, async group => {
+    const signatureResults = await Promise.all(
+      group.map(async entry => {
+        try {
+          const signature = await resolveEntrySignature(entry, group);
+          return { entry, signature };
+        } catch (error) {
+          return { entry, signature: null };
+        }
+      })
+    );
+
+    const resolved = signatureResults.filter(result => result.signature?.signature);
+
+    if (resolved.length === 0) {
+      return;
+    }
+
+    const signatureGroups = new Map();
+
+    for (const result of resolved) {
+      const key = result.signature.signature;
+
+      if (!signatureGroups.has(key)) {
+        signatureGroups.set(key, []);
+      }
+
+      signatureGroups.get(key).push(result);
+    }
+
+    if (resolved.length === group.length) {
+      for (const entry of group) {
+        delete entry.duplicateCandidate;
+      }
+    }
+
+    for (const [signatureKey, signatureGroup] of signatureGroups.entries()) {
+      if (signatureGroup.length < 2) {
+        continue;
+      }
+
+      const versions = signatureGroup
+        .map(result => result.entry.iCode)
+        .sort((left, right) => right - left);
+
+      for (const result of signatureGroup) {
+        result.entry.duplicateCandidate = {
+          mode: result.signature.mode || 'visible-tile-signature',
+          versions,
+          otherVersions: versions.filter(version => version !== result.entry.iCode),
+          representativePath: result.signature.representativePath,
+          signature: signatureKey,
+        };
+      }
+    }
+  });
 
   return entries;
 }
@@ -190,6 +318,7 @@ function buildViewportSummary({ bounds, zoom, cells }) {
       ancestorFallbackCount,
       unresolvedPathCount: cells.length - resolvedPathCount,
       duplicateCandidateCount: entries.filter(entry => entry.duplicateCandidate).length,
+      duplicateModes: countDuplicateModes(entries),
       parserModes,
     },
   };
@@ -217,6 +346,10 @@ function buildVersionCandidates(entries, preferredVersion = null) {
   });
 }
 
+function shouldContinueToParent(error) {
+  return error?.status === 404;
+}
+
 class HistoricalCatalog {
   constructor(options) {
     this.baseUrl = options.baseUrl;
@@ -226,9 +359,17 @@ class HistoricalCatalog {
     this.timeoutMs = options.timeoutMs || 10000;
     this.minMetadataPathLength = options.minMetadataPathLength || DEFAULT_MIN_METADATA_PATH_LENGTH;
     this.metadataConcurrency = options.metadataConcurrency || DEFAULT_METADATA_CONCURRENCY;
-    this.metadataCache = new Map();
-    this.packetCache = new Map();
-    this.boundsCatalogCache = new Map();
+    this.resolveEntrySignature = options.resolveEntrySignature || null;
+    this.signatureConcurrency = options.signatureConcurrency || DEFAULT_DUPLICATE_SIGNATURE_CONCURRENCY;
+    this.duplicateSignatureResults = new Map();
+    this.signatureResolutionJobs = new Map();
+  }
+
+  createRequestContext() {
+    return {
+      metadataByPath: new Map(),
+      packetsByPath: new Map(),
+    };
   }
 
   getBoundsCacheKey(bounds, zoom, cells = null) {
@@ -239,34 +380,46 @@ class HistoricalCatalog {
     return `${zoom}:${hashObject(bounds)}`;
   }
 
-  async fetchMetadataForPath(pathCode) {
-    if (this.metadataCache.has(pathCode)) {
-      return this.metadataCache.get(pathCode);
+  async fetchMetadataForPath(pathCode, requestContext = null) {
+    if (!requestContext) {
+      return this.fetchMetadataForPathUncached(pathCode);
     }
 
-    const request = this.fetchMetadataForPathUncached(pathCode).catch(error => {
-      this.metadataCache.delete(pathCode);
+    if (requestContext.metadataByPath.has(pathCode)) {
+      return requestContext.metadataByPath.get(pathCode);
+    }
+
+    const request = this.fetchMetadataForPathUncached(pathCode, requestContext).catch(error => {
+      requestContext.metadataByPath.delete(pathCode);
       throw error;
     });
-    this.metadataCache.set(pathCode, request);
+    requestContext.metadataByPath.set(pathCode, request);
     return request;
   }
 
-  async fetchPacketForPath(pathCode) {
-    if (this.packetCache.has(pathCode)) {
-      return this.packetCache.get(pathCode);
+  async fetchPacketForPath(pathCode, requestContext = null) {
+    if (!requestContext) {
+      return this.fetchPacketForPathUncached(pathCode);
+    }
+
+    if (requestContext.packetsByPath.has(pathCode)) {
+      return requestContext.packetsByPath.get(pathCode);
     }
 
     const request = this.fetchPacketForPathUncached(pathCode).catch(error => {
-      this.packetCache.delete(pathCode);
+      requestContext.packetsByPath.delete(pathCode);
       throw error;
     });
 
-    this.packetCache.set(pathCode, request);
+    requestContext.packetsByPath.set(pathCode, request);
     return request;
   }
 
   async fetchPacketForPathUncached(pathCode) {
+    return this.requestPacketFromUpstream(pathCode);
+  }
+
+  async requestPacketFromUpstream(pathCode) {
     return fetchMetadataPacket({
       baseUrl: this.baseUrl,
       pathCode,
@@ -277,12 +430,14 @@ class HistoricalCatalog {
     });
   }
 
-  async fetchMetadataForPathUncached(pathCode) {
+  async fetchMetadataForPathUncached(pathCode, requestContext = null) {
+    let lastError = null;
+
     for (let length = pathCode.length; length >= this.minMetadataPathLength; length -= 1) {
       const sourcePath = pathCode.slice(0, length);
 
       try {
-        const packet = await this.fetchPacketForPath(sourcePath);
+        const packet = await this.fetchPacketForPath(sourcePath, requestContext);
 
         if (packet.entries.length > 0) {
           return {
@@ -294,8 +449,17 @@ class HistoricalCatalog {
           };
         }
       } catch (error) {
-        // Continue upward through parent metadata paths.
+        if (shouldContinueToParent(error)) {
+          continue;
+        }
+
+        lastError = error;
+        break;
       }
+    }
+
+    if (lastError) {
+      throw lastError;
     }
 
     return {
@@ -312,45 +476,55 @@ class HistoricalCatalog {
   async buildBoundsCatalog(rawBounds, zoom) {
     const bounds = normalizeBounds(rawBounds);
     const cells = buildPathCellsForBounds(bounds, zoom);
-    const cacheKey = this.getBoundsCacheKey(bounds, zoom, cells);
     const startedAt = performance.now();
-
-    if (this.boundsCatalogCache.has(cacheKey)) {
-      const cachedCatalog = await this.boundsCatalogCache.get(cacheKey);
-      return hydrateCatalogForBounds(cachedCatalog, bounds, performance.now() - startedAt, 'bounds');
-    }
-
-    const request = this.buildBoundsCatalogUncached(bounds, zoom, cells).catch(error => {
-      this.boundsCatalogCache.delete(cacheKey);
-      throw error;
-    });
-    this.boundsCatalogCache.set(cacheKey, request);
-    const catalog = await request;
-    return hydrateCatalogForBounds(catalog, bounds, performance.now() - startedAt, 'miss');
+    const catalog = await this.buildBoundsCatalogUncached(bounds, zoom, cells);
+    return hydrateCatalogForBounds(catalog, bounds, performance.now() - startedAt, 'live');
   }
 
   async buildBoundsCatalogUncached(bounds, zoom, cells = buildPathCellsForBounds(bounds, zoom)) {
+    const requestContext = this.createRequestContext();
     const cellsWithMetadata = await mapWithConcurrency(
       cells,
       this.metadataConcurrency,
       async cell => {
-        const metadata = await this.fetchMetadataForPath(cell.path);
+        let metadata;
+
+        try {
+          metadata = await this.fetchMetadataForPath(cell.path, requestContext);
+        } catch (error) {
+          metadata = {
+            requestedPath: cell.path,
+            sourcePath: null,
+            url: null,
+            entries: [],
+            parser: {
+              mode: 'error',
+              acceptedCount: 0,
+              message: error.message,
+            },
+          };
+        }
+
         return {
-        ...cell,
-        metadata,
+          ...cell,
+          metadata,
         };
       }
     );
 
-    return buildViewportSummary({
+    const summary = buildViewportSummary({
       bounds,
       zoom,
       cells: cellsWithMetadata,
     });
+    this.applyResolvedDuplicateSignatures(summary);
+    this.queueDuplicateSignatureRefinement(summary);
+
+    return updateDuplicateVerification(summary);
   }
 
-  async findSelectionEntries(pathCode, selection) {
-    const metadata = await this.fetchMetadataForPath(pathCode);
+  async findSelectionEntries(pathCode, selection, requestContext = null) {
+    const metadata = await this.fetchMetadataForPath(pathCode, requestContext);
     const matches = metadata.entries.filter(entry => {
       if (selection.date && entry.date !== selection.date) {
         return false;
@@ -370,22 +544,84 @@ class HistoricalCatalog {
   }
 
   clearCaches() {
-    this.metadataCache.clear();
-    this.packetCache.clear();
-    this.boundsCatalogCache.clear();
+    this.duplicateSignatureResults.clear();
+    this.signatureResolutionJobs.clear();
+  }
+
+  applyResolvedDuplicateSignatures(summary) {
+    const groups = [...buildDuplicateCoverageGroups(summary.entries).values()].filter(group => group.length > 1);
+
+    for (const group of groups) {
+      const groupKey = getDuplicateSignatureGroupKey(group);
+      const duplicateResult = this.duplicateSignatureResults.get(groupKey);
+
+      if (!duplicateResult) {
+        continue;
+      }
+
+      applyDuplicateSignatureResult(group, duplicateResult);
+    }
+
+    return updateDuplicateVerification(summary);
+  }
+
+  queueDuplicateSignatureRefinement(summary) {
+    if (typeof this.resolveEntrySignature !== 'function') {
+      return;
+    }
+
+    const groups = [...buildDuplicateCoverageGroups(summary.entries).values()].filter(group => group.length > 1);
+
+    for (const group of groups) {
+      const groupKey = getDuplicateSignatureGroupKey(group);
+
+      if (this.duplicateSignatureResults.has(groupKey) || this.signatureResolutionJobs.has(groupKey)) {
+        continue;
+      }
+
+      const groupCopies = group.map(entry => ({
+        ...entry,
+        paths: [...entry.paths],
+        sourcePaths: [...entry.sourcePaths],
+      }));
+      const job = refineDuplicateEntriesWithSignatures(groupCopies, this.resolveEntrySignature, {
+        signatureConcurrency: this.signatureConcurrency,
+      })
+        .then(refinedGroup => {
+          const duplicateResult = new Map(
+            refinedGroup.map(entry => [entry.id, entry.duplicateCandidate ? { ...entry.duplicateCandidate } : null])
+          );
+          this.duplicateSignatureResults.set(groupKey, duplicateResult);
+          applyDuplicateSignatureResult(group, duplicateResult);
+          updateDuplicateVerification(summary);
+        })
+        .finally(() => {
+          this.signatureResolutionJobs.delete(groupKey);
+        });
+
+      this.signatureResolutionJobs.set(groupKey, job);
+    }
   }
 }
 
 module.exports = {
   DEFAULT_METADATA_CONCURRENCY,
+  DEFAULT_DUPLICATE_SIGNATURE_CONCURRENCY,
   DEFAULT_MIN_METADATA_PATH_LENGTH,
   DEFAULT_ROOT_VERSION,
   HistoricalCatalog,
   buildVersionCandidates,
   buildViewportSummary,
   buildCellSetCacheKey,
+  getDuplicateCoverageKey,
+  getDuplicateSignatureGroupKey,
+  buildDuplicateCoverageGroups,
+  countDuplicateModes,
   hydrateCatalogForBounds,
   mapWithConcurrency,
   annotateDuplicateEntries,
+  refineDuplicateEntriesWithSignatures,
+  shouldContinueToParent,
   summarizeEntries,
+  updateDuplicateVerification,
 };

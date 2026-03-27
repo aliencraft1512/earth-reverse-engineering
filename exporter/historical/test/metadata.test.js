@@ -1,7 +1,7 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
 
-const { extractMetadataEntriesWithDebug } = require('../metadata');
+const { extractMetadataEntriesWithDebug, fetchBuffer } = require('../metadata');
 
 function encodeVarint(value) {
   const bytes = [];
@@ -59,4 +59,59 @@ test('extractMetadataEntriesWithDebug prefers the structured recursive parser', 
       { date: '2022-06-11', iCode: 346, fToken: 'fcccb' },
     ]
   );
+});
+
+test('fetchBuffer retries transient network resets and succeeds', async () => {
+  const originalFetch = global.fetch;
+  let attemptCount = 0;
+
+  global.fetch = async () => {
+    attemptCount += 1;
+
+    if (attemptCount < 3) {
+      const error = new Error('fetch failed');
+      error.cause = { code: 'ECONNRESET' };
+      throw error;
+    }
+
+    return {
+      status: 200,
+      headers: new Map(),
+      arrayBuffer: async () => Uint8Array.from([1, 2, 3]).buffer,
+    };
+  };
+
+  try {
+    const response = await fetchBuffer('https://example.com/test', {
+      retryCount: 3,
+      retryDelayMs: 1,
+    });
+
+    assert.equal(attemptCount, 3);
+    assert.deepEqual([...response.buffer], [1, 2, 3]);
+  } finally {
+    global.fetch = originalFetch;
+  }
+});
+
+test('fetchBuffer includes the transport error code when retries are exhausted', async () => {
+  const originalFetch = global.fetch;
+
+  global.fetch = async () => {
+    const error = new Error('fetch failed');
+    error.cause = { code: 'ECONNRESET' };
+    throw error;
+  };
+
+  try {
+    await assert.rejects(
+      () => fetchBuffer('https://example.com/test', {
+        retryCount: 2,
+        retryDelayMs: 1,
+      }),
+      /ECONNRESET/
+    );
+  } finally {
+    global.fetch = originalFetch;
+  }
 });

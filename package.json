@@ -3,7 +3,8 @@
     "jimp": "^1.6.0"
   },
   "scripts": {
-    "test": "node --test exporter/historical/test/*.test.js"
+    "test": "node --test exporter/historical/test/*.test.js",
+    "test:historical-live": "node exporter/historical/test/liveNavigationSmoke.js"
   },
   "devDependencies": {
     "playwright": "^1.58.2"

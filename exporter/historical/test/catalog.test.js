@@ -5,6 +5,8 @@ const {
   HistoricalCatalog,
   buildVersionCandidates,
   buildViewportSummary,
+  refineDuplicateEntriesWithSignatures,
+  updateDuplicateVerification,
 } = require('../catalog');
 
 test('buildVersionCandidates prefers the selected version for a path', () => {
@@ -88,6 +90,68 @@ test('buildViewportSummary annotates coverage-equivalent duplicate versions cons
   assert.equal(summary.verification.duplicateCandidateCount, 2);
 });
 
+test('refineDuplicateEntriesWithSignatures upgrades duplicate annotations when visible-tile signatures match', async () => {
+  const summary = buildViewportSummary({
+    bounds: { north: 1, south: 0, east: 1, west: 0 },
+    zoom: 15,
+    cells: [
+      { path: '0200231121011100', bounds: { north: 1, south: 0.5, east: 0.5, west: 0 } },
+      { path: '0200231121011101', bounds: { north: 1, south: 0.5, east: 1, west: 0.5 } },
+    ].map(cell => ({
+      ...cell,
+      metadata: {
+        sourcePath: cell.path,
+        entries: [
+          { date: '2025-07-02', iCode: 364, fToken: 'fd2e2' },
+          { date: '2025-07-02', iCode: 362, fToken: 'fd2e2' },
+        ],
+        parser: { mode: 'stub', acceptedCount: 2 },
+      },
+    })),
+  });
+
+  await refineDuplicateEntriesWithSignatures(summary.entries, async entry => ({
+    signature: 'sig-a',
+    representativePath: entry.paths[0],
+  }));
+  updateDuplicateVerification(summary);
+
+  const duplicate = summary.entries.find(entry => entry.id === '2025-07-02|364|fd2e2');
+
+  assert.equal(duplicate.duplicateCandidate.mode, 'visible-tile-signature');
+  assert.equal(summary.verification.duplicateModes['visible-tile-signature'], 2);
+});
+
+test('refineDuplicateEntriesWithSignatures clears duplicate annotations when visible-tile signatures differ', async () => {
+  const summary = buildViewportSummary({
+    bounds: { north: 1, south: 0, east: 1, west: 0 },
+    zoom: 15,
+    cells: [
+      { path: '0200231121011100', bounds: { north: 1, south: 0.5, east: 0.5, west: 0 } },
+      { path: '0200231121011101', bounds: { north: 1, south: 0.5, east: 1, west: 0.5 } },
+    ].map(cell => ({
+      ...cell,
+      metadata: {
+        sourcePath: cell.path,
+        entries: [
+          { date: '2025-07-02', iCode: 364, fToken: 'fd2e2' },
+          { date: '2025-07-02', iCode: 362, fToken: 'fd2e2' },
+        ],
+        parser: { mode: 'stub', acceptedCount: 2 },
+      },
+    })),
+  });
+
+  await refineDuplicateEntriesWithSignatures(summary.entries, async entry => ({
+    signature: `sig-${entry.iCode}`,
+    representativePath: entry.paths[0],
+  }));
+  updateDuplicateVerification(summary);
+
+  assert.equal(summary.entries.some(entry => entry.duplicateCandidate), false);
+  assert.equal(summary.verification.duplicateCandidateCount, 0);
+});
+
 test('buildBoundsCatalogUncached fetches visible-path metadata concurrently with a cap', async () => {
   const catalog = new HistoricalCatalog({
     baseUrl: 'https://example.com',
@@ -127,7 +191,7 @@ test('buildBoundsCatalogUncached fetches visible-path metadata concurrently with
   assert.ok(maxActive <= 3, 'expected metadata concurrency cap to be respected');
 });
 
-test('buildBoundsCatalog reuses cache when slightly different bounds cover the same path set', async () => {
+test('buildBoundsCatalog performs a live rebuild for repeated bounds requests', async () => {
   class StubCatalog extends HistoricalCatalog {
     constructor() {
       super({
@@ -174,13 +238,14 @@ test('buildBoundsCatalog reuses cache when slightly different bounds cover the s
   const first = await catalog.buildBoundsCatalog(firstBounds, 10);
   const second = await catalog.buildBoundsCatalog(secondBounds, 10);
 
-  assert.equal(catalog.buildCount, 1);
+  assert.equal(catalog.buildCount, 2);
   assert.equal(first.pathCount, second.pathCount);
   assert.deepEqual(second.bounds, secondBounds);
-  assert.equal(second.timing.cacheStatus, 'bounds');
+  assert.equal(first.timing.cacheStatus, 'live');
+  assert.equal(second.timing.cacheStatus, 'live');
 });
 
-test('fetchPacketForPath caches identical source-path lookups', async () => {
+test('fetchPacketForPath performs a fresh live request when no request context is supplied', async () => {
   class StubCatalog extends HistoricalCatalog {
     constructor() {
       super({
@@ -206,6 +271,105 @@ test('fetchPacketForPath caches identical source-path lookups', async () => {
   const first = await catalog.fetchPacketForPath('0200231');
   const second = await catalog.fetchPacketForPath('0200231');
 
+  assert.equal(catalog.packetFetchCount, 2);
+  assert.equal(first.url, second.url);
+});
+
+test('fetchPacketForPath reuses a packet only within the current live request context', async () => {
+  class StubCatalog extends HistoricalCatalog {
+    constructor() {
+      super({
+        baseUrl: 'https://example.com',
+        requestHeaders: {},
+        rootVersion: 366,
+        secretKey: null,
+      });
+      this.packetFetchCount = 0;
+    }
+
+    async fetchPacketForPathUncached(pathCode) {
+      this.packetFetchCount += 1;
+      return {
+        url: `https://example.com/${pathCode}`,
+        entries: [{ date: '2024-01-01', iCode: 350, fToken: 'fd000' }],
+        parser: { mode: 'stub', acceptedCount: 1 },
+      };
+    }
+  }
+
+  const catalog = new StubCatalog();
+  const requestContext = catalog.createRequestContext();
+  const first = await catalog.fetchPacketForPath('0200231', requestContext);
+  const second = await catalog.fetchPacketForPath('0200231', requestContext);
+
   assert.equal(catalog.packetFetchCount, 1);
   assert.equal(first.url, second.url);
+});
+
+test('fetchMetadataForPathUncached continues upward only when the live child packet is missing', async () => {
+  class StubCatalog extends HistoricalCatalog {
+    constructor() {
+      super({
+        baseUrl: 'https://example.com',
+        requestHeaders: {},
+        rootVersion: 366,
+        secretKey: null,
+      });
+      this.packetAttempts = 0;
+    }
+
+    async fetchPacketForPathUncached(pathCode) {
+      this.packetAttempts += 1;
+
+      if (pathCode === '0200231121011102') {
+        const error = new Error('missing');
+        error.status = 404;
+        throw error;
+      }
+
+      return {
+        url: `https://example.com/${pathCode}`,
+        entries: [{ date: '2025-07-02', iCode: 362, fToken: 'fd2e2' }],
+        parser: { mode: 'framed', acceptedCount: 1 },
+      };
+    }
+  }
+
+  const catalog = new StubCatalog();
+  const metadata = await catalog.fetchMetadataForPathUncached('0200231121011102');
+
+  assert.equal(catalog.packetAttempts, 2);
+  assert.equal(metadata.sourcePath, '020023112101110');
+  assert.equal(metadata.parser.mode, 'framed');
+  assert.deepEqual(metadata.entries, [
+    { date: '2025-07-02', iCode: 362, fToken: 'fd2e2' },
+  ]);
+});
+
+test('fetchMetadataForPathUncached surfaces live upstream errors instead of substituting cached metadata', async () => {
+  class StubCatalog extends HistoricalCatalog {
+    constructor() {
+      super({
+        baseUrl: 'https://example.com',
+        requestHeaders: {},
+        rootVersion: 366,
+        secretKey: null,
+      });
+      this.packetAttempts = 0;
+    }
+
+    async fetchPacketForPathUncached() {
+      this.packetAttempts += 1;
+      const error = new Error('fetch failed');
+      error.cause = { code: 'ECONNRESET' };
+      throw error;
+    }
+  }
+
+  const catalog = new StubCatalog();
+  await assert.rejects(
+    () => catalog.fetchMetadataForPathUncached('0200231121011102'),
+    /fetch failed/
+  );
+  assert.equal(catalog.packetAttempts, 1);
 });

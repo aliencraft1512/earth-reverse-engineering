@@ -1,13 +1,15 @@
 const fs = require('fs');
 const path = require('path');
+const crypto = require('crypto');
 
 const { loadDependency } = require('./dependencyLoader');
-const { HistoricalCatalog, buildVersionCandidates } = require('./catalog');
+const { HistoricalCatalog, buildVersionCandidates, mapWithConcurrency } = require('./catalog');
 const { readSecretKey, DEFAULT_REQUEST_HEADERS, decryptXOR, fetchBuffer } = require('./metadata');
-const { latLonToPath, normalizeBounds, slippyTileToCenter } = require('./pathUtils');
+const { buildPathCellsForBounds, latLonToPath, normalizeBounds, slippyTileToCenter } = require('./pathUtils');
 const {
   createViewStatsRecord,
   pruneViewStatsCache,
+  summarizeTileResults,
   summarizeViewStats,
   upsertViewTileResult,
 } = require('./renderProvenance');
@@ -21,30 +23,31 @@ const PORT = 3001;
 
 const DBROOT_PATH = path.resolve(__dirname, 'dbRoot.v5');
 const CACHE_DIR = path.join(__dirname, 'tile_cache');
-const RAW_CACHE_DIR = path.join(CACHE_DIR, 'raw');
-const DERIVED_CACHE_DIR = path.join(CACHE_DIR, 'derived');
-const BASE_URL = 'https://cmpmap.com/flatfile?db=tm';
+const BASE_URL = 'https://kh.google.com/flatfile?db=tm';
 const ROOT_VERSION = 366;
 const REQUEST_TIMEOUT_MS = 10000;
 const DEFAULT_FIDELITY_MODE = 'allow-ancestor-derived';
+const OVERLAY_FETCH_CONCURRENCY = 4;
 const VIEW_STATS_TTL_MS = 5 * 60 * 1000;
 
-for (const directory of [CACHE_DIR, RAW_CACHE_DIR, DERIVED_CACHE_DIR]) {
-  fs.mkdirSync(directory, { recursive: true });
-}
+fs.mkdirSync(CACHE_DIR, { recursive: true });
 
 const secretKey = readSecretKey(DBROOT_PATH);
+migrateLegacyTileCache();
 const historicalCatalog = new HistoricalCatalog({
   baseUrl: BASE_URL,
   requestHeaders: DEFAULT_REQUEST_HEADERS,
   rootVersion: ROOT_VERSION,
+  resolveEntrySignature,
   secretKey,
   timeoutMs: REQUEST_TIMEOUT_MS,
 });
 const viewStatsCache = new Map();
+const tileSignatureCache = new Map();
 
 app.use(express.json({ limit: '1mb' }));
 app.use(express.static(path.join(__dirname, 'public')));
+app.use('/tile_cache', express.static(CACHE_DIR));
 
 function normalizeCatalogZoom(rawZoom) {
   const zoom = Number.parseInt(rawZoom, 10);
@@ -80,16 +83,149 @@ async function normalizeTileBuffer(buffer) {
   }
 }
 
+function buildTileCacheFileName(kind, parts) {
+  return `${kind}__${parts.join('__')}.jpg`;
+}
+
 function getRawTileCachePath(pathCode, iCode, fToken) {
-  return path.join(RAW_CACHE_DIR, `${pathCode}_${iCode}_${fToken}.jpg`);
+  return path.join(CACHE_DIR, buildTileCacheFileName('raw', [pathCode, String(iCode), fToken]));
 }
 
 function getDerivedTileCachePath(requestedPath, resolvedPath, iCode, fToken) {
-  return path.join(DERIVED_CACHE_DIR, `${requestedPath}__${resolvedPath}_${iCode}_${fToken}.jpg`);
+  return path.join(CACHE_DIR, buildTileCacheFileName('derived', [requestedPath, resolvedPath, String(iCode), fToken]));
+}
+
+function getLegacyRawTileCachePath(pathCode, iCode, fToken) {
+  return path.join(CACHE_DIR, 'raw', `${pathCode}_${iCode}_${fToken}.jpg`);
+}
+
+function getLegacyDerivedTileCachePath(requestedPath, resolvedPath, iCode, fToken) {
+  return path.join(CACHE_DIR, 'derived', `${requestedPath}__${resolvedPath}_${iCode}_${fToken}.jpg`);
+}
+
+function getLegacyFlatRawTileCachePath(pathCode, iCode, fToken) {
+  return path.join(CACHE_DIR, `raw__${pathCode}_${iCode}_${fToken}.jpg`);
+}
+
+function getLegacyFlatDerivedTileCachePath(requestedPath, resolvedPath, iCode, fToken) {
+  return path.join(CACHE_DIR, `derived__${requestedPath}__${resolvedPath}_${iCode}_${fToken}.jpg`);
+}
+
+function parseLegacyRawCacheName(fileName) {
+  const match = /^([0-9]+)_(\d+)_([^.]+)\.jpg$/i.exec(fileName);
+
+  if (!match) {
+    return null;
+  }
+
+  return {
+    pathCode: match[1],
+    iCode: Number.parseInt(match[2], 10),
+    fToken: match[3],
+  };
+}
+
+function parseLegacyDerivedCacheName(fileName) {
+  const match = /^([0-9]+)__([0-9]+)_(\d+)_([^.]+)\.jpg$/i.exec(fileName);
+
+  if (!match) {
+    return null;
+  }
+
+  return {
+    requestedPath: match[1],
+    resolvedPath: match[2],
+    iCode: Number.parseInt(match[3], 10),
+    fToken: match[4],
+  };
+}
+
+function migrateLegacyCacheFile(legacyPath, cachePath) {
+  if (!fs.existsSync(legacyPath)) {
+    return false;
+  }
+
+  if (!fs.existsSync(cachePath)) {
+    fs.renameSync(legacyPath, cachePath);
+  }
+
+  return true;
+}
+
+function migrateLegacyTileCache() {
+  const legacyDirectories = [
+    path.join(CACHE_DIR, 'raw'),
+    path.join(CACHE_DIR, 'derived'),
+  ];
+
+  for (const legacyDirectory of legacyDirectories) {
+    if (!fs.existsSync(legacyDirectory)) {
+      continue;
+    }
+
+    for (const entry of fs.readdirSync(legacyDirectory, { withFileTypes: true })) {
+      if (!entry.isFile()) {
+        continue;
+      }
+
+      const sourcePath = path.join(legacyDirectory, entry.name);
+      const isDerivedDirectory = path.basename(legacyDirectory) === 'derived';
+      const parsed = isDerivedDirectory
+        ? parseLegacyDerivedCacheName(entry.name)
+        : parseLegacyRawCacheName(entry.name);
+
+      if (!parsed) {
+        continue;
+      }
+
+      const targetPath = isDerivedDirectory
+        ? getDerivedTileCachePath(parsed.requestedPath, parsed.resolvedPath, parsed.iCode, parsed.fToken)
+        : getRawTileCachePath(parsed.pathCode, parsed.iCode, parsed.fToken);
+
+      if (!fs.existsSync(targetPath)) {
+        fs.renameSync(sourcePath, targetPath);
+      }
+    }
+
+    try {
+      fs.rmdirSync(legacyDirectory);
+    } catch (error) {
+      // Ignore non-empty legacy directories.
+    }
+  }
+
+  for (const entry of fs.readdirSync(CACHE_DIR, { withFileTypes: true })) {
+    if (!entry.isFile()) {
+      continue;
+    }
+
+    const sourcePath = path.join(CACHE_DIR, entry.name);
+    let targetPath = null;
+
+    if (entry.name.startsWith('raw__')) {
+      const parsed = parseLegacyRawCacheName(entry.name.slice('raw__'.length));
+      if (parsed) {
+        targetPath = getRawTileCachePath(parsed.pathCode, parsed.iCode, parsed.fToken);
+      }
+    } else if (entry.name.startsWith('derived__')) {
+      const parsed = parseLegacyDerivedCacheName(entry.name.slice('derived__'.length));
+      if (parsed) {
+        targetPath = getDerivedTileCachePath(parsed.requestedPath, parsed.resolvedPath, parsed.iCode, parsed.fToken);
+      }
+    }
+
+    if (!targetPath || targetPath === sourcePath || fs.existsSync(targetPath)) {
+      continue;
+    }
+
+    fs.renameSync(sourcePath, targetPath);
+  }
 }
 
 async function fetchOrCacheRawTile(pathCode, iCode, fToken) {
   const cachePath = getRawTileCachePath(pathCode, iCode, fToken);
+  migrateLegacyCacheFile(getLegacyRawTileCachePath(pathCode, iCode, fToken), cachePath);
+  migrateLegacyCacheFile(getLegacyFlatRawTileCachePath(pathCode, iCode, fToken), cachePath);
 
   if (fs.existsSync(cachePath)) {
     return {
@@ -118,12 +254,113 @@ async function fetchOrCacheRawTile(pathCode, iCode, fToken) {
   };
 }
 
+function getTileSignatureCacheKey(pathCode, iCode, fToken) {
+  return `${pathCode}_${iCode}_${fToken}`;
+}
+
+function toTileCacheUrl(cachePath) {
+  const relativePath = path.relative(CACHE_DIR, cachePath).replace(/\\/g, '/');
+  return `/tile_cache/${relativePath}`;
+}
+
+async function fetchVisibleTileSignature(pathCode, iCode, fToken) {
+  const cacheKey = `native:${getTileSignatureCacheKey(pathCode, iCode, fToken)}`;
+
+  if (tileSignatureCache.has(cacheKey)) {
+    return tileSignatureCache.get(cacheKey);
+  }
+
+  const request = (async () => {
+    try {
+      const rawTile = await fetchOrCacheRawTile(pathCode, iCode, fToken);
+      return {
+        mode: 'visible-tile-signature',
+        signature: crypto.createHash('sha1').update(rawTile.buffer).digest('hex'),
+        representativePath: pathCode,
+        sourceUrl: rawTile.sourceUrl,
+      };
+    } catch (error) {
+      tileSignatureCache.delete(cacheKey);
+      return null;
+    }
+  })();
+
+  tileSignatureCache.set(cacheKey, request);
+  return request;
+}
+
+async function fetchRenderedTileSignature(pathCode, iCode, fToken) {
+  const cacheKey = `rendered:${getTileSignatureCacheKey(pathCode, iCode, fToken)}`;
+
+  if (tileSignatureCache.has(cacheKey)) {
+    return tileSignatureCache.get(cacheKey);
+  }
+
+  const request = (async () => {
+    try {
+      const renderedTile = await resolveTileImage({
+        requestedPath: pathCode,
+        fToken,
+        candidateVersions: [iCode],
+        allowAncestorDerived: true,
+      });
+
+      if (!renderedTile) {
+        tileSignatureCache.delete(cacheKey);
+        return null;
+      }
+
+      return {
+        mode: 'rendered-tile-signature',
+        signature: crypto.createHash('sha1').update(renderedTile.buffer).digest('hex'),
+        representativePath: pathCode,
+        sourceUrl: renderedTile.sourceUrl,
+        resolvedPath: renderedTile.resolvedPath,
+      };
+    } catch (error) {
+      tileSignatureCache.delete(cacheKey);
+      return null;
+    }
+  })();
+
+  tileSignatureCache.set(cacheKey, request);
+  return request;
+}
+
+async function resolveEntrySignature(entry, group = []) {
+  const candidatePaths = [...new Set(
+    [
+      ...group.flatMap(item => item.paths || []),
+      ...group.flatMap(item => item.sourcePaths || []),
+      ...(entry.paths || []),
+      ...(entry.sourcePaths || []),
+    ].filter(Boolean)
+  )].sort();
+
+  for (const pathCode of candidatePaths) {
+    const nativeSignature = await fetchVisibleTileSignature(pathCode, entry.iCode, entry.fToken);
+
+    if (nativeSignature) {
+      return nativeSignature;
+    }
+
+    const renderedSignature = await fetchRenderedTileSignature(pathCode, entry.iCode, entry.fToken);
+
+    if (renderedSignature) {
+      return renderedSignature;
+    }
+  }
+
+  return null;
+}
+
 async function resolveTileImage({
   requestedPath,
   fToken,
   candidateVersions,
   allowAncestorDerived = true,
   fetchRawTile = fetchOrCacheRawTile,
+  attemptLog = null,
 }) {
   const minimumLength = allowAncestorDerived ? 5 : requestedPath.length;
 
@@ -132,10 +369,23 @@ async function resolveTileImage({
     const suffix = requestedPath.slice(length);
 
     for (const iCode of candidateVersions) {
+      const sourceUrl = `${BASE_URL}&f1-${resolvedPath}-i.${iCode}-${fToken}`;
+
       try {
         const rawTile = await fetchRawTile(resolvedPath, iCode, fToken);
 
         if (!suffix) {
+          attemptLog?.push({
+            requestedPath,
+            resolvedPath,
+            iCode,
+            fToken,
+            sourceUrl: rawTile.sourceUrl || sourceUrl,
+            status: 'ok',
+            cacheHit: Boolean(rawTile.cacheHit),
+            derivedCacheHit: false,
+            croppedFromParent: false,
+          });
           return {
             buffer: rawTile.buffer,
             requestedPath,
@@ -144,12 +394,33 @@ async function resolveTileImage({
             sourceUrl: rawTile.sourceUrl,
             cachePath: rawTile.cachePath,
             croppedFromParent: false,
+            cacheHit: Boolean(rawTile.cacheHit),
+            derivedCacheHit: false,
           };
         }
 
         const derivedCachePath = getDerivedTileCachePath(requestedPath, resolvedPath, iCode, fToken);
+        migrateLegacyCacheFile(
+          getLegacyDerivedTileCachePath(requestedPath, resolvedPath, iCode, fToken),
+          derivedCachePath
+        );
+        migrateLegacyCacheFile(
+          getLegacyFlatDerivedTileCachePath(requestedPath, resolvedPath, iCode, fToken),
+          derivedCachePath
+        );
 
         if (fs.existsSync(derivedCachePath)) {
+          attemptLog?.push({
+            requestedPath,
+            resolvedPath,
+            iCode,
+            fToken,
+            sourceUrl: rawTile.sourceUrl || sourceUrl,
+            status: 'ok',
+            cacheHit: Boolean(rawTile.cacheHit),
+            derivedCacheHit: true,
+            croppedFromParent: true,
+          });
           return {
             buffer: fs.readFileSync(derivedCachePath),
             requestedPath,
@@ -158,11 +429,25 @@ async function resolveTileImage({
             sourceUrl: rawTile.sourceUrl,
             cachePath: derivedCachePath,
             croppedFromParent: true,
+            cacheHit: Boolean(rawTile.cacheHit),
+            derivedCacheHit: true,
           };
         }
 
         const croppedBuffer = await cropBufferToSuffix(rawTile.buffer, suffix);
         fs.writeFileSync(derivedCachePath, croppedBuffer);
+
+        attemptLog?.push({
+          requestedPath,
+          resolvedPath,
+          iCode,
+          fToken,
+          sourceUrl: rawTile.sourceUrl || sourceUrl,
+          status: 'ok',
+          cacheHit: Boolean(rawTile.cacheHit),
+          derivedCacheHit: false,
+          croppedFromParent: true,
+        });
 
         return {
           buffer: croppedBuffer,
@@ -172,8 +457,22 @@ async function resolveTileImage({
           sourceUrl: rawTile.sourceUrl,
           cachePath: derivedCachePath,
           croppedFromParent: true,
+          cacheHit: Boolean(rawTile.cacheHit),
+          derivedCacheHit: false,
         };
       } catch (error) {
+        attemptLog?.push({
+          requestedPath,
+          resolvedPath,
+          iCode,
+          fToken,
+          sourceUrl: error?.sourceUrl || sourceUrl,
+          status: error?.status === 404 ? 'missing' : 'error',
+          cacheHit: false,
+          derivedCacheHit: false,
+          croppedFromParent: Boolean(suffix),
+          message: error?.message || 'Tile request failed.',
+        });
         // Try the next version or parent.
       }
     }
@@ -204,6 +503,50 @@ function getVersionMode(selection) {
   return Number.isFinite(selection.preferredVersion) ? 'exact-preferred' : 'best-valid-per-path';
 }
 
+function buildSelectionDecision(matches, preferredVersion = null) {
+  const availableVersions = [...new Set(matches.map(entry => entry.iCode).filter(Number.isFinite))]
+    .sort((left, right) => right - left);
+  let candidateVersions = buildVersionCandidates(matches, preferredVersion);
+
+  if (candidateVersions.length === 0 && Number.isFinite(preferredVersion)) {
+    candidateVersions = [preferredVersion];
+  }
+
+  if (availableVersions.length === 0) {
+    return {
+      availableVersions,
+      candidateVersions,
+      selectedVersion: null,
+      reason: Number.isFinite(preferredVersion) ? 'preferred-version-unavailable' : 'no-valid-version',
+    };
+  }
+
+  if (Number.isFinite(preferredVersion) && availableVersions.includes(preferredVersion)) {
+    return {
+      availableVersions,
+      candidateVersions,
+      selectedVersion: preferredVersion,
+      reason: 'preferred-version',
+    };
+  }
+
+  if (Number.isFinite(preferredVersion)) {
+    return {
+      availableVersions,
+      candidateVersions,
+      selectedVersion: candidateVersions[0] || availableVersions[0],
+      reason: 'alternate-version',
+    };
+  }
+
+  return {
+    availableVersions,
+    candidateVersions,
+    selectedVersion: candidateVersions[0] || availableVersions[0],
+    reason: 'best-valid-version',
+  };
+}
+
 function getViewStatsRecord(viewToken, selection, fidelityMode) {
   if (!viewToken) {
     return null;
@@ -218,6 +561,7 @@ function getViewStatsRecord(viewToken, selection, fidelityMode) {
         viewToken,
         selection,
         fidelityMode,
+        renderStrategy: 'xyz-tiles',
         versionMode: getVersionMode(selection),
       })
     );
@@ -235,6 +579,213 @@ function recordTileProvenance(viewToken, selection, fidelityMode, tileResult) {
 
   upsertViewTileResult(record, tileResult);
   return summarizeViewStats(record);
+}
+
+function buildDownloadLogEntry(selection, cellPath, selectionDecision, attempt) {
+  return {
+    date: selection.date || null,
+    path: cellPath,
+    requestedPath: attempt.requestedPath || cellPath,
+    resolvedPath: attempt.resolvedPath || null,
+    iCode: Number.isFinite(attempt.iCode) ? attempt.iCode : null,
+    fToken: attempt.fToken || selection.fToken || null,
+    sourceUrl: attempt.sourceUrl || null,
+    status: attempt.status || 'missing',
+    cacheHit: Boolean(attempt.cacheHit),
+    derivedCacheHit: Boolean(attempt.derivedCacheHit),
+    croppedFromParent: Boolean(attempt.croppedFromParent),
+    selectionReason: selectionDecision.reason,
+    availableVersions: selectionDecision.availableVersions,
+    message: attempt.message || null,
+  };
+}
+
+function logOverlayDownloadEntries(selection, entries) {
+  for (const entry of entries) {
+    const cacheLabel = entry.derivedCacheHit
+      ? 'derived-cache'
+      : entry.cacheHit
+        ? 'tile-cache'
+        : 'network';
+    const versionLabel = Number.isFinite(entry.iCode) ? `i.${entry.iCode}` : 'i.none';
+    const resolvedLabel = entry.resolvedPath || 'none';
+    const extra = entry.message ? ` | ${entry.message}` : '';
+    console.log(
+      `[historical-overlay] ${entry.status.toUpperCase()} date=${selection.date || 'unknown'} path=${entry.path} requested=${entry.requestedPath} resolved=${resolvedLabel} version=${versionLabel} via=${cacheLabel}${entry.croppedFromParent ? ' parent-derived' : ''}${extra}`
+    );
+  }
+}
+
+async function buildSelectionDiagnostics({ bounds, zoom, selection }) {
+  const normalizedBounds = normalizeBounds(bounds);
+  const renderZoom = normalizeCatalogZoom(zoom);
+  const cells = buildPathCellsForBounds(normalizedBounds, renderZoom);
+  const requestContext = historicalCatalog.createRequestContext();
+  const paths = await mapWithConcurrency(cells, OVERLAY_FETCH_CONCURRENCY, async cell => {
+    let selectionInfo;
+
+    try {
+      selectionInfo = await historicalCatalog.findSelectionEntries(cell.path, selection, requestContext);
+    } catch (error) {
+      return {
+        path: cell.path,
+        sourcePath: null,
+        bounds: cell.bounds,
+        availableVersions: [],
+        candidateVersions: [],
+        selectedVersion: null,
+        reason: 'metadata-error',
+        error: error.message,
+      };
+    }
+
+    const decision = buildSelectionDecision(selectionInfo.matches, selection.preferredVersion);
+
+    return {
+      path: cell.path,
+      sourcePath: selectionInfo.metadata.sourcePath,
+      bounds: cell.bounds,
+      availableVersions: decision.availableVersions,
+      candidateVersions: decision.candidateVersions,
+      selectedVersion: decision.selectedVersion,
+      reason: decision.reason,
+    };
+  });
+  const summary = {
+    totalPaths: paths.length,
+    matchedPaths: paths.filter(pathInfo => pathInfo.selectedVersion !== null).length,
+    missingPaths: paths.filter(pathInfo => pathInfo.selectedVersion === null).length,
+    preferredVersionPaths: paths.filter(pathInfo => pathInfo.reason === 'preferred-version').length,
+    alternateVersionPaths: paths.filter(pathInfo => pathInfo.reason === 'alternate-version').length,
+    bestValidVersionPaths: paths.filter(pathInfo => pathInfo.reason === 'best-valid-version').length,
+    versionsUsed: [...new Set(paths.map(pathInfo => pathInfo.selectedVersion).filter(Number.isFinite))]
+      .sort((left, right) => right - left),
+  };
+
+  return {
+    bounds: normalizedBounds,
+    zoom: renderZoom,
+    selection: {
+      date: selection.date || null,
+      fToken: selection.fToken || null,
+      preferredVersion: Number.isFinite(selection.preferredVersion) ? selection.preferredVersion : null,
+    },
+    summary,
+    paths,
+  };
+}
+
+async function buildOverlayPayload({ bounds, zoom, selection, fidelityMode }) {
+  const normalizedBounds = normalizeBounds(bounds);
+  const renderZoom = normalizeCatalogZoom(zoom);
+  const cells = buildPathCellsForBounds(normalizedBounds, renderZoom);
+  const downloadLog = [];
+  const requestContext = historicalCatalog.createRequestContext();
+  const tiles = await mapWithConcurrency(cells, OVERLAY_FETCH_CONCURRENCY, async cell => {
+    let selectionInfo;
+
+    try {
+      selectionInfo = await historicalCatalog.findSelectionEntries(cell.path, selection, requestContext);
+    } catch (error) {
+      const metadataErrorDecision = {
+        availableVersions: [],
+        reason: 'metadata-error',
+      };
+      const metadataErrorLog = buildDownloadLogEntry(selection, cell.path, metadataErrorDecision, {
+        requestedPath: cell.path,
+        status: 'error',
+        message: `Metadata fetch failed: ${error.message}`,
+      });
+      downloadLog.push(metadataErrorLog);
+      logOverlayDownloadEntries(selection, [metadataErrorLog]);
+
+      return {
+        path: cell.path,
+        bounds: cell.bounds,
+        requestedPath: cell.path,
+        status: 'error',
+        selectionReason: 'metadata-error',
+        availableVersions: [],
+      };
+    }
+
+    const decision = buildSelectionDecision(selectionInfo.matches, selection.preferredVersion);
+    const candidateVersions = decision.candidateVersions;
+
+    if (candidateVersions.length === 0) {
+      const noMatchLog = buildDownloadLogEntry(selection, cell.path, decision, {
+        requestedPath: cell.path,
+        status: 'missing',
+        message: 'No live metadata match for the selected date in this visible cell.',
+      });
+      downloadLog.push(noMatchLog);
+      logOverlayDownloadEntries(selection, [noMatchLog]);
+      return {
+        path: cell.path,
+        bounds: cell.bounds,
+        requestedPath: cell.path,
+        status: 'missing',
+        selectionReason: decision.reason,
+        availableVersions: decision.availableVersions,
+      };
+    }
+
+    const attemptLog = [];
+    const resolvedTile = await resolveTileImage({
+      requestedPath: cell.path,
+      fToken: selection.fToken,
+      candidateVersions,
+      allowAncestorDerived: fidelityMode !== 'native-only',
+      attemptLog,
+    });
+    const loggedAttempts = attemptLog.map(attempt => buildDownloadLogEntry(selection, cell.path, decision, attempt));
+    downloadLog.push(...loggedAttempts);
+    logOverlayDownloadEntries(selection, loggedAttempts);
+
+    if (!resolvedTile) {
+      return {
+        path: cell.path,
+        bounds: cell.bounds,
+        requestedPath: cell.path,
+        status: 'missing',
+      };
+    }
+
+    return {
+      path: cell.path,
+      bounds: cell.bounds,
+      requestedPath: cell.path,
+      resolvedPath: resolvedTile.resolvedPath,
+      url: toTileCacheUrl(resolvedTile.cachePath),
+      status: 'ok',
+      sourceUrl: resolvedTile.sourceUrl,
+      version: resolvedTile.iCode,
+      croppedFromParent: resolvedTile.croppedFromParent,
+      cacheHit: resolvedTile.cacheHit,
+      derivedCacheHit: resolvedTile.derivedCacheHit,
+      selectionReason: decision.reason,
+      availableVersions: decision.availableVersions,
+    };
+  });
+
+  return {
+    bounds: normalizedBounds,
+    fidelityMode,
+    renderStrategy: 'bounds-overlay',
+    tiles: tiles.filter(tile => tile.status === 'ok'),
+    downloadLog,
+    summary: summarizeTileResults(tiles, {
+      fidelityMode,
+      renderStrategy: 'bounds-overlay',
+      selection: {
+        date: selection.date || null,
+        fToken: selection.fToken || null,
+        preferredVersion: Number.isFinite(selection.preferredVersion) ? selection.preferredVersion : null,
+      },
+      versionMode: getVersionMode(selection),
+    }),
+    zoom: renderZoom,
+  };
 }
 
 app.post('/api/catalog', async (req, res) => {
@@ -327,18 +878,21 @@ app.get('/api/tile/:z/:x/:y', async (req, res) => {
 
     const tileCenter = slippyTileToCenter(z, x, y);
     const requestedPath = latLonToPath(tileCenter.lat, tileCenter.lon, z);
-    const selectionInfo = await historicalCatalog.findSelectionEntries(requestedPath, selection);
-    let candidateVersions = buildVersionCandidates(selectionInfo.matches, selection.preferredVersion);
-
-    if (candidateVersions.length === 0 && Number.isFinite(selection.preferredVersion)) {
-      candidateVersions = [selection.preferredVersion];
-    }
+    const selectionInfo = await historicalCatalog.findSelectionEntries(
+      requestedPath,
+      selection,
+      historicalCatalog.createRequestContext()
+    );
+    const decision = buildSelectionDecision(selectionInfo.matches, selection.preferredVersion);
+    const candidateVersions = decision.candidateVersions;
 
     if (candidateVersions.length === 0) {
       recordTileProvenance(req.query.viewToken, selection, fidelityMode, {
         tileKey,
         status: 'missing',
         requestedPath,
+        selectionReason: decision.reason,
+        availableVersions: decision.availableVersions,
       });
       return res.status(404).json({
         error: 'The selected date is not available for the requested path.',
@@ -372,6 +926,8 @@ app.get('/api/tile/:z/:x/:y', async (req, res) => {
     res.set('X-Historical-Version', String(resolvedTile.iCode));
     res.set('X-Historical-Cropped', String(resolvedTile.croppedFromParent));
     res.set('X-Historical-Fidelity-Mode', fidelityMode);
+    res.set('X-Historical-Selection-Reason', decision.reason);
+    res.set('X-Historical-Available-Versions', decision.availableVersions.join(','));
     recordTileProvenance(req.query.viewToken, selection, fidelityMode, {
       tileKey,
       status: 'ok',
@@ -379,10 +935,64 @@ app.get('/api/tile/:z/:x/:y', async (req, res) => {
       resolvedPath: resolvedTile.resolvedPath,
       version: resolvedTile.iCode,
       croppedFromParent: resolvedTile.croppedFromParent,
+      selectionReason: decision.reason,
+      availableVersions: decision.availableVersions,
     });
     return res.send(resolvedTile.buffer);
   } catch (error) {
     return res.status(500).json({ error: error.message });
+  }
+});
+
+app.post('/api/selection-diagnostics', async (req, res) => {
+  try {
+    const { bounds, zoom } = req.body || {};
+    const selection = buildSelectionFromQuery(req.body || {});
+
+    if (!selection.date || !selection.fToken) {
+      return res.status(400).json({ error: 'date and fToken are required.' });
+    }
+
+    if (!bounds) {
+      return res.status(400).json({ error: 'bounds are required.' });
+    }
+
+    const diagnostics = await buildSelectionDiagnostics({
+      bounds,
+      zoom,
+      selection,
+    });
+
+    return res.json(diagnostics);
+  } catch (error) {
+    return res.status(400).json({ error: error.message });
+  }
+});
+
+app.post('/api/overlays', async (req, res) => {
+  try {
+    const { bounds, zoom } = req.body || {};
+    const selection = buildSelectionFromQuery(req.body || {});
+    const fidelityMode = parseFidelityMode(req.body || {});
+
+    if (!selection.date || !selection.fToken) {
+      return res.status(400).json({ error: 'date and fToken are required.' });
+    }
+
+    if (!bounds) {
+      return res.status(400).json({ error: 'bounds are required.' });
+    }
+
+    const payload = await buildOverlayPayload({
+      bounds,
+      zoom,
+      selection,
+      fidelityMode,
+    });
+
+    return res.json(payload);
+  } catch (error) {
+    return res.status(400).json({ error: error.message });
   }
 });
 
@@ -399,24 +1009,32 @@ app.get('/api/view-stats/:viewToken', (req, res) => {
 
 app.post('/api/clear-caches', (req, res) => {
   historicalCatalog.clearCaches();
+  tileSignatureCache.clear();
   viewStatsCache.clear();
   res.json({ ok: true });
 });
 
 let server = null;
 
-function startServer() {
-  server = app.listen(PORT, () => {
-    console.log(`Historical Server running at http://localhost:${PORT}`);
+function startServer(options = {}) {
+  const port = Number.isFinite(options.port) ? options.port : PORT;
+  const host = options.host || '127.0.0.1';
+  const exitOnError = options.exitOnError !== false;
+  server = app.listen(port, host, () => {
+    const address = server.address();
+    const resolvedPort = typeof address === 'object' && address ? address.port : port;
+    console.log(`Historical Server running at http://${host}:${resolvedPort}`);
   });
 
   server.on('error', error => {
     if (error.code === 'EADDRINUSE') {
-      console.error(`Error: Port ${PORT} is already in use.`);
+      console.error(`Error: Port ${port} is already in use.`);
     } else {
       console.error('Server error:', error);
     }
-    process.exit(1);
+    if (exitOnError) {
+      process.exit(1);
+    }
   });
 
   return server;
@@ -428,8 +1046,14 @@ if (require.main === module) {
 
 module.exports = {
   app,
+  buildSelectionDecision,
+  buildSelectionDiagnostics,
   historicalCatalog,
+  buildOverlayPayload,
   normalizeCatalogZoom,
+  getDerivedTileCachePath,
+  getRawTileCachePath,
+  resolveEntrySignature,
   resolveTileImage,
   startServer,
 };

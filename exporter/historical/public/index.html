@@ -200,7 +200,8 @@
         }
 
         #dateList,
-        #pathDebugList {
+        #pathDebugList,
+        #downloadLogList {
             min-height: 0;
             overflow-y: auto;
             overscroll-behavior: contain;
@@ -257,13 +258,59 @@
             color: #5f7087;
         }
 
+        .download-log-entry {
+            border: 1px solid #d3dceb;
+            border-radius: 8px;
+            background: #f8fbff;
+            padding: 8px 10px;
+            margin-top: 8px;
+        }
+
+        .download-log-entry[data-status="ok"] {
+            border-color: #b7d8c2;
+            background: #f4fbf6;
+        }
+
+        .download-log-entry[data-status="missing"] {
+            border-color: #e3d3aa;
+            background: #fffaf0;
+        }
+
+        .download-log-entry[data-status="error"] {
+            border-color: #e2b9b9;
+            background: #fff5f5;
+        }
+
+        .download-log-title,
+        .download-log-meta,
+        .download-log-source,
+        .download-log-detail,
+        .download-log-empty {
+            font-size: 0.76rem;
+            line-height: 1.45;
+            color: #50627a;
+            overflow-wrap: anywhere;
+        }
+
+        .download-log-title {
+            font-weight: 700;
+            color: #24364f;
+        }
+
+        .download-log-meta,
+        .download-log-source,
+        .download-log-detail {
+            margin-top: 4px;
+        }
+
         #renderSummary {
             display: grid;
             gap: 6px;
         }
 
         #entriesPanel[open] .accordion-content,
-        #pathDebugPanel[open] .accordion-content {
+        #pathDebugPanel[open] .accordion-content,
+        #downloadLogPanel[open] .accordion-content {
             flex: 1 1 auto;
         }
 
@@ -272,7 +319,8 @@
             max-height: 42vh;
         }
 
-        #pathDebugPanel[open] #pathDebugList {
+        #pathDebugPanel[open] #pathDebugList,
+        #downloadLogPanel[open] #downloadLogList {
             max-height: 28vh;
         }
 
@@ -298,7 +346,8 @@
             }
 
             #dateList,
-            #pathDebugList {
+            #pathDebugList,
+            #downloadLogList {
                 max-height: 38vh;
             }
         }
@@ -307,44 +356,34 @@
 <body>
     <div id="map"></div>
     <aside id="sidebar">
-        <h1>Historical Bounds Catalog</h1>
+        <h1>Historical Imagery</h1>
         <div class="panel">
             <div id="status">Move the map to verify historical metadata for the current bounds.</div>
-        </div>
-        <div class="panel">
-            <div class="toggle-row">
-                <input id="preferExactVersion" type="checkbox" checked />
-                <label for="preferExactVersion">Prefer the selected iCode when it is valid</label>
-            </div>
-            <label class="control-label" for="fidelityMode">Tile fidelity mode</label>
-            <select id="fidelityMode" class="control-select">
-                <option value="allow-ancestor-derived">Allow ancestor-derived fallback</option>
-                <option value="native-only">Native only</option>
-            </select>
             <div id="selectionStatus">No historical entry selected.</div>
         </div>
         <details class="accordion-panel" id="entriesPanel" open>
-            <summary class="accordion-summary">Visible Entries</summary>
+            <summary class="accordion-summary">Available Dates</summary>
             <div class="accordion-content">
                 <div id="dateList"></div>
             </div>
         </details>
-        <details class="accordion-panel" id="verificationPanel">
-            <summary class="accordion-summary">Verification</summary>
+        <details class="accordion-panel" id="verificationPanel" open>
+            <summary class="accordion-summary">Coverage</summary>
             <div class="accordion-content">
                 <div id="verificationSummary"></div>
-            </div>
-        </details>
-        <details class="accordion-panel" id="renderPanel">
-            <summary class="accordion-summary">Render Provenance</summary>
-            <div class="accordion-content">
                 <div id="renderSummary">
-                    <div class="verification-line">No active tile view.</div>
+                    <div class="verification-line">No historical imagery loaded.</div>
                 </div>
             </div>
         </details>
+        <details class="accordion-panel" id="downloadLogPanel" open>
+            <summary class="accordion-summary">Tile Download Log</summary>
+            <div class="accordion-content">
+                <div id="downloadLogList"></div>
+            </div>
+        </details>
         <details class="accordion-panel" id="pathDebugPanel">
-            <summary class="accordion-summary">Visible Paths Debug</summary>
+            <summary class="accordion-summary">Technical Details</summary>
             <div class="accordion-content">
                 <div id="pathDebugList"></div>
             </div>

@@ -26,6 +26,7 @@ test('render provenance summarizes exact, ancestor-derived, missing, and mixed-v
     resolvedPath: '0200231121011100',
     version: 364,
     croppedFromParent: false,
+    selectionReason: 'preferred-version',
   });
   upsertViewTileResult(record, {
     tileKey: '15/1/2',
@@ -34,11 +35,13 @@ test('render provenance summarizes exact, ancestor-derived, missing, and mixed-v
     resolvedPath: '020023112101110',
     version: 362,
     croppedFromParent: true,
+    selectionReason: 'alternate-version',
   });
   upsertViewTileResult(record, {
     tileKey: '15/1/3',
     status: 'missing',
     requestedPath: '0200231121011110',
+    selectionReason: 'preferred-version-unavailable',
   });
 
   const summary = summarizeViewStats(record);
@@ -48,5 +51,8 @@ test('render provenance summarizes exact, ancestor-derived, missing, and mixed-v
   assert.equal(summary.ancestorDerivedCount, 1);
   assert.equal(summary.missingCount, 1);
   assert.equal(summary.mixedVersion, true);
+  assert.equal(summary.preferredVersionCount, 1);
+  assert.equal(summary.alternateVersionCount, 1);
+  assert.equal(summary.bestValidVersionCount, 0);
   assert.deepEqual(summary.versionsUsed, [364, 362]);
 });

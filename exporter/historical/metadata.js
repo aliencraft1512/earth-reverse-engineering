@@ -536,37 +536,82 @@ function extractMetadataEntries(buffer) {
   return extractMetadataEntriesWithDebug(buffer).entries;
 }
 
+function isRetryableFetchError(error) {
+  if (!error) {
+    return false;
+  }
+
+  const code = error.code || error.cause?.code || null;
+
+  if (['ECONNRESET', 'ETIMEDOUT', 'ECONNREFUSED', 'EHOSTUNREACH', 'UND_ERR_CONNECT_TIMEOUT'].includes(code)) {
+    return true;
+  }
+
+  return error.name === 'AbortError';
+}
+
+function formatFetchErrorMessage(error) {
+  const code = error?.code || error?.cause?.code || null;
+  const message = error?.message || 'fetch failed';
+
+  if (!code || message.includes(code)) {
+    return message;
+  }
+
+  return `${message} (${code})`;
+}
+
 async function fetchBuffer(url, options = {}) {
   const {
     headers = DEFAULT_REQUEST_HEADERS,
     timeoutMs = 10000,
+    retryCount = 3,
+    retryDelayMs = 250,
     validateStatus = status => status === 200,
   } = options;
 
-  const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), timeoutMs);
+  let lastError = null;
 
-  try {
-    const response = await fetch(url, {
-      headers,
-      signal: controller.signal,
-    });
+  for (let attempt = 1; attempt <= retryCount; attempt += 1) {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), timeoutMs);
 
-    if (!validateStatus(response.status)) {
-      const error = new Error(`Unexpected status ${response.status}`);
-      error.status = response.status;
-      throw error;
+    try {
+      const response = await fetch(url, {
+        headers,
+        signal: controller.signal,
+      });
+
+      if (!validateStatus(response.status)) {
+        const error = new Error(`Unexpected status ${response.status}`);
+        error.status = response.status;
+        throw error;
+      }
+
+      const arrayBuffer = await response.arrayBuffer();
+      return {
+        status: response.status,
+        headers: response.headers,
+        buffer: Buffer.from(arrayBuffer),
+      };
+    } catch (error) {
+      lastError = error;
+
+      if (!isRetryableFetchError(error) || attempt >= retryCount) {
+        const wrappedError = new Error(formatFetchErrorMessage(error));
+        wrappedError.status = error.status;
+        wrappedError.code = error.code || error.cause?.code;
+        wrappedError.cause = error;
+        throw wrappedError;
+      }
+
+      await new Promise(resolve => setTimeout(resolve, retryDelayMs * attempt));
+    } finally {
+      clearTimeout(timer);
     }
-
-    const arrayBuffer = await response.arrayBuffer();
-    return {
-      status: response.status,
-      headers: response.headers,
-      buffer: Buffer.from(arrayBuffer),
-    };
-  } finally {
-    clearTimeout(timer);
   }
+
+  throw lastError;
 }
 
 async function fetchMetadataPacket({
