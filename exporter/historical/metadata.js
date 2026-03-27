@@ -693,7 +693,7 @@ async function fetchMetadataPacket({
   baseUrls = [],
   pathCode,
   rootVersion,
-  requestheaders = getRequestHeaders(),
+  requestHeaders = getRequestHeaders(),
   timeoutMs = 10000,
   secretKey = null,
   fetchBufferImpl = fetchBuffer,

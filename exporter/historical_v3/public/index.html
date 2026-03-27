@@ -32,6 +32,16 @@
     </header>
     <div class="status-bar" id="status-bar">
         Zoom to 14+ to see available dates for the center of the map.
+        <span id="global-status" style="float:right"></span>
+    </div>
+    <div id="timeline-container" style="background: #444; padding: 10px 20px; display: none;">
+        <label style="color: white; font-size: 0.8rem;">Global Timeline (Scrub to see imagery exists in this year):</label>
+        <input type="range" id="timeline-slider" style="width: 100%; margin-top: 5px;" min="0" max="100" value="0">
+        <div style="display: flex; justify-content: space-between; color: #ccc; font-size: 0.7rem;">
+            <span id="timeline-start">1945</span>
+            <span id="timeline-current" style="color: white; font-weight: bold;">Select a year</span>
+            <span id="timeline-end">2025</span>
+        </div>
     </div>
     <div id="main-container">
         <div id="map"></div>

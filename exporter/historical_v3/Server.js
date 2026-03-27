@@ -18,8 +18,13 @@ const PREDEFINED_REGIONS = [
 
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.get('/api/regions', (req, res) => {
-    res.json(PREDEFINED_REGIONS);
+app.get('/api/world-index', (req, res) => {
+    const indexPath = path.join(__dirname, 'public', 'world_index.json');
+    if (fs.existsSync(indexPath)) {
+        res.json(fs.readJsonSync(indexPath));
+    } else {
+        res.status(404).json({ error: "World index not generated yet. Run WorldCrawler.js" });
+    }
 });
 
 app.get('/api/metadata/:pathCode', async (req, res) => {

@@ -375,7 +375,7 @@ test.before(async () => {
   }
 
   ownsServer = true;
-  server = startServer();
+  server = startServer({ port: TEST_PORT, exitOnError: false });
   await waitForServer(BASE_URL);
 });
 
