@@ -13,3 +13,16 @@ test('same-date siblings keep unique selection identity', () => {
   assert.equal(reconcileSelection(selectedEntryId, entries), selectedEntryId);
   assert.equal(reconcileSelection(selectedEntryId, [entries[1]]), null);
 });
+
+test('best-valid-per-path mode keeps the same date/token selected when the exact version changes', () => {
+  const previousEntry = { date: '2025-07-02', iCode: 364, fToken: 'fd2e2', pathCount: 9 };
+  const nextEntries = [
+    { date: '2025-07-02', iCode: 362, fToken: 'fd2e2', pathCount: 12 },
+    { date: '2024-05-20', iCode: 350, fToken: 'fd0b4', pathCount: 12 },
+  ];
+
+  assert.equal(
+    reconcileSelection(makeEntryId(previousEntry), nextEntries, { preferExactVersion: false }),
+    makeEntryId(nextEntries[0])
+  );
+});

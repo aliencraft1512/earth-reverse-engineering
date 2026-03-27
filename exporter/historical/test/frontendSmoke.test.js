@@ -93,6 +93,8 @@ test('frontend smoke: bounds refresh, list scroll, selection, and tile responses
       () => document.getElementById('status')?.textContent.includes('Verified'),
       { timeout: 180000 }
     );
+    assert.equal(await page.locator('#entriesPanel').evaluate(node => node.open), true);
+    assert.equal(await page.locator('#pathDebugPanel').evaluate(node => node.open), false);
 
     const entryItems = page.locator('#dateList .date-item:not(.empty)');
     assert.ok((await entryItems.count()) > 0, 'expected at least one historical entry');
@@ -136,6 +138,15 @@ test('frontend smoke: bounds refresh, list scroll, selection, and tile responses
       () => document.getElementById('selectionStatus')?.textContent.includes('Selected'),
       { timeout: 30000 }
     );
+    const layerOptions = await page.evaluate(() => {
+      const layer = window.__historicalDebug.getHistoricalLayer();
+      return {
+        keepBuffer: layer?.options?.keepBuffer,
+        updateWhenZooming: layer?.options?.updateWhenZooming,
+      };
+    });
+    assert.equal(layerOptions.keepBuffer, 0);
+    assert.equal(layerOptions.updateWhenZooming, false);
 
     const tileResponse = await page.waitForResponse(response => {
       return response.url().includes('/api/tile/') && response.status() === 200;
@@ -170,6 +181,8 @@ test('frontend smoke: bounds refresh, list scroll, selection, and tile responses
     assert.match(verificationText || '', /Coverage-equivalent duplicates/i);
     assert.match(verificationText || '', /Parser modes/i);
 
+    await page.locator('#pathDebugPanel .accordion-summary').click();
+    await page.waitForFunction(() => document.getElementById('pathDebugPanel')?.open === true, { timeout: 30000 });
     const pathCards = page.locator('#pathDebugList details');
     assert.ok((await pathCards.count()) > 0, 'expected visible path debug cards');
     await pathCards.first().click();

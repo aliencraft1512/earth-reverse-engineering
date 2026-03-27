@@ -58,6 +58,53 @@
             min-height: 0;
         }
 
+        .accordion-panel {
+            background: rgba(255, 255, 255, 0.88);
+            border: 1px solid #d6deea;
+            border-radius: 10px;
+            box-shadow: 0 10px 28px rgba(20, 35, 60, 0.05);
+            display: flex;
+            flex-direction: column;
+            min-height: 0;
+            overflow: hidden;
+        }
+
+        .accordion-summary {
+            list-style: none;
+            cursor: pointer;
+            padding: 12px 14px;
+            font-size: 0.92rem;
+            font-weight: 700;
+            color: #24364f;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            user-select: none;
+        }
+
+        .accordion-summary::-webkit-details-marker {
+            display: none;
+        }
+
+        .accordion-summary::after {
+            content: "+";
+            font-size: 1rem;
+            color: #50627a;
+        }
+
+        .accordion-panel[open] .accordion-summary::after {
+            content: "-";
+        }
+
+        .accordion-content {
+            padding: 0 14px 14px;
+            display: flex;
+            flex-direction: column;
+            min-height: 0;
+            overflow: hidden;
+        }
+
         #status {
             font-size: 0.9rem;
             line-height: 1.4;
@@ -145,11 +192,11 @@
         }
 
         #entriesPanel {
-            flex: 1 1 40%;
+            flex: 1 1 auto;
         }
 
         #pathDebugPanel {
-            flex: 1 1 45%;
+            flex: 0 0 auto;
         }
 
         #dateList,
@@ -163,11 +210,11 @@
         #dateList {
             display: flex;
             flex-direction: column;
-            min-height: 220px;
+            min-height: 0;
         }
 
         #pathDebugList {
-            min-height: 180px;
+            min-height: 0;
         }
 
         .date-item {
@@ -213,6 +260,20 @@
         #renderSummary {
             display: grid;
             gap: 6px;
+        }
+
+        #entriesPanel[open] .accordion-content,
+        #pathDebugPanel[open] .accordion-content {
+            flex: 1 1 auto;
+        }
+
+        #entriesPanel[open] #dateList {
+            flex: 1 1 auto;
+            max-height: 42vh;
+        }
+
+        #pathDebugPanel[open] #pathDebugList {
+            max-height: 28vh;
         }
 
         @media (max-width: 900px) {
@@ -262,24 +323,32 @@
             </select>
             <div id="selectionStatus">No historical entry selected.</div>
         </div>
-        <div class="panel">
-            <strong>Verification</strong>
-            <div id="verificationSummary"></div>
-        </div>
-        <div class="panel">
-            <strong>Render Provenance</strong>
-            <div id="renderSummary">
-                <div class="verification-line">No active tile view.</div>
+        <details class="accordion-panel" id="entriesPanel" open>
+            <summary class="accordion-summary">Visible Entries</summary>
+            <div class="accordion-content">
+                <div id="dateList"></div>
             </div>
-        </div>
-        <div class="panel scroll-panel" id="entriesPanel">
-            <strong>Visible Entries</strong>
-            <div id="dateList"></div>
-        </div>
-        <div class="panel scroll-panel" id="pathDebugPanel">
-            <strong>Visible Paths Debug</strong>
-            <div id="pathDebugList"></div>
-        </div>
+        </details>
+        <details class="accordion-panel" id="verificationPanel">
+            <summary class="accordion-summary">Verification</summary>
+            <div class="accordion-content">
+                <div id="verificationSummary"></div>
+            </div>
+        </details>
+        <details class="accordion-panel" id="renderPanel">
+            <summary class="accordion-summary">Render Provenance</summary>
+            <div class="accordion-content">
+                <div id="renderSummary">
+                    <div class="verification-line">No active tile view.</div>
+                </div>
+            </div>
+        </details>
+        <details class="accordion-panel" id="pathDebugPanel">
+            <summary class="accordion-summary">Visible Paths Debug</summary>
+            <div class="accordion-content">
+                <div id="pathDebugList"></div>
+            </div>
+        </details>
     </aside>
     <script src="selection.js"></script>
     <script src="app.js"></script>

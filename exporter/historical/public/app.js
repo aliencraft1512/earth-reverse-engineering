@@ -43,6 +43,7 @@ function initMap() {
   }
 
   map.on('moveend', updateCatalogForCurrentBounds);
+  map.on('zoomstart', handleZoomStart);
   updateCatalogForCurrentBounds();
 }
 
@@ -79,8 +80,17 @@ function getVersionMode() {
     : 'best valid version per path';
 }
 
+function ensureEntriesVisible() {
+  const entriesPanel = document.getElementById('entriesPanel');
+
+  if (entriesPanel) {
+    entriesPanel.open = true;
+  }
+}
+
 window.__historicalDebug = {
   getCatalog: () => currentCatalog,
+  getHistoricalLayer: () => historicalLayer,
   getMap: () => map,
   getRequestNonce: () => requestNonce,
   getSelectedEntry: () => getSelectedEntry(),
@@ -293,7 +303,7 @@ function renderDateList(entries) {
   }
 }
 
-function clearHistoricalLayer() {
+function clearHistoricalLayer(message = 'No active tile view.') {
   if (historicalLayer) {
     map.removeLayer(historicalLayer);
     historicalLayer = null;
@@ -301,13 +311,21 @@ function clearHistoricalLayer() {
 
   currentViewToken = null;
   clearTimeout(viewStatsTimer);
-  renderViewSummary(null, 'No active tile view.');
+  renderViewSummary(null, message);
+}
+
+function handleZoomStart() {
+  if (!historicalLayer) {
+    return;
+  }
+
+  clearHistoricalLayer('Refreshing historical coverage for the new zoom...');
 }
 
 function refreshHistoricalLayer() {
   const selectedEntry = getSelectedEntry();
 
-  clearHistoricalLayer();
+  clearHistoricalLayer('Preparing historical tiles...');
 
   if (!selectedEntry) {
     syncSelectionStatus();
@@ -330,6 +348,8 @@ function refreshHistoricalLayer() {
   historicalLayer = L.tileLayer(`/api/tile/{z}/{x}/{y}?${params.toString()}`, {
     maxZoom: 20,
     attribution: 'Historical Imagery',
+    keepBuffer: 0,
+    updateWhenZooming: false,
   });
 
   renderViewSummary(null, 'Waiting for tile provenance...');
@@ -380,8 +400,11 @@ async function updateCatalogForCurrentBounds() {
 
     currentCatalog = catalog;
     const previousSelection = selectedEntryId;
-    selectedEntryId = reconcileSelection(selectedEntryId, catalog.entries);
+    selectedEntryId = reconcileSelection(selectedEntryId, catalog.entries, {
+      preferExactVersion: document.getElementById('preferExactVersion').checked,
+    });
 
+    ensureEntriesVisible();
     renderVerification(catalog);
     renderPathDebug(catalog);
     renderDateList(catalog.entries);
