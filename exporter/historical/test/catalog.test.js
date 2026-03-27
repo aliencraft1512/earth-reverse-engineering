@@ -50,6 +50,44 @@ test('buildViewportSummary remains path-aware across the current bounds', () => 
   assert.deepEqual(exactEntry.paths, ['0200231']);
 });
 
+test('buildViewportSummary annotates coverage-equivalent duplicate versions conservatively', () => {
+  const summary = buildViewportSummary({
+    bounds: { north: 1, south: 0, east: 1, west: 0 },
+    zoom: 15,
+    cells: [
+      {
+        path: '0200231',
+        bounds: { north: 1, south: 0.5, east: 0.5, west: 0 },
+        metadata: {
+          sourcePath: '0200231',
+          entries: [
+            { date: '2024-04-06', iCode: 344, fToken: 'fd086' },
+            { date: '2024-04-06', iCode: 346, fToken: 'fd086' },
+          ],
+        },
+      },
+      {
+        path: '0200232',
+        bounds: { north: 1, south: 0.5, east: 1, west: 0.5 },
+        metadata: {
+          sourcePath: '0200232',
+          entries: [
+            { date: '2024-04-06', iCode: 344, fToken: 'fd086' },
+            { date: '2024-04-06', iCode: 346, fToken: 'fd086' },
+          ],
+        },
+      },
+    ],
+  });
+
+  const first = summary.entries.find(entry => entry.id === '2024-04-06|344|fd086');
+  const second = summary.entries.find(entry => entry.id === '2024-04-06|346|fd086');
+
+  assert.deepEqual(first.duplicateCandidate.versions, [346, 344]);
+  assert.deepEqual(second.duplicateCandidate.otherVersions, [344]);
+  assert.equal(summary.verification.duplicateCandidateCount, 2);
+});
+
 test('buildBoundsCatalogUncached fetches visible-path metadata concurrently with a cap', async () => {
   const catalog = new HistoricalCatalog({
     baseUrl: 'https://example.com',

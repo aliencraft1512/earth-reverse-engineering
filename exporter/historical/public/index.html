@@ -127,6 +127,23 @@
             font-size: 0.9rem;
         }
 
+        .control-label {
+            display: block;
+            font-size: 0.82rem;
+            color: #4a5b72;
+            margin-bottom: 6px;
+        }
+
+        .control-select {
+            width: 100%;
+            border: 1px solid #c8d4e4;
+            border-radius: 8px;
+            padding: 8px 10px;
+            font: inherit;
+            color: #24364f;
+            background: #ffffff;
+        }
+
         #entriesPanel {
             flex: 1 1 40%;
         }
@@ -193,6 +210,11 @@
             color: #5f7087;
         }
 
+        #renderSummary {
+            display: grid;
+            gap: 6px;
+        }
+
         @media (max-width: 900px) {
             body {
                 flex-direction: column;
@@ -233,11 +255,22 @@
                 <input id="preferExactVersion" type="checkbox" checked />
                 <label for="preferExactVersion">Prefer the selected iCode when it is valid</label>
             </div>
+            <label class="control-label" for="fidelityMode">Tile fidelity mode</label>
+            <select id="fidelityMode" class="control-select">
+                <option value="allow-ancestor-derived">Allow ancestor-derived fallback</option>
+                <option value="native-only">Native only</option>
+            </select>
             <div id="selectionStatus">No historical entry selected.</div>
         </div>
         <div class="panel">
             <strong>Verification</strong>
             <div id="verificationSummary"></div>
+        </div>
+        <div class="panel">
+            <strong>Render Provenance</strong>
+            <div id="renderSummary">
+                <div class="verification-line">No active tile view.</div>
+            </div>
         </div>
         <div class="panel scroll-panel" id="entriesPanel">
             <strong>Visible Entries</strong>

@@ -4,6 +4,8 @@ let currentCatalog = null;
 let selectedEntryId = null;
 let requestNonce = 0;
 let catalogAbortController = null;
+let currentViewToken = null;
+let viewStatsTimer = null;
 
 const DEFAULT_CENTER = [35.1723, 33.3667];
 const DEFAULT_ZOOM = 15;
@@ -21,6 +23,10 @@ function initMap() {
   }).addTo(map);
 
   document.getElementById('preferExactVersion').addEventListener('change', () => {
+    syncSelectionStatus();
+    refreshHistoricalLayer();
+  });
+  document.getElementById('fidelityMode').addEventListener('change', () => {
     syncSelectionStatus();
     refreshHistoricalLayer();
   });
@@ -63,6 +69,16 @@ function getSelectedEntry() {
   return currentCatalog.entries.find(entry => makeEntryId(entry) === selectedEntryId) || null;
 }
 
+function getFidelityMode() {
+  return document.getElementById('fidelityMode').value;
+}
+
+function getVersionMode() {
+  return document.getElementById('preferExactVersion').checked
+    ? 'exact selected version'
+    : 'best valid version per path';
+}
+
 window.__historicalDebug = {
   getCatalog: () => currentCatalog,
   getMap: () => map,
@@ -90,6 +106,7 @@ function renderVerification(catalog) {
     `Catalog response ${catalog.timing?.durationMs ?? 'n/a'} ms  |  cache ${catalog.timing?.cacheStatus || 'n/a'}`,
     `Visible paths ${catalog.verification.resolvedPathCount}/${catalog.verification.requestedPathCount}`,
     `Ancestor fallbacks ${catalog.verification.ancestorFallbackCount}`,
+    `Coverage-equivalent duplicates ${catalog.verification.duplicateCandidateCount || 0}`,
     `Parser modes ${parserModes || 'n/a'}`,
     `Bounds ${bounds.south.toFixed(4)}, ${bounds.west.toFixed(4)} -> ${bounds.north.toFixed(4)}, ${bounds.east.toFixed(4)}`,
   ];
@@ -166,6 +183,7 @@ function syncSelectionStatus() {
   const selectedEntry = getSelectedEntry();
   const selectedLabel = document.getElementById('selectionStatus');
   const exactPreferred = document.getElementById('preferExactVersion').checked;
+  const fidelityMode = getFidelityMode();
 
   if (!selectedEntry) {
     selectedLabel.innerText = 'No historical entry selected.';
@@ -173,8 +191,62 @@ function syncSelectionStatus() {
   }
 
   selectedLabel.innerText = exactPreferred
-    ? `Selected ${selectedEntry.date} with i.${selectedEntry.iCode} as the preferred version.`
-    : `Selected ${selectedEntry.date}; the server will choose the best valid version per path.`;
+    ? `Selected ${selectedEntry.date} with i.${selectedEntry.iCode} preferred. Mode: exact selected version, ${fidelityMode}.`
+    : `Selected ${selectedEntry.date}. Mode: best valid version per path, ${fidelityMode}.`;
+}
+
+function renderViewSummary(summary, message = null) {
+  const container = document.getElementById('renderSummary');
+  container.innerHTML = '';
+
+  const lines = message
+    ? [message]
+    : [
+        `Version mode ${summary.versionMode}`,
+        `Fidelity mode ${summary.fidelityMode}`,
+        `Exact tiles ${summary.exactCount}/${summary.totalTiles}`,
+        `Ancestor-derived tiles ${summary.ancestorDerivedCount}`,
+        `Missing tiles ${summary.missingCount}`,
+        `Mixed version ${summary.mixedVersion ? 'yes' : 'no'}`,
+        `Versions used ${summary.versionsUsed.length ? summary.versionsUsed.map(version => `i.${version}`).join(', ') : 'none yet'}`,
+      ];
+
+  for (const line of lines) {
+    const div = document.createElement('div');
+    div.className = 'verification-line';
+    div.innerText = line;
+    container.appendChild(div);
+  }
+}
+
+function scheduleViewStatsRefresh(viewToken) {
+  if (!viewToken) {
+    return;
+  }
+
+  clearTimeout(viewStatsTimer);
+  viewStatsTimer = setTimeout(() => {
+    updateViewStats(viewToken);
+  }, 150);
+}
+
+async function updateViewStats(viewToken) {
+  if (!viewToken || viewToken !== currentViewToken) {
+    return;
+  }
+
+  try {
+    const response = await fetch(`/api/view-stats/${encodeURIComponent(viewToken)}`);
+    const summary = await response.json();
+
+    if (!response.ok || viewToken !== currentViewToken) {
+      return;
+    }
+
+    renderViewSummary(summary);
+  } catch (error) {
+    // Keep the existing summary when transient tile stats requests fail.
+  }
 }
 
 function renderDateList(entries) {
@@ -203,7 +275,10 @@ function renderDateList(entries) {
 
     const meta = document.createElement('div');
     meta.className = 'date-meta';
-    meta.innerText = `${entry.pathCount} visible paths  |  ${entry.fToken}`;
+    const duplicateText = entry.duplicateCandidate?.otherVersions?.length
+      ? `  |  coverage-equivalent ${entry.duplicateCandidate.otherVersions.map(version => `i.${version}`).join(', ')}`
+      : '';
+    meta.innerText = `${entry.pathCount} visible paths  |  ${entry.fToken}${duplicateText}`;
 
     button.appendChild(title);
     button.appendChild(meta);
@@ -223,6 +298,10 @@ function clearHistoricalLayer() {
     map.removeLayer(historicalLayer);
     historicalLayer = null;
   }
+
+  currentViewToken = null;
+  clearTimeout(viewStatsTimer);
+  renderViewSummary(null, 'No active tile view.');
 }
 
 function refreshHistoricalLayer() {
@@ -238,19 +317,32 @@ function refreshHistoricalLayer() {
   const params = new URLSearchParams({
     date: selectedEntry.date,
     fToken: selectedEntry.fToken,
+    fidelityMode: getFidelityMode(),
   });
 
   if (document.getElementById('preferExactVersion').checked) {
     params.set('preferredVersion', selectedEntry.iCode);
   }
 
+  currentViewToken = `${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
+  params.set('viewToken', currentViewToken);
+
   historicalLayer = L.tileLayer(`/api/tile/{z}/{x}/{y}?${params.toString()}`, {
     maxZoom: 20,
     attribution: 'Historical Imagery',
   });
 
+  renderViewSummary(null, 'Waiting for tile provenance...');
+
+  historicalLayer.on('tileload', () => {
+    scheduleViewStatsRefresh(currentViewToken);
+  });
   historicalLayer.on('tileerror', () => {
     setStatus('Some visible tiles did not resolve for the selected date/path combination.', 'warn');
+    scheduleViewStatsRefresh(currentViewToken);
+  });
+  historicalLayer.on('load', () => {
+    scheduleViewStatsRefresh(currentViewToken);
   });
 
   historicalLayer.addTo(map);

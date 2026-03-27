@@ -5,6 +5,12 @@ const { loadDependency } = require('./dependencyLoader');
 const { HistoricalCatalog, buildVersionCandidates } = require('./catalog');
 const { readSecretKey, DEFAULT_REQUEST_HEADERS, decryptXOR, fetchBuffer } = require('./metadata');
 const { latLonToPath, normalizeBounds, slippyTileToCenter } = require('./pathUtils');
+const {
+  createViewStatsRecord,
+  pruneViewStatsCache,
+  summarizeViewStats,
+  upsertViewTileResult,
+} = require('./renderProvenance');
 const { cropBufferToSuffix } = require('./tileCropper');
 
 const express = loadDependency('express');
@@ -20,6 +26,8 @@ const DERIVED_CACHE_DIR = path.join(CACHE_DIR, 'derived');
 const BASE_URL = 'https://cmpmap.com/flatfile?db=tm';
 const ROOT_VERSION = 366;
 const REQUEST_TIMEOUT_MS = 10000;
+const DEFAULT_FIDELITY_MODE = 'allow-ancestor-derived';
+const VIEW_STATS_TTL_MS = 5 * 60 * 1000;
 
 for (const directory of [CACHE_DIR, RAW_CACHE_DIR, DERIVED_CACHE_DIR]) {
   fs.mkdirSync(directory, { recursive: true });
@@ -33,6 +41,7 @@ const historicalCatalog = new HistoricalCatalog({
   secretKey,
   timeoutMs: REQUEST_TIMEOUT_MS,
 });
+const viewStatsCache = new Map();
 
 app.use(express.json({ limit: '1mb' }));
 app.use(express.static(path.join(__dirname, 'public')));
@@ -109,14 +118,22 @@ async function fetchOrCacheRawTile(pathCode, iCode, fToken) {
   };
 }
 
-async function resolveTileImage({ requestedPath, fToken, candidateVersions }) {
-  for (let length = requestedPath.length; length >= 5; length -= 1) {
+async function resolveTileImage({
+  requestedPath,
+  fToken,
+  candidateVersions,
+  allowAncestorDerived = true,
+  fetchRawTile = fetchOrCacheRawTile,
+}) {
+  const minimumLength = allowAncestorDerived ? 5 : requestedPath.length;
+
+  for (let length = requestedPath.length; length >= minimumLength; length -= 1) {
     const resolvedPath = requestedPath.slice(0, length);
     const suffix = requestedPath.slice(length);
 
     for (const iCode of candidateVersions) {
       try {
-        const rawTile = await fetchOrCacheRawTile(resolvedPath, iCode, fToken);
+        const rawTile = await fetchRawTile(resolvedPath, iCode, fToken);
 
         if (!suffix) {
           return {
@@ -173,6 +190,51 @@ function buildSelectionFromQuery(query) {
     fToken: query.fToken || null,
     preferredVersion: Number.isFinite(preferredVersion) ? preferredVersion : null,
   };
+}
+
+function parseFidelityMode(query) {
+  if (query.fidelityMode === 'native-only') {
+    return 'native-only';
+  }
+
+  return DEFAULT_FIDELITY_MODE;
+}
+
+function getVersionMode(selection) {
+  return Number.isFinite(selection.preferredVersion) ? 'exact-preferred' : 'best-valid-per-path';
+}
+
+function getViewStatsRecord(viewToken, selection, fidelityMode) {
+  if (!viewToken) {
+    return null;
+  }
+
+  pruneViewStatsCache(viewStatsCache, VIEW_STATS_TTL_MS);
+
+  if (!viewStatsCache.has(viewToken)) {
+    viewStatsCache.set(
+      viewToken,
+      createViewStatsRecord({
+        viewToken,
+        selection,
+        fidelityMode,
+        versionMode: getVersionMode(selection),
+      })
+    );
+  }
+
+  return viewStatsCache.get(viewToken);
+}
+
+function recordTileProvenance(viewToken, selection, fidelityMode, tileResult) {
+  const record = getViewStatsRecord(viewToken, selection, fidelityMode);
+
+  if (!record) {
+    return null;
+  }
+
+  upsertViewTileResult(record, tileResult);
+  return summarizeViewStats(record);
 }
 
 app.post('/api/catalog', async (req, res) => {
@@ -248,6 +310,8 @@ app.get('/api/dates', async (req, res) => {
 app.get('/api/tile/:z/:x/:y', async (req, res) => {
   try {
     const selection = buildSelectionFromQuery(req.query);
+    const fidelityMode = parseFidelityMode(req.query);
+    const tileKey = `${req.params.z}/${req.params.x}/${req.params.y}`;
 
     if (!selection.date || !selection.fToken) {
       return res.status(400).json({ error: 'date and fToken are required.' });
@@ -271,6 +335,11 @@ app.get('/api/tile/:z/:x/:y', async (req, res) => {
     }
 
     if (candidateVersions.length === 0) {
+      recordTileProvenance(req.query.viewToken, selection, fidelityMode, {
+        tileKey,
+        status: 'missing',
+        requestedPath,
+      });
       return res.status(404).json({
         error: 'The selected date is not available for the requested path.',
         requestedPath,
@@ -281,9 +350,15 @@ app.get('/api/tile/:z/:x/:y', async (req, res) => {
       requestedPath,
       fToken: selection.fToken,
       candidateVersions,
+      allowAncestorDerived: fidelityMode !== 'native-only',
     });
 
     if (!resolvedTile) {
+      recordTileProvenance(req.query.viewToken, selection, fidelityMode, {
+        tileKey,
+        status: 'missing',
+        requestedPath,
+      });
       return res.status(404).json({
         error: 'No tile found for the requested path/date combination.',
         requestedPath,
@@ -296,14 +371,35 @@ app.get('/api/tile/:z/:x/:y', async (req, res) => {
     res.set('X-Historical-Resolved-Path', resolvedTile.resolvedPath);
     res.set('X-Historical-Version', String(resolvedTile.iCode));
     res.set('X-Historical-Cropped', String(resolvedTile.croppedFromParent));
+    res.set('X-Historical-Fidelity-Mode', fidelityMode);
+    recordTileProvenance(req.query.viewToken, selection, fidelityMode, {
+      tileKey,
+      status: 'ok',
+      requestedPath,
+      resolvedPath: resolvedTile.resolvedPath,
+      version: resolvedTile.iCode,
+      croppedFromParent: resolvedTile.croppedFromParent,
+    });
     return res.send(resolvedTile.buffer);
   } catch (error) {
     return res.status(500).json({ error: error.message });
   }
 });
 
+app.get('/api/view-stats/:viewToken', (req, res) => {
+  pruneViewStatsCache(viewStatsCache, VIEW_STATS_TTL_MS);
+  const record = viewStatsCache.get(req.params.viewToken);
+
+  if (!record) {
+    return res.status(404).json({ error: 'Unknown or expired view token.' });
+  }
+
+  return res.json(summarizeViewStats(record));
+});
+
 app.post('/api/clear-caches', (req, res) => {
   historicalCatalog.clearCaches();
+  viewStatsCache.clear();
   res.json({ ok: true });
 });
 

@@ -74,6 +74,47 @@ function hydrateCatalogForBounds(catalog, bounds, durationMs, cacheStatus) {
   };
 }
 
+function getUniqueSortedValues(values) {
+  return [...new Set(values)].sort();
+}
+
+function annotateDuplicateEntries(entries) {
+  const groups = new Map();
+
+  for (const entry of entries) {
+    const key = JSON.stringify({
+      date: entry.date,
+      fToken: entry.fToken,
+      paths: getUniqueSortedValues(entry.paths),
+      sourcePaths: getUniqueSortedValues(entry.sourcePaths),
+    });
+
+    if (!groups.has(key)) {
+      groups.set(key, []);
+    }
+
+    groups.get(key).push(entry);
+  }
+
+  for (const group of groups.values()) {
+    if (group.length < 2) {
+      continue;
+    }
+
+    const versions = group.map(entry => entry.iCode).sort((left, right) => right - left);
+
+    for (const entry of group) {
+      entry.duplicateCandidate = {
+        mode: 'coverage-equivalent',
+        versions,
+        otherVersions: versions.filter(version => version !== entry.iCode),
+      };
+    }
+  }
+
+  return entries;
+}
+
 function buildViewportSummary({ bounds, zoom, cells }) {
   const entriesById = new Map();
   let resolvedPathCount = 0;
@@ -119,14 +160,14 @@ function buildViewportSummary({ bounds, zoom, cells }) {
     }
   }
 
-  const entries = [...entriesById.values()].sort((left, right) => {
+  const entries = annotateDuplicateEntries([...entriesById.values()].sort((left, right) => {
     const byDate = right.date.localeCompare(left.date);
     if (byDate !== 0) {
       return byDate;
     }
 
     return right.iCode - left.iCode;
-  });
+  }));
 
   return {
     bounds,
@@ -148,6 +189,7 @@ function buildViewportSummary({ bounds, zoom, cells }) {
       resolvedPathCount,
       ancestorFallbackCount,
       unresolvedPathCount: cells.length - resolvedPathCount,
+      duplicateCandidateCount: entries.filter(entry => entry.duplicateCandidate).length,
       parserModes,
     },
   };
@@ -344,5 +386,6 @@ module.exports = {
   buildCellSetCacheKey,
   hydrateCatalogForBounds,
   mapWithConcurrency,
+  annotateDuplicateEntries,
   summarizeEntries,
 };

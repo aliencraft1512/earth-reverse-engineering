@@ -144,6 +144,10 @@ test('frontend smoke: bounds refresh, list scroll, selection, and tile responses
     assert.ok(tileHeaders['x-historical-requested-path'], 'expected requested path header');
     assert.ok(tileHeaders['x-historical-resolved-path'], 'expected resolved path header');
     assert.ok(tileHeaders['x-historical-version'], 'expected resolved version header');
+    await page.waitForFunction(
+      () => document.getElementById('renderSummary')?.textContent.includes('Fidelity mode'),
+      { timeout: 30000 }
+    );
 
     const firstCatalogNonce = await page.evaluate(() => window.__historicalDebug.getRequestNonce());
     await page.evaluate(() => {
@@ -163,6 +167,7 @@ test('frontend smoke: bounds refresh, list scroll, selection, and tile responses
 
     const verificationText = await page.locator('#verificationSummary').textContent();
     assert.match(verificationText || '', /Catalog response/i);
+    assert.match(verificationText || '', /Coverage-equivalent duplicates/i);
     assert.match(verificationText || '', /Parser modes/i);
 
     const pathCards = page.locator('#pathDebugList details');
