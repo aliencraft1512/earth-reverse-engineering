@@ -1,44 +1,23 @@
 {
-  "generatedAt": "2026-03-27T17:49:24.791Z",
+  "generatedAt": "2026-03-27T18:30:35.612Z",
   "seed": 20260327,
   "limit": 4,
   "clicksPerTarget": 2,
   "strict": true,
-  "baseUrl": "http://127.0.0.1:61550",
+  "baseUrl": "http://127.0.0.1:62052",
   "summary": {
     "targetCount": 4,
     "targetsWithEntries": 4,
-    "targetsWithRenderedOverlays": 3,
+    "targetsWithRenderedOverlays": 4,
     "targetsWithSuccessfulClicks": 4,
     "targetsWithMetadataErrors": 0,
     "clickAttempts": 8,
-    "clickFailures": 1,
-    "targetFailures": 1,
+    "clickFailures": 0,
+    "targetFailures": 0,
     "parserModes": {
       "framed": 79
     },
-    "failures": [
-      {
-        "label": "New York",
-        "failureReasons": [],
-        "clickFailures": [
-          {
-            "entry": {
-              "id": "1974-10-24|13|f6d58",
-              "date": "1974-10-24",
-              "iCode": 13,
-              "fToken": "f6d58",
-              "pathCount": 6
-            },
-            "failureReasons": [
-              "no-successful-tiles",
-              "no-overlays"
-            ],
-            "statusText": "Loaded 0/20 visible cells for 1974-10-24. Some cells could not be resolved."
-          }
-        ]
-      }
-    ]
+    "failures": []
   },
   "results": [
     {
@@ -48,10 +27,10 @@
         -21.9426
       ],
       "zoom": 15,
-      "statusText": "Loaded 15/15 visible cells for 2002-04-26.",
-      "selectionText": "Showing 2002-04-26. The server prefers i.272 and only switches version when that preferred tile is not valid for a visible cell. Coverage 9/15 visible cells. Alternate version cells 3. Missing cells 6.",
-      "renderSummary": "Tiles loaded 15/15 visible cellsDirect tiles 6  |  Parent-derived 9  |  Missing 0Versions used i.366, i.272, i.6Selection handling preferred 6  |  alternate 3  |  best-valid 0",
-      "catalogEntryCount": 87,
+      "statusText": "Loaded 6/15 visible cells for 2002-04-26. Some cells could not be resolved.",
+      "selectionText": "Showing 2002-04-26. The server prefers i.6 and only switches version when that preferred tile is not valid for a visible cell. Coverage 9/15 visible cells. Alternate version cells 3. Missing cells 6.",
+      "renderSummary": "Tiles loaded 6/15 visible cellsDirect tiles 6  |  Parent-derived 0  |  Missing 9Versions used i.366, i.6Selection handling preferred 3  |  alternate 3  |  best-valid 0",
+      "catalogEntryCount": 81,
       "requestedPathCount": 15,
       "resolvedPathCount": 15,
       "unresolvedPathCount": 0,
@@ -63,16 +42,16 @@
       "oldestDate": "2002-04-26",
       "newestDate": "2025-05-31",
       "selectedEntry": {
-        "id": "2002-04-26|272|fa49a",
+        "id": "2002-04-26|6|fa49a",
         "date": "2002-04-26",
-        "iCode": 272,
+        "iCode": 6,
         "fToken": "fa49a"
       },
-      "overlayCount": 15,
-      "downloadLogCount": 30,
+      "overlayCount": 6,
+      "downloadLogCount": 21,
       "downloadStatusCounts": {
         "missing": 15,
-        "ok": 15
+        "ok": 6
       },
       "clickResults": [
         {
@@ -96,20 +75,20 @@
         },
         {
           "entry": {
-            "id": "2002-04-26|272|fa49a",
+            "id": "2002-04-26|6|fa49a",
             "date": "2002-04-26",
-            "iCode": 272,
+            "iCode": 6,
             "fToken": "fa49a",
             "pathCount": 6
           },
-          "statusText": "Loaded 15/15 visible cells for 2002-04-26.",
-          "selectionText": "Showing 2002-04-26. The server prefers i.272 and only switches version when that preferred tile is not valid for a visible cell. Coverage 9/15 visible cells. Alternate version cells 3. Missing cells 6.",
-          "renderSummary": "Tiles loaded 15/15 visible cellsDirect tiles 6  |  Parent-derived 9  |  Missing 0Versions used i.366, i.272, i.6Selection handling preferred 6  |  alternate 3  |  best-valid 0",
-          "overlayCount": 15,
-          "downloadLogCount": 30,
+          "statusText": "Loaded 6/15 visible cells for 2002-04-26. Some cells could not be resolved.",
+          "selectionText": "Showing 2002-04-26. The server prefers i.6 and only switches version when that preferred tile is not valid for a visible cell. Coverage 9/15 visible cells. Alternate version cells 3. Missing cells 6.",
+          "renderSummary": "Tiles loaded 6/15 visible cellsDirect tiles 6  |  Parent-derived 0  |  Missing 9Versions used i.366, i.6Selection handling preferred 3  |  alternate 3  |  best-valid 0",
+          "overlayCount": 6,
+          "downloadLogCount": 21,
           "downloadStatusCounts": {
             "missing": 15,
-            "ok": 15
+            "ok": 6
           },
           "passed": true,
           "failureReasons": []
@@ -131,10 +110,10 @@
         -74.006
       ],
       "zoom": 15,
-      "statusText": "Loaded 0/20 visible cells for 1974-10-24. Some cells could not be resolved.",
-      "selectionText": "Showing 1974-10-24. The server prefers i.13 and only switches version when that preferred tile is not valid for a visible cell. Coverage 6/20 visible cells. Alternate version cells 0. Missing cells 14.",
-      "renderSummary": "Tiles loaded 0/20 visible cellsDirect tiles 0  |  Parent-derived 0  |  Missing 20Versions used noneSelection handling preferred 0  |  alternate 0  |  best-valid 0",
-      "catalogEntryCount": 213,
+      "statusText": "Loaded 7/20 visible cells for 1994-04-04. Some cells could not be resolved.",
+      "selectionText": "Showing 1994-04-04. The server prefers i.7 and only switches version when that preferred tile is not valid for a visible cell. Coverage 11/20 visible cells. Alternate version cells 3. Missing cells 9.",
+      "renderSummary": "Tiles loaded 7/20 visible cellsDirect tiles 7  |  Parent-derived 0  |  Missing 13Versions used i.272Selection handling preferred 4  |  alternate 3  |  best-valid 0",
+      "catalogEntryCount": 182,
       "requestedPathCount": 20,
       "resolvedPathCount": 20,
       "unresolvedPathCount": 0,
@@ -143,18 +122,19 @@
       },
       "metadataErrorCount": 0,
       "metadataErrorSample": null,
-      "oldestDate": "1974-10-24",
+      "oldestDate": "1994-04-04",
       "newestDate": "2025-09-11",
       "selectedEntry": {
-        "id": "1974-10-24|13|f6d58",
-        "date": "1974-10-24",
-        "iCode": 13,
-        "fToken": "f6d58"
+        "id": "1994-04-04|7|f9484",
+        "date": "1994-04-04",
+        "iCode": 7,
+        "fToken": "f9484"
       },
-      "overlayCount": 0,
-      "downloadLogCount": 240,
+      "overlayCount": 7,
+      "downloadLogCount": 26,
       "downloadStatusCounts": {
-        "missing": 240
+        "missing": 19,
+        "ok": 7
       },
       "clickResults": [
         {
@@ -178,25 +158,23 @@
         },
         {
           "entry": {
-            "id": "1974-10-24|13|f6d58",
-            "date": "1974-10-24",
-            "iCode": 13,
-            "fToken": "f6d58",
-            "pathCount": 6
+            "id": "1994-04-04|7|f9484",
+            "date": "1994-04-04",
+            "iCode": 7,
+            "fToken": "f9484",
+            "pathCount": 8
           },
-          "statusText": "Loaded 0/20 visible cells for 1974-10-24. Some cells could not be resolved.",
-          "selectionText": "Showing 1974-10-24. The server prefers i.13 and only switches version when that preferred tile is not valid for a visible cell. Coverage 6/20 visible cells. Alternate version cells 0. Missing cells 14.",
-          "renderSummary": "Tiles loaded 0/20 visible cellsDirect tiles 0  |  Parent-derived 0  |  Missing 20Versions used noneSelection handling preferred 0  |  alternate 0  |  best-valid 0",
-          "overlayCount": 0,
-          "downloadLogCount": 240,
+          "statusText": "Loaded 7/20 visible cells for 1994-04-04. Some cells could not be resolved.",
+          "selectionText": "Showing 1994-04-04. The server prefers i.7 and only switches version when that preferred tile is not valid for a visible cell. Coverage 11/20 visible cells. Alternate version cells 3. Missing cells 9.",
+          "renderSummary": "Tiles loaded 7/20 visible cellsDirect tiles 7  |  Parent-derived 0  |  Missing 13Versions used i.272Selection handling preferred 4  |  alternate 3  |  best-valid 0",
+          "overlayCount": 7,
+          "downloadLogCount": 26,
           "downloadStatusCounts": {
-            "missing": 240
+            "missing": 19,
+            "ok": 7
           },
-          "passed": false,
-          "failureReasons": [
-            "no-successful-tiles",
-            "no-overlays"
-          ]
+          "passed": true,
+          "failureReasons": []
         }
       ],
       "failureReasons": [],
@@ -218,7 +196,7 @@
       "statusText": "Loaded 20/24 visible cells for 2000-04-21. Some cells could not be resolved.",
       "selectionText": "Showing 2000-04-21. The server prefers i.10 and only switches version when that preferred tile is not valid for a visible cell. Coverage 24/24 visible cells. Alternate version cells 4. Missing cells 0.",
       "renderSummary": "Tiles loaded 20/24 visible cellsDirect tiles 20  |  Parent-derived 0  |  Missing 4Versions used i.272, i.17, i.10Selection handling preferred 16  |  alternate 4  |  best-valid 0",
-      "catalogEntryCount": 121,
+      "catalogEntryCount": 112,
       "requestedPathCount": 24,
       "resolvedPathCount": 24,
       "unresolvedPathCount": 0,
@@ -236,10 +214,10 @@
         "fToken": "fa095"
       },
       "overlayCount": 20,
-      "downloadLogCount": 72,
+      "downloadLogCount": 28,
       "downloadStatusCounts": {
         "ok": 20,
-        "missing": 52
+        "missing": 8
       },
       "clickResults": [
         {
@@ -251,7 +229,7 @@
             "pathCount": 24
           },
           "statusText": "Loaded 24/24 visible cells for 2025-11-26.",
-          "selectionText": "Showing 2025-11-26. The server prefers i.366 and only switches version when that preferred tile is not valid for a visible cell.",
+          "selectionText": "Showing 2025-11-26. The server prefers i.366 and only switches version when that preferred tile is not valid for a visible cell. Coverage 24/24 visible cells. Alternate version cells 0. Missing cells 0.",
           "renderSummary": "Tiles loaded 24/24 visible cellsDirect tiles 24  |  Parent-derived 0  |  Missing 0Versions used i.366Selection handling preferred 24  |  alternate 0  |  best-valid 0",
           "overlayCount": 24,
           "downloadLogCount": 24,
@@ -273,10 +251,10 @@
           "selectionText": "Showing 2000-04-21. The server prefers i.10 and only switches version when that preferred tile is not valid for a visible cell. Coverage 24/24 visible cells. Alternate version cells 4. Missing cells 0.",
           "renderSummary": "Tiles loaded 20/24 visible cellsDirect tiles 20  |  Parent-derived 0  |  Missing 4Versions used i.272, i.17, i.10Selection handling preferred 16  |  alternate 4  |  best-valid 0",
           "overlayCount": 20,
-          "downloadLogCount": 72,
+          "downloadLogCount": 28,
           "downloadStatusCounts": {
             "ok": 20,
-            "missing": 52
+            "missing": 8
           },
           "passed": true,
           "failureReasons": []
@@ -301,7 +279,7 @@
       "statusText": "Loaded 20/20 visible cells for 2000-07-10.",
       "selectionText": "Showing 2000-07-10. The server prefers i.10 and only switches version when that preferred tile is not valid for a visible cell. Coverage 20/20 visible cells. Alternate version cells 0. Missing cells 0.",
       "renderSummary": "Tiles loaded 20/20 visible cellsDirect tiles 20  |  Parent-derived 0  |  Missing 0Versions used i.10Selection handling preferred 20  |  alternate 0  |  best-valid 0",
-      "catalogEntryCount": 148,
+      "catalogEntryCount": 143,
       "requestedPathCount": 20,
       "resolvedPathCount": 20,
       "unresolvedPathCount": 0,

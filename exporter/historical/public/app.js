@@ -6,7 +6,6 @@ let requestNonce = 0;
 let renderRequestNonce = 0;
 let catalogAbortController = null;
 let overlayAbortController = null;
-let selectionDiagnosticsAbortController = null;
 let currentSelectionDiagnostics = null;
 let currentDownloadLog = [];
 
@@ -79,6 +78,135 @@ function ensureEntriesVisible() {
   if (entriesPanel) {
     entriesPanel.open = true;
   }
+}
+
+function buildCandidateVersions(availableVersions, preferredVersion = null) {
+  const versions = [...new Set((availableVersions || []).filter(Number.isFinite))];
+
+  if (!Number.isFinite(preferredVersion)) {
+    return versions.sort((left, right) => right - left);
+  }
+
+  return versions.sort((left, right) => {
+    if (left === preferredVersion) return -1;
+    if (right === preferredVersion) return 1;
+
+    const leftDistance = Math.abs(left - preferredVersion);
+    const rightDistance = Math.abs(right - preferredVersion);
+
+    if (leftDistance !== rightDistance) {
+      return leftDistance - rightDistance;
+    }
+
+    return right - left;
+  });
+}
+
+function buildSelectionDecisionForEntry(entries, preferredVersion = null) {
+  const availableVersions = [...new Set(entries.map(entry => entry.iCode).filter(Number.isFinite))]
+    .sort((left, right) => right - left);
+  let candidateVersions = buildCandidateVersions(availableVersions, preferredVersion);
+
+  if (candidateVersions.length === 0 && Number.isFinite(preferredVersion)) {
+    candidateVersions = [preferredVersion];
+  }
+
+  if (availableVersions.length === 0) {
+    return {
+      availableVersions,
+      candidateVersions,
+      selectedVersion: null,
+      reason: Number.isFinite(preferredVersion) ? 'preferred-version-unavailable' : 'no-valid-version',
+    };
+  }
+
+  if (Number.isFinite(preferredVersion) && availableVersions.includes(preferredVersion)) {
+    return {
+      availableVersions,
+      candidateVersions,
+      selectedVersion: preferredVersion,
+      reason: 'preferred-version',
+    };
+  }
+
+  if (Number.isFinite(preferredVersion)) {
+    return {
+      availableVersions,
+      candidateVersions,
+      selectedVersion: candidateVersions[0] || availableVersions[0],
+      reason: 'alternate-version',
+    };
+  }
+
+  return {
+    availableVersions,
+    candidateVersions,
+    selectedVersion: candidateVersions[0] || availableVersions[0],
+    reason: 'best-valid-version',
+  };
+}
+
+function buildSelectionDiagnosticsFromCatalog(catalog, selectedEntry) {
+  if (!catalog || !selectedEntry) {
+    return null;
+  }
+
+  const preferredVersion = getPreferredVersion(selectedEntry);
+  const paths = (catalog.paths || []).map(pathInfo => {
+    const matches = (pathInfo.entries || []).filter(entry => {
+      if (entry.date !== selectedEntry.date) {
+        return false;
+      }
+
+      if (entry.fToken !== selectedEntry.fToken) {
+        return false;
+      }
+
+      return true;
+    });
+    const decision = buildSelectionDecisionForEntry(matches, preferredVersion);
+
+    return {
+      path: pathInfo.path,
+      sourcePath: pathInfo.sourcePath || pathInfo.path,
+      bounds: pathInfo.bounds,
+      availableVersions: decision.availableVersions,
+      candidateVersions: decision.candidateVersions,
+      selectedVersion: decision.selectedVersion,
+      reason: decision.reason,
+    };
+  });
+
+  return {
+    bounds: catalog.bounds,
+    zoom: catalog.zoom,
+    selection: {
+      date: selectedEntry.date,
+      fToken: selectedEntry.fToken,
+      preferredVersion,
+    },
+    summary: {
+      totalPaths: paths.length,
+      matchedPaths: paths.filter(pathInfo => pathInfo.selectedVersion !== null).length,
+      missingPaths: paths.filter(pathInfo => pathInfo.selectedVersion === null).length,
+      preferredVersionPaths: paths.filter(pathInfo => pathInfo.reason === 'preferred-version').length,
+      alternateVersionPaths: paths.filter(pathInfo => pathInfo.reason === 'alternate-version').length,
+      bestValidVersionPaths: paths.filter(pathInfo => pathInfo.reason === 'best-valid-version').length,
+      versionsUsed: [...new Set(paths.map(pathInfo => pathInfo.selectedVersion).filter(Number.isFinite))]
+        .sort((left, right) => right - left),
+    },
+    paths,
+  };
+}
+
+function refreshSelectionDiagnostics(selectedEntry = getSelectedEntry()) {
+  currentSelectionDiagnostics = buildSelectionDiagnosticsFromCatalog(currentCatalog, selectedEntry);
+
+  if (currentCatalog) {
+    renderPathDebug(currentCatalog);
+  }
+
+  syncSelectionStatus();
 }
 
 window.__historicalDebug = {
@@ -353,7 +481,7 @@ function renderDateList(entries, emptyMessage = 'No historical data found for th
     button.addEventListener('click', () => {
       selectedEntryId = entryId;
       renderDateList(entries);
-      syncSelectionStatus();
+      refreshSelectionDiagnostics();
       void refreshHistoricalLayer();
     });
 
@@ -374,63 +502,6 @@ function clearHistoricalLayer(message = 'No historical imagery loaded.') {
   renderDownloadLog([], 'No tile download attempts yet.');
 }
 
-async function refreshSelectionDiagnostics(selectedEntry) {
-  selectionDiagnosticsAbortController?.abort();
-  selectionDiagnosticsAbortController = null;
-
-  if (!selectedEntry) {
-    currentSelectionDiagnostics = null;
-    if (currentCatalog) {
-      renderPathDebug(currentCatalog);
-    }
-    syncSelectionStatus();
-    return;
-  }
-
-  try {
-    const requestController = new AbortController();
-    selectionDiagnosticsAbortController = requestController;
-    const response = await fetch('/api/selection-diagnostics', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      signal: requestController.signal,
-      body: JSON.stringify({
-        bounds: getBoundsPayload(),
-        zoom: currentCatalog?.zoom || getCatalogZoom(),
-        date: selectedEntry.date,
-        fToken: selectedEntry.fToken,
-        preferredVersion: getPreferredVersion(selectedEntry),
-      }),
-    });
-    const payload = await response.json();
-
-    if (!response.ok) {
-      throw new Error(payload.error || 'Selection diagnostics request failed.');
-    }
-
-    if (selectionDiagnosticsAbortController !== requestController) {
-      return;
-    }
-
-    currentSelectionDiagnostics = payload;
-    renderPathDebug(currentCatalog);
-    syncSelectionStatus();
-    selectionDiagnosticsAbortController = null;
-  } catch (error) {
-    if (error.name === 'AbortError') {
-      return;
-    }
-
-    currentSelectionDiagnostics = null;
-
-    if (currentCatalog) {
-      renderPathDebug(currentCatalog);
-    }
-  }
-}
-
 function handleZoomStart() {
   if (!historicalLayer) {
     return;
@@ -440,6 +511,7 @@ function handleZoomStart() {
 }
 
 async function refreshBoundsOverlay(selectedEntry, renderNonce) {
+  const overlayPaths = currentSelectionDiagnostics?.paths || [];
   const requestController = new AbortController();
   overlayAbortController = requestController;
   const response = await fetch('/api/overlays', {
@@ -453,6 +525,7 @@ async function refreshBoundsOverlay(selectedEntry, renderNonce) {
       date: selectedEntry.date,
       fToken: selectedEntry.fToken,
       preferredVersion: getPreferredVersion(selectedEntry),
+      paths: overlayPaths,
       fidelityMode: FIXED_FIDELITY_MODE,
       zoom: map.getZoom(),
     }),
@@ -499,7 +572,7 @@ async function refreshHistoricalLayer() {
     return;
   }
 
-  void refreshSelectionDiagnostics(selectedEntry);
+  refreshSelectionDiagnostics(selectedEntry);
   renderDownloadLog([], `Waiting for tile download attempts for ${selectedEntry.date}...`);
   setStatus(`Downloading historical tiles for ${selectedEntry.date}...`);
 
@@ -558,7 +631,7 @@ async function updateCatalogForCurrentBounds() {
 
     ensureEntriesVisible();
     renderVerification(catalog);
-    currentSelectionDiagnostics = null;
+    refreshSelectionDiagnostics();
     renderPathDebug(catalog);
     const errorSummary = getCatalogErrorSummary(catalog);
     const hasCompleteMetadataFailure = errorSummary.errorPathCount === catalog.verification.requestedPathCount && errorSummary.errorPathCount > 0;
@@ -589,8 +662,6 @@ async function updateCatalogForCurrentBounds() {
         'ok'
       );
     }
-
-    syncSelectionStatus();
 
     if (selectedEntryId) {
       void refreshHistoricalLayer();

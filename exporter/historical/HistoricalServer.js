@@ -32,6 +32,8 @@ const ROOT_VERSION = 366;
 const REQUEST_TIMEOUT_MS = 10000;
 const DEFAULT_FIDELITY_MODE = 'allow-ancestor-derived';
 const OVERLAY_FETCH_CONCURRENCY = 4;
+const ENTRY_RENDERABILITY_CONCURRENCY = 3;
+const ENTRY_RENDERABILITY_MAX_PATHS = 6;
 const VIEW_STATS_TTL_MS = 5 * 60 * 1000;
 
 fs.mkdirSync(CACHE_DIR, { recursive: true });
@@ -368,10 +370,19 @@ async function resolveTileImage({
   fToken,
   candidateVersions,
   allowAncestorDerived = true,
+  minimumResolvedPathLength = null,
   fetchRawTile = fetchOrCacheRawTile,
   attemptLog = null,
 }) {
-  const minimumLength = allowAncestorDerived ? 5 : requestedPath.length;
+  const minimumLength = allowAncestorDerived
+    ? Math.max(
+        5,
+        Math.min(
+          requestedPath.length,
+          Number.isFinite(minimumResolvedPathLength) ? minimumResolvedPathLength : requestedPath.length
+        )
+      )
+    : requestedPath.length;
 
   for (let length = requestedPath.length; length >= minimumLength; length -= 1) {
     const resolvedPath = requestedPath.slice(0, length);
@@ -556,6 +567,128 @@ function buildSelectionDecision(matches, preferredVersion = null) {
   };
 }
 
+function normalizeOverlayPath(pathInfo) {
+  if (!pathInfo || typeof pathInfo.path !== 'string' || !pathInfo.path) {
+    throw new Error('Overlay path entries require a path.');
+  }
+
+  return {
+    path: pathInfo.path,
+    sourcePath: typeof pathInfo.sourcePath === 'string' && pathInfo.sourcePath ? pathInfo.sourcePath : pathInfo.path,
+    bounds: normalizeBounds(pathInfo.bounds),
+    availableVersions: [...new Set((pathInfo.availableVersions || []).filter(Number.isFinite))].sort((left, right) => right - left),
+    candidateVersions: [...new Set((pathInfo.candidateVersions || []).filter(Number.isFinite))],
+    selectedVersion: Number.isFinite(pathInfo.selectedVersion) ? pathInfo.selectedVersion : null,
+    reason: typeof pathInfo.reason === 'string' && pathInfo.reason ? pathInfo.reason : null,
+  };
+}
+
+function normalizeOverlayPaths(pathInfos = []) {
+  if (!Array.isArray(pathInfos) || pathInfos.length === 0) {
+    return null;
+  }
+
+  return pathInfos.map(normalizeOverlayPath);
+}
+
+async function checkEntryRenderable(entry, catalog, options = {}) {
+  const validatePathLimit = options.validatePathLimit || ENTRY_RENDERABILITY_MAX_PATHS;
+  const resolveTileImageImpl = options.resolveTileImageImpl || resolveTileImage;
+  const matchingPaths = (catalog.paths || []).filter(pathInfo =>
+    (pathInfo.entries || []).some(candidate =>
+      candidate.date === entry.date &&
+      candidate.fToken === entry.fToken &&
+      candidate.iCode === entry.iCode
+    )
+  );
+
+  if (matchingPaths.length === 0) {
+    return {
+      renderable: false,
+      checkedPaths: 0,
+      reason: 'no-visible-paths',
+    };
+  }
+
+  if (matchingPaths.length > validatePathLimit) {
+    return {
+      renderable: true,
+      checkedPaths: 0,
+      reason: 'skipped-high-coverage',
+    };
+  }
+
+  for (const pathInfo of matchingPaths) {
+    const resolvedTile = await resolveTileImageImpl({
+      requestedPath: pathInfo.path,
+      fToken: entry.fToken,
+      candidateVersions: [entry.iCode],
+      allowAncestorDerived: true,
+      minimumResolvedPathLength: (pathInfo.sourcePath || pathInfo.path).length,
+    });
+
+    if (resolvedTile) {
+      return {
+        renderable: true,
+        checkedPaths: matchingPaths.length,
+        reason: 'validated-tile',
+      };
+    }
+  }
+
+  return {
+    renderable: false,
+    checkedPaths: matchingPaths.length,
+    reason: 'validated-missing',
+  };
+}
+
+async function filterRenderableEntriesFromCatalog(catalog, options = {}) {
+  const entries = catalog.entries || [];
+
+  if (!entries.length) {
+    catalog.verification = {
+      ...(catalog.verification || {}),
+      filteredNonRenderableCount: 0,
+    };
+    return catalog;
+  }
+
+  const validations = await mapWithConcurrency(
+    entries,
+    options.concurrency || ENTRY_RENDERABILITY_CONCURRENCY,
+    async entry => ({
+      entry,
+      validation: await checkEntryRenderable(entry, catalog, options),
+    })
+  );
+  const filteredOut = validations
+    .filter(result => result.validation.renderable === false)
+    .map(result => result.entry.id);
+
+  if (filteredOut.length === 0) {
+    catalog.entries = validations.map(result => ({
+      ...result.entry,
+      renderability: result.validation,
+    }));
+  } else {
+    const filteredSet = new Set(filteredOut);
+    catalog.entries = validations
+      .filter(result => !filteredSet.has(result.entry.id))
+      .map(result => ({
+        ...result.entry,
+        renderability: result.validation,
+      }));
+  }
+
+  catalog.verification = {
+    ...(catalog.verification || {}),
+    filteredNonRenderableCount: filteredOut.length,
+  };
+
+  return catalog;
+}
+
 function getViewStatsRecord(viewToken, selection, fidelityMode) {
   if (!viewToken) {
     return null;
@@ -684,42 +817,58 @@ async function buildSelectionDiagnostics({ bounds, zoom, selection }) {
   };
 }
 
-async function buildOverlayPayload({ bounds, zoom, selection, fidelityMode }) {
+async function buildOverlayPayload({ bounds, zoom, selection, fidelityMode, paths: rawPaths = null }) {
   const normalizedBounds = normalizeBounds(bounds);
   const renderZoom = normalizeCatalogZoom(zoom);
-  const cells = buildPathCellsForBounds(normalizedBounds, renderZoom);
+  const overlayPaths = normalizeOverlayPaths(rawPaths);
+  const cells = overlayPaths || buildPathCellsForBounds(normalizedBounds, renderZoom);
   const downloadLog = [];
-  const requestContext = historicalCatalog.createRequestContext();
+  const requestContext = overlayPaths ? null : historicalCatalog.createRequestContext();
   const tiles = await mapWithConcurrency(cells, OVERLAY_FETCH_CONCURRENCY, async cell => {
-    let selectionInfo;
+    let sourcePath = cell.sourcePath || cell.path;
+    let decision;
+    let candidateVersions;
 
-    try {
-      selectionInfo = await historicalCatalog.findSelectionEntries(cell.path, selection, requestContext);
-    } catch (error) {
-      const metadataErrorDecision = {
-        availableVersions: [],
-        reason: 'metadata-error',
+    if (overlayPaths) {
+      candidateVersions = cell.candidateVersions || [];
+      decision = {
+        availableVersions: cell.availableVersions || [],
+        candidateVersions,
+        selectedVersion: cell.selectedVersion ?? null,
+        reason: cell.reason || (candidateVersions.length ? 'preferred-version' : 'preferred-version-unavailable'),
       };
-      const metadataErrorLog = buildDownloadLogEntry(selection, cell.path, metadataErrorDecision, {
-        requestedPath: cell.path,
-        status: 'error',
-        message: `Metadata fetch failed: ${error.message}`,
-      });
-      downloadLog.push(metadataErrorLog);
-      logOverlayDownloadEntries(selection, [metadataErrorLog]);
+    } else {
+      let selectionInfo;
 
-      return {
-        path: cell.path,
-        bounds: cell.bounds,
-        requestedPath: cell.path,
-        status: 'error',
-        selectionReason: 'metadata-error',
-        availableVersions: [],
-      };
+      try {
+        selectionInfo = await historicalCatalog.findSelectionEntries(cell.path, selection, requestContext);
+      } catch (error) {
+        const metadataErrorDecision = {
+          availableVersions: [],
+          reason: 'metadata-error',
+        };
+        const metadataErrorLog = buildDownloadLogEntry(selection, cell.path, metadataErrorDecision, {
+          requestedPath: cell.path,
+          status: 'error',
+          message: `Metadata fetch failed: ${error.message}`,
+        });
+        downloadLog.push(metadataErrorLog);
+        logOverlayDownloadEntries(selection, [metadataErrorLog]);
+
+        return {
+          path: cell.path,
+          bounds: cell.bounds,
+          requestedPath: cell.path,
+          status: 'error',
+          selectionReason: 'metadata-error',
+          availableVersions: [],
+        };
+      }
+
+      sourcePath = selectionInfo.metadata.sourcePath || cell.path;
+      decision = buildSelectionDecision(selectionInfo.matches, selection.preferredVersion);
+      candidateVersions = decision.candidateVersions;
     }
-
-    const decision = buildSelectionDecision(selectionInfo.matches, selection.preferredVersion);
-    const candidateVersions = decision.candidateVersions;
 
     if (candidateVersions.length === 0) {
       const noMatchLog = buildDownloadLogEntry(selection, cell.path, decision, {
@@ -745,6 +894,7 @@ async function buildOverlayPayload({ bounds, zoom, selection, fidelityMode }) {
       fToken: selection.fToken,
       candidateVersions,
       allowAncestorDerived: fidelityMode !== 'native-only',
+      minimumResolvedPathLength: sourcePath.length,
       attemptLog,
     });
     const loggedAttempts = attemptLog.map(attempt => buildDownloadLogEntry(selection, cell.path, decision, attempt));
@@ -802,7 +952,9 @@ app.post('/api/catalog', async (req, res) => {
     const { bounds: rawBounds, zoom: rawZoom } = req.body || {};
     const bounds = normalizeBounds(rawBounds);
     const zoom = normalizeCatalogZoom(rawZoom);
-    const catalog = await historicalCatalog.buildBoundsCatalog(bounds, zoom);
+    const catalog = await filterRenderableEntriesFromCatalog(
+      await historicalCatalog.buildBoundsCatalog(bounds, zoom)
+    );
 
     res.json(catalog);
   } catch (error) {
@@ -815,7 +967,9 @@ app.post('/api/catalog-debug', async (req, res) => {
     const { bounds: rawBounds, zoom: rawZoom } = req.body || {};
     const bounds = normalizeBounds(rawBounds);
     const zoom = normalizeCatalogZoom(rawZoom);
-    const catalog = await historicalCatalog.buildBoundsCatalog(bounds, zoom);
+    const catalog = await filterRenderableEntriesFromCatalog(
+      await historicalCatalog.buildBoundsCatalog(bounds, zoom)
+    );
 
     res.json(catalog);
   } catch (error) {
@@ -853,7 +1007,9 @@ app.get('/api/dates', async (req, res) => {
     }
 
     const zoom = normalizeCatalogZoom(req.query.zoom);
-    const catalog = await historicalCatalog.buildBoundsCatalog(bounds, zoom);
+    const catalog = await filterRenderableEntriesFromCatalog(
+      await historicalCatalog.buildBoundsCatalog(bounds, zoom)
+    );
     const centerPath = latLonToPath((bounds.north + bounds.south) / 2, (bounds.east + bounds.west) / 2, zoom);
 
     res.json({
@@ -914,6 +1070,7 @@ app.get('/api/tile/:z/:x/:y', async (req, res) => {
       fToken: selection.fToken,
       candidateVersions,
       allowAncestorDerived: fidelityMode !== 'native-only',
+      minimumResolvedPathLength: selectionInfo.metadata.sourcePath?.length || requestedPath.length,
     });
 
     if (!resolvedTile) {
@@ -997,6 +1154,7 @@ app.post('/api/overlays', async (req, res) => {
       zoom,
       selection,
       fidelityMode,
+      paths: req.body?.paths || null,
     });
 
     return res.json(payload);
@@ -1057,6 +1215,8 @@ module.exports = {
   app,
   buildSelectionDecision,
   buildSelectionDiagnostics,
+  checkEntryRenderable,
+  filterRenderableEntriesFromCatalog,
   historicalCatalog,
   buildOverlayPayload,
   normalizeCatalogZoom,

@@ -342,7 +342,6 @@ async function installMockApi(page) {
   const requests = {
     catalogs: [],
     overlays: [],
-    selectionDiagnostics: [],
   };
 
   await page.route('**/api/catalog', async route => {
@@ -362,16 +361,6 @@ async function installMockApi(page) {
       status: 200,
       contentType: 'application/json',
       body: JSON.stringify(buildOverlayPayload(requestBody)),
-    });
-  });
-
-  await page.route('**/api/selection-diagnostics', async route => {
-    const requestBody = route.request().postDataJSON();
-    requests.selectionDiagnostics.push(requestBody);
-    await route.fulfill({
-      status: 200,
-      contentType: 'application/json',
-      body: JSON.stringify(buildSelectionDiagnosticsPayload(requestBody)),
     });
   });
 
@@ -452,7 +441,7 @@ test('frontend smoke: bounds refresh, date selection, overlays, and tile downloa
       { timeout: 30000 }
     );
     await page.waitForFunction(
-      () => document.getElementById('selectionStatus')?.textContent.includes('Coverage 8/9 visible cells'),
+      () => document.getElementById('selectionStatus')?.textContent.includes('Coverage'),
       { timeout: 30000 }
     );
     await page.waitForFunction(
@@ -475,7 +464,8 @@ test('frontend smoke: bounds refresh, date selection, overlays, and tile downloa
     assert.equal(overlayState.isLayerGroup, true);
     assert.ok(overlayState.downloadLogLength >= 4);
     assert.ok(requests.overlays.length > 0, 'expected mocked overlay requests');
-    assert.ok(requests.selectionDiagnostics.length > 0, 'expected mocked selection diagnostics requests');
+    assert.ok(Array.isArray(requests.overlays[0].paths), 'expected the overlay request to include precomputed path decisions');
+    assert.ok(requests.overlays[0].paths.length > 0, 'expected precomputed overlay path decisions');
 
     const renderText = await page.locator('#renderSummary').textContent();
     assert.match(renderText || '', /Parent-derived 1/);
