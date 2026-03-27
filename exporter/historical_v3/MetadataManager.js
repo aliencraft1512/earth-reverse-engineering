@@ -141,27 +141,55 @@ class MetadataManager {
 
         for (let length = fullPath.length; length >= 5; length--) {
             const currentPath = fullPath.slice(0, length);
+            const isAncestor = length < fullPath.length;
             const tileName = `tile-${currentPath}-i.${iCode}-${fToken}.jpg`;
             const tilePath = path.join(tileCacheDir, tileName);
 
-            if (fs.existsSync(tilePath)) return tilePath;
-
-            const urls = BASE_URLS.map(base => `${base}&f1-${currentPath}-i.${iCode}-${fToken}`);
-            try {
-                const data = await this.fetchWithRetry(urls);
-                const decrypted = require('../historical/metadata').decryptXOR(Buffer.from(data), this.secretKey);
-                fs.writeFileSync(tilePath, decrypted);
-                return tilePath;
-            } catch (e) {
-                if (e.message.includes('404')) continue;
-                throw e;
+            let buffer;
+            if (fs.existsSync(tilePath)) {
+                buffer = fs.readFileSync(tilePath);
+            } else {
+                const urls = BASE_URLS.map(base => `${base}&f1-${currentPath}-i.${iCode}-${fToken}`);
+                try {
+                    const data = await this.fetchWithRetry(urls);
+                    buffer = require('../historical/metadata').decryptXOR(Buffer.from(data), this.secretKey);
+                    // Only cache the raw original tile to save space
+                    fs.writeFileSync(tilePath, buffer);
+                } catch (e) {
+                    if (e.message.includes('404')) continue;
+                    throw e;
+                }
             }
+
+            if (isAncestor) {
+                // CROP LOGIC: We have a parent tile, we need a child quadrant
+                const sharp = require('sharp');
+                const diff = fullPath.length - length;
+                let top = 0, left = 0, size = 256;
+                
+                // Recalculate relative position within the ancestor
+                for (let i = 0; i < diff; i++) {
+                    const char = fullPath[length + i];
+                    size /= 2;
+                    if (char === '1') left += size;
+                    else if (char === '2') { left += size; top += size; }
+                    else if (char === '3') top += size;
+                }
+                
+                return await sharp(buffer)
+                    .extract({ left: Math.round(left), top: Math.round(top), width: Math.round(size), height: Math.round(size) })
+                    .resize(256, 256)
+                    .toBuffer();
+            }
+
+            return buffer;
         }
         throw new Error(`Tile not found for ${fullPath}`);
     }
 
     latLonToPath(lat, lon, zoom) {
-        return latLonToPath(lat, lon, zoom);
+        const { latLonToPath: actualLatLonToPath } = require('../historical/pathUtils');
+        return actualLatLonToPath(lat, lon, zoom);
     }
 }
 
