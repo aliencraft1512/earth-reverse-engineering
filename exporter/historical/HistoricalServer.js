@@ -4,7 +4,7 @@ const crypto = require('crypto');
 
 const { loadDependency } = require('./dependencyLoader');
 const { HistoricalCatalog, buildVersionCandidates, mapWithConcurrency } = require('./catalog');
-const { readSecretKey, DEFAULT_REQUEST_HEADERS, decryptXOR, fetchBuffer } = require('./metadata');
+const { readSecretKey, DEFAULT_REQUEST_HEADERS, decryptXOR, fetchBuffer, fetchFirstSuccessfulBuffer } = require('./metadata');
 const { buildPathCellsForBounds, latLonToPath, normalizeBounds, slippyTileToCenter } = require('./pathUtils');
 const {
   createViewStatsRecord,
@@ -23,7 +23,11 @@ const PORT = 3001;
 
 const DBROOT_PATH = path.resolve(__dirname, 'dbRoot.v5');
 const CACHE_DIR = path.join(__dirname, 'tile_cache');
-const BASE_URL = 'https://kh.google.com/flatfile?db=tm';
+const BASE_URLS = [
+  'https://kh.google.com/flatfile?db=tm',
+  'https://cmpmap.com/flatfile?db=tm',
+];
+const BASE_URL = BASE_URLS[0];
 const ROOT_VERSION = 366;
 const REQUEST_TIMEOUT_MS = 10000;
 const DEFAULT_FIDELITY_MODE = 'allow-ancestor-derived';
@@ -36,6 +40,7 @@ const secretKey = readSecretKey(DBROOT_PATH);
 migrateLegacyTileCache();
 const historicalCatalog = new HistoricalCatalog({
   baseUrl: BASE_URL,
+  baseUrls: BASE_URLS,
   requestHeaders: DEFAULT_REQUEST_HEADERS,
   rootVersion: ROOT_VERSION,
   resolveEntrySignature,
@@ -236,12 +241,16 @@ async function fetchOrCacheRawTile(pathCode, iCode, fToken) {
     };
   }
 
-  const sourceUrl = `${BASE_URL}&f1-${pathCode}-i.${iCode}-${fToken}`;
-  const response = await fetchBuffer(sourceUrl, {
+  const response = await fetchFirstSuccessfulBuffer({
+    baseUrl: BASE_URL,
+    baseUrls: BASE_URLS,
+    buildUrl: candidateBaseUrl => `${candidateBaseUrl}&f1-${pathCode}-i.${iCode}-${fToken}`,
     headers: DEFAULT_REQUEST_HEADERS,
     timeoutMs: REQUEST_TIMEOUT_MS,
     validateStatus: status => status === 200,
+    fetchBufferImpl: fetchBuffer,
   });
+  const sourceUrl = response.url;
   const normalizedBuffer = await normalizeTileBuffer(response.buffer);
 
   fs.writeFileSync(cachePath, normalizedBuffer);

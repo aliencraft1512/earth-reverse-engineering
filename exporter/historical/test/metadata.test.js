@@ -1,7 +1,8 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
+const zlib = require('node:zlib');
 
-const { extractMetadataEntriesWithDebug, fetchBuffer } = require('../metadata');
+const { extractMetadataEntriesWithDebug, fetchBuffer, fetchMetadataPacket } = require('../metadata');
 
 function encodeVarint(value) {
   const bytes = [];
@@ -114,4 +115,55 @@ test('fetchBuffer includes the transport error code when retries are exhausted',
   } finally {
     global.fetch = originalFetch;
   }
+});
+
+test('fetchMetadataPacket falls back to the next flatfile host when the first host fails', async () => {
+  const packedDate = ((2025 - 1920) << 9) | (7 << 5) | 2;
+  const entry = Buffer.concat([
+    encodeField(1, 0, packedDate),
+    encodeField(2, 0, 364),
+  ]);
+  const inflated = Buffer.concat([encodeField(4, 2, entry)]);
+  const packetBuffer = Buffer.concat([Buffer.alloc(8), zlib.deflateSync(inflated)]);
+  const attemptedUrls = [];
+
+  const packet = await fetchMetadataPacket({
+    baseUrl: 'https://cmpmap.com/flatfile?db=tm',
+    baseUrls: [
+      'https://cmpmap.com/flatfile?db=tm',
+      'https://kh.google.com/flatfile?db=tm',
+    ],
+    pathCode: '0200231121011100',
+    rootVersion: 366,
+    secretKey: null,
+    fetchBufferImpl: async url => {
+      attemptedUrls.push(url);
+
+      if (url.includes('cmpmap.com')) {
+        const error = new Error('fetch failed (ECONNRESET)');
+        error.code = 'ECONNRESET';
+        throw error;
+      }
+
+      return {
+        status: 200,
+        headers: new Map(),
+        buffer: packetBuffer,
+      };
+    },
+  });
+
+  assert.deepEqual(attemptedUrls, [
+    'https://cmpmap.com/flatfile?db=tm&qp-0200231121011100-q.366',
+    'https://kh.google.com/flatfile?db=tm&qp-0200231121011100-q.366',
+  ]);
+  assert.equal(packet.url, attemptedUrls[1]);
+  assert.equal(packet.parser.mode, 'structured');
+  assert.deepEqual(packet.entries.map(entryInfo => ({
+    date: entryInfo.date,
+    iCode: entryInfo.iCode,
+    fToken: entryInfo.fToken,
+  })), [
+    { date: '2025-07-02', iCode: 364, fToken: 'fd2e2' },
+  ]);
 });

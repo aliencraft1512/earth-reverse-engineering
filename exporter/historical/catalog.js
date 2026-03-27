@@ -352,7 +352,8 @@ function shouldContinueToParent(error) {
 
 class HistoricalCatalog {
   constructor(options) {
-    this.baseUrl = options.baseUrl;
+    this.baseUrl = options.baseUrl || null;
+    this.baseUrls = [...new Set([...(options.baseUrls || []), options.baseUrl].filter(Boolean))];
     this.rootVersion = options.rootVersion || DEFAULT_ROOT_VERSION;
     this.requestHeaders = options.requestHeaders;
     this.secretKey = options.secretKey;
@@ -422,6 +423,7 @@ class HistoricalCatalog {
   async requestPacketFromUpstream(pathCode) {
     return fetchMetadataPacket({
       baseUrl: this.baseUrl,
+      baseUrls: this.baseUrls,
       pathCode,
       rootVersion: this.rootVersion,
       requestHeaders: this.requestHeaders,

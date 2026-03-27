@@ -561,6 +561,16 @@ function formatFetchErrorMessage(error) {
   return `${message} (${code})`;
 }
 
+function normalizeBaseUrlCandidates(baseUrl, baseUrls = []) {
+  const candidates = Array.isArray(baseUrls) ? [...baseUrls] : [];
+
+  if (baseUrl) {
+    candidates.unshift(baseUrl);
+  }
+
+  return [...new Set(candidates.filter(Boolean))];
+}
+
 async function fetchBuffer(url, options = {}) {
   const {
     headers = DEFAULT_REQUEST_HEADERS,
@@ -614,20 +624,75 @@ async function fetchBuffer(url, options = {}) {
   throw lastError;
 }
 
+async function fetchFirstSuccessfulBuffer({
+  baseUrl = null,
+  baseUrls = [],
+  buildUrl,
+  headers = DEFAULT_REQUEST_HEADERS,
+  timeoutMs = 10000,
+  validateStatus = status => status === 200,
+  fetchBufferImpl = fetchBuffer,
+}) {
+  const candidates = normalizeBaseUrlCandidates(baseUrl, baseUrls);
+  const attempts = [];
+
+  for (const candidateBaseUrl of candidates) {
+    const url = buildUrl(candidateBaseUrl);
+
+    try {
+      const response = await fetchBufferImpl(url, {
+        headers,
+        timeoutMs,
+        validateStatus,
+      });
+      return {
+        ...response,
+        url,
+        baseUrl: candidateBaseUrl,
+        attempts,
+      };
+    } catch (error) {
+      attempts.push({
+        baseUrl: candidateBaseUrl,
+        url,
+        message: error.message,
+        status: error.status || null,
+        code: error.code || error.cause?.code || null,
+      });
+    }
+  }
+
+  const message = attempts.length
+    ? `All flatfile hosts failed. ${attempts.map(attempt => `${attempt.baseUrl}: ${attempt.message}`).join(' | ')}`
+    : 'No flatfile hosts configured.';
+  const error = new Error(message);
+  const lastAttempt = attempts[attempts.length - 1] || null;
+  error.status = lastAttempt?.status || null;
+  error.code = lastAttempt?.code || null;
+  error.attempts = attempts;
+  throw error;
+}
+
 async function fetchMetadataPacket({
   baseUrl,
+  baseUrls = [],
   pathCode,
   rootVersion,
   requestHeaders = DEFAULT_REQUEST_HEADERS,
   timeoutMs = 10000,
   secretKey = null,
+  fetchBufferImpl = fetchBuffer,
 }) {
-  const url = `${baseUrl}&qp-${pathCode}-q.${rootVersion}`;
-  const response = await fetchBuffer(url, {
+  const response = await fetchFirstSuccessfulBuffer({
+    baseUrl,
+    baseUrls,
+    buildUrl: candidateBaseUrl => `${candidateBaseUrl}&qp-${pathCode}-q.${rootVersion}`,
     headers: requestHeaders,
     timeoutMs,
     validateStatus: status => status === 200,
+    fetchBufferImpl,
   });
+  const url = response.url;
   const decrypted = decryptXOR(response.buffer, secretKey);
 
   if (decrypted.length <= 8) {
@@ -665,7 +730,9 @@ module.exports = {
   extractMetadataEntries,
   extractMetadataEntriesWithDebug,
   fetchBuffer,
+  fetchFirstSuccessfulBuffer,
   fetchMetadataPacket,
+  normalizeBaseUrlCandidates,
   parseProtobufMessage,
   readSecretKey,
   readVarint,
