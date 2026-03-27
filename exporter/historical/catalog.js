@@ -1,3 +1,5 @@
+const fs = require('fs');
+const path = require('path');
 const crypto = require('crypto');
 const { performance } = require('perf_hooks');
 
@@ -355,9 +357,11 @@ class HistoricalCatalog {
     this.baseUrl = options.baseUrl || null;
     this.baseUrls = [...new Set([...(options.baseUrls || []), options.baseUrl].filter(Boolean))];
     this.rootVersion = options.rootVersion || DEFAULT_ROOT_VERSION;
-    this.requestHeaders = options.requestHeaders;
+    const { getRequestHeaders } = require('./metadata');
+    this.requestHeaders = options.requestHeaders || getRequestHeaders();
     this.secretKey = options.secretKey;
     this.timeoutMs = options.timeoutMs || 10000;
+    this.metadataCacheDir = options.metadataCacheDir || null;
     this.minMetadataPathLength = options.minMetadataPathLength || DEFAULT_MIN_METADATA_PATH_LENGTH;
     this.metadataConcurrency = options.metadataConcurrency || DEFAULT_METADATA_CONCURRENCY;
     this.resolveEntrySignature = options.resolveEntrySignature || null;

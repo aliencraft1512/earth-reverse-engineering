@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Historical Imagery V3 - Interactive Map</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <style>
+        body { font-family: sans-serif; margin: 0; padding: 0; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
+        header { padding: 10px 20px; background: #333; color: white; display: flex; justify-content: space-between; align-items: center; }
+        #main-container { display: flex; flex: 1; overflow: hidden; }
+        #map { flex: 1; background: #ddd; }
+        #sidebar { width: 350px; background: white; padding: 15px; border-left: 1px solid #ccc; overflow-y: auto; display: flex; flex-direction: column; }
+        h1 { font-size: 1.1rem; margin: 0; }
+        .region-item { padding: 8px; cursor: pointer; border-bottom: 1px solid #eee; font-size: 0.9rem; }
+        .region-item:hover { background: #f9f9f9; }
+        .region-item.active { background: #e0f0ff; font-weight: bold; }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 0.85rem; }
+        th, td { text-align: left; padding: 6px; border-bottom: 1px solid #eee; }
+        th { background: #fafafa; position: sticky; top: 0; }
+        .metadata-row { cursor: pointer; }
+        .metadata-row:hover { background: #f0f8ff; }
+        .metadata-row.active { background: #d0e8ff; font-weight: bold; }
+        .status-bar { font-size: 0.75rem; background: #eee; padding: 5px 20px; border-bottom: 1px solid #ccc; }
+        .controls { margin-bottom: 15px; }
+        .refresh-btn { background: #4caf50; color: white; border: none; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 0.75rem; }
+        #date-list-container { flex: 1; overflow-y: auto; border: 1px solid #eee; margin-top: 10px; }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Historical V3: Interactive Map Explorer</h1>
+        <button class="refresh-btn" onclick="refreshDbRoot()">Refresh dbRoot</button>
+    </header>
+    <div class="status-bar" id="status-bar">
+        Zoom to 14+ to see available dates for the center of the map.
+    </div>
+    <div id="main-container">
+        <div id="map"></div>
+        <div id="sidebar">
+            <div class="controls">
+                <h3>Predefined Shortcuts</h3>
+                <div id="regions-list"></div>
+            </div>
+            <h3>Available Dates (Z14+)</h3>
+            <div id="date-list-container">
+                <table id="metadata-table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>v.</th>
+                            <th>Token</th>
+                        </tr>
+                    </thead>
+                    <tbody id="metadata-body">
+                        <tr><td colspan="3">Zoom in or select a shortcut</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <div id="loading-indicator" style="display:none; color: blue; font-size: 0.8rem; margin-top: 5px;">Loading metadata...</div>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>

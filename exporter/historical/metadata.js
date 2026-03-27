@@ -8,6 +8,21 @@ const DEFAULT_REQUEST_HEADERS = {
   'Accept-Encoding': 'gzip, deflate, gfe',
 };
 
+const REQUEST_AGENTS = [
+  'GoogleEarth/7.3.6.9796(Windows;Microsoft Windows (6.2.9200.0);el;kml:2.2;client:Pro;type:default)',
+  'GoogleEarth/7.3.4.8248(Windows;Microsoft Windows (6.2.9200.0);en;kml:2.2;client:Pro;type:default)',
+  'GoogleEarth/7.3.3.7786(Windows;Microsoft Windows (6.2.9200.0);en;kml:2.2;client:Pro;type:default)',
+  'GoogleEarth/7.3.2.5776(Windows;Microsoft Windows (6.2.9200.0);en;kml:2.2;client:Pro;type:default)'
+];
+
+function getRequestHeaders() {
+  const agent = REQUEST_AGENTS[Math.floor(Math.random() * REQUEST_AGENTS.length)];
+  return {
+    ...DEFAULT_REQUEST_HEADERS,
+    'User-Agent': agent,
+  };
+}
+
 function readSecretKey(dbRootPath) {
   if (!fs.existsSync(dbRootPath)) {
     return null;
@@ -573,7 +588,7 @@ function normalizeBaseUrlCandidates(baseUrl, baseUrls = []) {
 
 async function fetchBuffer(url, options = {}) {
   const {
-    headers = DEFAULT_REQUEST_HEADERS,
+    headers = getRequestHeaders(),
     timeoutMs = 10000,
     retryCount = 3,
     retryDelayMs = 250,
@@ -628,7 +643,7 @@ async function fetchFirstSuccessfulBuffer({
   baseUrl = null,
   baseUrls = [],
   buildUrl,
-  headers = DEFAULT_REQUEST_HEADERS,
+  headers = getRequestHeaders(),
   timeoutMs = 10000,
   validateStatus = status => status === 200,
   fetchBufferImpl = fetchBuffer,
@@ -678,7 +693,7 @@ async function fetchMetadataPacket({
   baseUrls = [],
   pathCode,
   rootVersion,
-  requestHeaders = DEFAULT_REQUEST_HEADERS,
+  requestheaders = getRequestHeaders(),
   timeoutMs = 10000,
   secretKey = null,
   fetchBufferImpl = fetchBuffer,
@@ -726,6 +741,7 @@ async function fetchMetadataPacket({
 
 module.exports = {
   DEFAULT_REQUEST_HEADERS,
+  getRequestHeaders,
   decryptXOR,
   extractMetadataEntries,
   extractMetadataEntriesWithDebug,

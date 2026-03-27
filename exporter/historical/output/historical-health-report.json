@@ -1,10 +1,10 @@
 {
-  "generatedAt": "2026-03-27T18:30:35.612Z",
+  "generatedAt": "2026-03-27T19:47:46.433Z",
   "seed": 20260327,
   "limit": 4,
   "clicksPerTarget": 2,
   "strict": true,
-  "baseUrl": "http://127.0.0.1:62052",
+  "baseUrl": "http://127.0.0.1:59526",
   "summary": {
     "targetCount": 4,
     "targetsWithEntries": 4,

@@ -12,19 +12,6 @@ const DEFAULT_SEED = 20260327;
 const DEFAULT_CLICKS_PER_TARGET = 2;
 const REPORT_DIRECTORY = path.join(__dirname, '..', 'output');
 
-const WORLD_TARGETS = [
-  { label: 'Nicosia', center: [35.1723, 33.3667], zoom: 15 },
-  { label: 'London', center: [51.5074, -0.1278], zoom: 15 },
-  { label: 'New York', center: [40.7128, -74.006], zoom: 15 },
-  { label: 'Tokyo', center: [35.6762, 139.6503], zoom: 15 },
-  { label: 'Cairo', center: [30.0444, 31.2357], zoom: 15 },
-  { label: 'Rio', center: [-22.9068, -43.1729], zoom: 15 },
-  { label: 'Sydney', center: [-33.8688, 151.2093], zoom: 15 },
-  { label: 'Cape Town', center: [-33.9249, 18.4241], zoom: 15 },
-  { label: 'Buenos Aires', center: [-34.6037, -58.3816], zoom: 15 },
-  { label: 'Reykjavik', center: [64.1466, -21.9426], zoom: 15 },
-];
-
 function parseCliArgs(argv) {
   const options = {
     seed: DEFAULT_SEED,
@@ -86,16 +73,11 @@ function mulberry32(seed) {
   };
 }
 
-function shuffleTargets(targets, seed) {
-  const random = mulberry32(seed);
-  const shuffled = [...targets];
-
-  for (let index = shuffled.length - 1; index > 0; index -= 1) {
-    const swapIndex = Math.floor(random() * (index + 1));
-    [shuffled[index], shuffled[swapIndex]] = [shuffled[swapIndex], shuffled[index]];
-  }
-
-  return shuffled;
+function generateRandomTarget(random) {
+  const lat = (random() * 180) - 90;
+  const lon = (random() * 360) - 180;
+  const zoom = Math.floor(random() * 6) + 12; // Zoom between 12 and 17
+  return { label: `Random (${lat.toFixed(4)}, ${lon.toFixed(4)})`, center: [lat, lon], zoom };
 }
 
 function buildEntryId(entry) {
@@ -416,8 +398,10 @@ function buildSummary(results) {
 
 async function run() {
   const options = parseCliArgs(process.argv.slice(2));
-  const targets = shuffleTargets(WORLD_TARGETS, options.seed).slice(0, options.limit);
+  const random = mulberry32(options.seed);
+  const targets = Array.from({ length: options.limit }, () => generateRandomTarget(random));
   const server = startServer({ port: 0, host: DEFAULT_HOST, exitOnError: false });
+
   await waitForListening(server);
   const address = server.address();
   const port = typeof address === 'object' && address ? address.port : 3001;

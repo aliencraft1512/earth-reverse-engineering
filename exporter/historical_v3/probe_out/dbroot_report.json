@@ -1,0 +1,149 @@
+{
+  "dbrootPath": "exporter/historical_v3/dbRoot.v5",
+  "raw": {
+    "size": 18238,
+    "sha256": "9658e49126885fa7d99a0cc82987dc9cada31b54751509d5f8723566e0352a40",
+    "entropy": 7.9877687525566685,
+    "printableRatio": 0.3901743612238184,
+    "hexPreview": "080012f80745f4bd0b79e26a452205922c17cd0671f84910466751004225c6e8612c662908c634dc6a6225790a771d6d69d6f09c6b93a1bd4e75e041045bdf40",
+    "asciiStrings": [
+      "3>mF8J",
+      "'UfYNe",
+      "aF}a?",
+      "l.jC'c",
+      "?q{gC}:",
+      "u-6,rt",
+      "i#i*|",
+      "T9w.)",
+      "U^1I7",
+      "[y`In7gS",
+      "YRe|3",
+      "YEkh/",
+      "}!v^cw",
+      "NlWbHA",
+      "ZbZo1",
+      ";f;Htpy",
+      "~<I\"y",
+      "'^Y8O",
+      "tA_);",
+      "tG1*!d",
+      "27s(S5",
+      "=oX]R",
+      "b3Hya",
+      "j = '",
+      "uoD[EK",
+      "7b4Z)",
+      "e6z5p6f",
+      "(-AG#1",
+      "}'oE(",
+      "XHX5R",
+      "p?PLR",
+      "cuwVU>",
+      "9gjFj",
+      "4o<~$",
+      ")q7c}",
+      "^DF[#",
+      "50ySQ",
+      "urEWo(",
+      "2kL*g",
+      "Y+v?Ip"
+    ],
+    "protobufSummary": [
+      {
+        "field": 1,
+        "wireType": 0,
+        "value": 0
+      },
+      {
+        "field": 2,
+        "wireType": 2,
+        "length": 1016,
+        "sha256": "8b356c90cd6052726d70a8cd24c2a7880dfc323c5a9f7e4855579f716c1c7007",
+        "asciiPreview": [
+          "3>mF8J",
+          "'UfYNe",
+          "aF}a?",
+          "l.jC'c",
+          "?q{gC}:"
+        ]
+      },
+      {
+        "field": 3,
+        "wireType": 2,
+        "length": 17213,
+        "sha256": "bceda5663ff53dec5622a661319a584de2eaf3c652cb94e0b80e284a0a6e78b2",
+        "asciiPreview": [
+          "YEkh/",
+          "}!v^cw",
+          "NlWbHA",
+          "ZbZo1",
+          ";f;Htpy"
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "field": 1,
+      "wireType": 0,
+      "value": 0
+    },
+    {
+      "field": 2,
+      "wireType": 2,
+      "length": 1016,
+      "sha256": "8b356c90cd6052726d70a8cd24c2a7880dfc323c5a9f7e4855579f716c1c7007",
+      "entropy": 7.7332588695960665,
+      "printableRatio": 0.49803149606299213,
+      "asciiStrings": [
+        "3>mF8J",
+        "'UfYNe",
+        "aF}a?",
+        "l.jC'c",
+        "?q{gC}:",
+        "u-6,rt",
+        "i#i*|",
+        "T9w.)",
+        "U^1I7",
+        "[y`In7gS",
+        "YRe|3"
+      ],
+      "protobufSummary": {
+        "error": "Unsupported wire type 5 at field 8"
+      }
+    },
+    {
+      "field": 3,
+      "wireType": 2,
+      "length": 17213,
+      "sha256": "bceda5663ff53dec5622a661319a584de2eaf3c652cb94e0b80e284a0a6e78b2",
+      "entropy": 7.986990952393185,
+      "printableRatio": 0.38401208389008307,
+      "asciiStrings": [
+        "YEkh/",
+        "}!v^cw",
+        "NlWbHA",
+        "ZbZo1",
+        ";f;Htpy",
+        "~<I\"y",
+        "'^Y8O",
+        "tA_);",
+        "tG1*!d",
+        "27s(S5",
+        "=oX]R",
+        "b3Hya",
+        "j = '",
+        "uoD[EK",
+        "7b4Z)",
+        "e6z5p6f",
+        "(-AG#1",
+        "}'oE(",
+        "XHX5R",
+        "p?PLR"
+      ],
+      "protobufSummary": {
+        "error": "Unsupported wire type 5 at field 10"
+      }
+    }
+  ]
+}

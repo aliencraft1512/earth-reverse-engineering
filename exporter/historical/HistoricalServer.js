@@ -23,6 +23,7 @@ const PORT = 3001;
 
 const DBROOT_PATH = path.resolve(__dirname, 'dbRoot.v5');
 const CACHE_DIR = path.join(__dirname, 'tile_cache');
+const METADATA_CACHE_DIR = path.join(__dirname, 'metadata_cache');
 const BASE_URLS = [
   'https://kh.google.com/flatfile?db=tm',
   'https://cmpmap.com/flatfile?db=tm',
@@ -37,9 +38,9 @@ const ENTRY_RENDERABILITY_MAX_PATHS = 6;
 const VIEW_STATS_TTL_MS = 5 * 60 * 1000;
 
 fs.mkdirSync(CACHE_DIR, { recursive: true });
+fs.mkdirSync(METADATA_CACHE_DIR, { recursive: true });
 
 const secretKey = readSecretKey(DBROOT_PATH);
-migrateLegacyTileCache();
 const historicalCatalog = new HistoricalCatalog({
   baseUrl: BASE_URL,
   baseUrls: BASE_URLS,
@@ -48,6 +49,7 @@ const historicalCatalog = new HistoricalCatalog({
   resolveEntrySignature,
   secretKey,
   timeoutMs: REQUEST_TIMEOUT_MS,
+  metadataCacheDir: METADATA_CACHE_DIR,
 });
 const viewStatsCache = new Map();
 const tileSignatureCache = new Map();
@@ -63,7 +65,7 @@ function normalizeCatalogZoom(rawZoom) {
     return 17;
   }
 
-  return Math.min(18, Math.max(10, zoom));
+  return Math.min(14, Math.max(10, zoom));
 }
 
 function isJpeg(buffer) {
@@ -231,8 +233,8 @@ function migrateLegacyTileCache() {
 
 async function fetchOrCacheRawTile(pathCode, iCode, fToken) {
   const cachePath = getRawTileCachePath(pathCode, iCode, fToken);
-  migrateLegacyCacheFile(getLegacyRawTileCachePath(pathCode, iCode, fToken), cachePath);
-  migrateLegacyCacheFile(getLegacyFlatRawTileCachePath(pathCode, iCode, fToken), cachePath);
+  
+  
 
   if (fs.existsSync(cachePath)) {
     return {
@@ -249,6 +251,7 @@ async function fetchOrCacheRawTile(pathCode, iCode, fToken) {
     buildUrl: candidateBaseUrl => `${candidateBaseUrl}&f1-${pathCode}-i.${iCode}-${fToken}`,
     headers: DEFAULT_REQUEST_HEADERS,
     timeoutMs: REQUEST_TIMEOUT_MS,
+  metadataCacheDir: METADATA_CACHE_DIR,
     validateStatus: status => status === 200,
     fetchBufferImpl: fetchBuffer,
   });
@@ -420,14 +423,8 @@ async function resolveTileImage({
         }
 
         const derivedCachePath = getDerivedTileCachePath(requestedPath, resolvedPath, iCode, fToken);
-        migrateLegacyCacheFile(
-          getLegacyDerivedTileCachePath(requestedPath, resolvedPath, iCode, fToken),
-          derivedCachePath
-        );
-        migrateLegacyCacheFile(
-          getLegacyFlatDerivedTileCachePath(requestedPath, resolvedPath, iCode, fToken),
-          derivedCachePath
-        );
+        
+        
 
         if (fs.existsSync(derivedCachePath)) {
           attemptLog?.push({

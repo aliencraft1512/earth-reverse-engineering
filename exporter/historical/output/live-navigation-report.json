@@ -1,353 +1,464 @@
 {
-  "generatedAt": "2026-03-27T18:29:29.967Z",
-  "seed": 20260327,
-  "limit": 4,
+  "generatedAt": "2026-03-27T19:52:55.319Z",
+  "seed": 12345,
+  "limit": 10,
   "clicksPerTarget": 2,
-  "strict": true,
-  "baseUrl": "http://127.0.0.1:64746",
+  "strict": false,
+  "baseUrl": "http://127.0.0.1:61738",
   "summary": {
-    "targetCount": 4,
-    "targetsWithEntries": 4,
-    "targetsWithRenderedOverlays": 4,
-    "targetsWithSuccessfulClicks": 4,
-    "targetsWithMetadataErrors": 0,
-    "clickAttempts": 8,
+    "targetCount": 10,
+    "targetsWithEntries": 0,
+    "targetsWithRenderedOverlays": 0,
+    "targetsWithSuccessfulClicks": 0,
+    "targetsWithMetadataErrors": 10,
+    "clickAttempts": 0,
     "clickFailures": 0,
-    "targetFailures": 0,
+    "targetFailures": 10,
     "parserModes": {
-      "framed": 79
+      "error": 167
     },
-    "failures": []
+    "failures": [
+      {
+        "label": "Random (86.3511, -69.5692)",
+        "failureReasons": [
+          "metadata-fetch-failed"
+        ],
+        "clickFailures": []
+      },
+      {
+        "label": "Random (57.2282, 3.3942)",
+        "failureReasons": [
+          "metadata-fetch-failed"
+        ],
+        "clickFailures": []
+      },
+      {
+        "label": "Random (-76.7236, 95.9027)",
+        "failureReasons": [
+          "metadata-fetch-failed"
+        ],
+        "clickFailures": []
+      },
+      {
+        "label": "Random (58.5040, -14.4234)",
+        "failureReasons": [
+          "metadata-fetch-failed"
+        ],
+        "clickFailures": []
+      },
+      {
+        "label": "Random (70.3121, 168.9637)",
+        "failureReasons": [
+          "metadata-fetch-failed"
+        ],
+        "clickFailures": []
+      },
+      {
+        "label": "Random (-45.2114, -9.5966)",
+        "failureReasons": [
+          "metadata-fetch-failed"
+        ],
+        "clickFailures": []
+      },
+      {
+        "label": "Random (49.0354, 131.4630)",
+        "failureReasons": [
+          "metadata-fetch-failed"
+        ],
+        "clickFailures": []
+      },
+      {
+        "label": "Random (50.4269, 103.4352)",
+        "failureReasons": [
+          "metadata-fetch-failed"
+        ],
+        "clickFailures": []
+      },
+      {
+        "label": "Random (-8.4526, -153.5868)",
+        "failureReasons": [
+          "metadata-fetch-failed"
+        ],
+        "clickFailures": []
+      },
+      {
+        "label": "Random (-52.9945, 90.8046)",
+        "failureReasons": [
+          "metadata-fetch-failed"
+        ],
+        "clickFailures": []
+      }
+    ]
   },
   "results": [
     {
-      "label": "Reykjavik",
+      "label": "Random (86.3511, -69.5692)",
       "center": [
-        64.1466,
-        -21.9426
+        86.35108819697052,
+        -69.56918478012085
       ],
-      "zoom": 15,
-      "statusText": "Loaded 6/15 visible cells for 2002-04-26. Some cells could not be resolved.",
-      "selectionText": "Showing 2002-04-26. The server prefers i.6 and only switches version when that preferred tile is not valid for a visible cell. Coverage 9/15 visible cells. Alternate version cells 3. Missing cells 6.",
-      "renderSummary": "Tiles loaded 6/15 visible cellsDirect tiles 6  |  Parent-derived 0  |  Missing 9Versions used i.366, i.6Selection handling preferred 3  |  alternate 3  |  best-valid 0",
-      "catalogEntryCount": 81,
+      "zoom": 14,
+      "statusText": "Live metadata fetch failed for all visible paths: All flatfile hosts failed. https://kh.google.com/flatfile?db=tm: Unexpected status 404 | https://cmpmap.com/flatfile?db=tm: This operation was aborted (20)",
+      "selectionText": "Pick a date to load historical imagery for the current map view.",
+      "renderSummary": "No historical imagery loaded.",
+      "catalogEntryCount": 0,
+      "requestedPathCount": 5,
+      "resolvedPathCount": 0,
+      "unresolvedPathCount": 5,
+      "parserModes": {
+        "error": 5
+      },
+      "metadataErrorCount": 5,
+      "metadataErrorSample": "All flatfile hosts failed. https://kh.google.com/flatfile?db=tm: Unexpected status 404 | https://cmpmap.com/flatfile?db=tm: This operation was aborted (20)",
+      "oldestDate": null,
+      "newestDate": null,
+      "selectedEntry": null,
+      "overlayCount": 0,
+      "downloadLogCount": 0,
+      "downloadStatusCounts": {},
+      "clickResults": [],
+      "failureReasons": [
+        "metadata-fetch-failed"
+      ],
+      "firstPath": {
+        "path": "031332210022221",
+        "sourcePath": null,
+        "packetUrl": null,
+        "parserMode": "error",
+        "entryCount": 0
+      }
+    },
+    {
+      "label": "Random (57.2282, 3.3942)",
+      "center": [
+        57.22819425165653,
+        3.3942129649221897
+      ],
+      "zoom": 14,
+      "statusText": "Live metadata fetch failed for all visible paths: All flatfile hosts failed. https://kh.google.com/flatfile?db=tm: fetch failed (ENOTFOUND) | https://cmpmap.com/flatfile?db=tm: fetch failed (ENOTFOUND)",
+      "selectionText": "Pick a date to load historical imagery for the current map view.",
+      "renderSummary": "No historical imagery loaded.",
+      "catalogEntryCount": 0,
       "requestedPathCount": 15,
-      "resolvedPathCount": 15,
-      "unresolvedPathCount": 0,
+      "resolvedPathCount": 0,
+      "unresolvedPathCount": 15,
       "parserModes": {
-        "framed": 15
+        "error": 15
       },
-      "metadataErrorCount": 0,
-      "metadataErrorSample": null,
-      "oldestDate": "2002-04-26",
-      "newestDate": "2025-05-31",
-      "selectedEntry": {
-        "id": "2002-04-26|6|fa49a",
-        "date": "2002-04-26",
-        "iCode": 6,
-        "fToken": "fa49a"
-      },
-      "overlayCount": 6,
-      "downloadLogCount": 21,
-      "downloadStatusCounts": {
-        "missing": 15,
-        "ok": 6
-      },
-      "clickResults": [
-        {
-          "entry": {
-            "id": "2025-05-30|360|fd2be",
-            "date": "2025-05-30",
-            "iCode": 360,
-            "fToken": "fd2be",
-            "pathCount": 15
-          },
-          "statusText": "Loaded 15/15 visible cells for 2025-05-30.",
-          "selectionText": "Showing 2025-05-30. The server prefers i.360 and only switches version when that preferred tile is not valid for a visible cell. Coverage 15/15 visible cells. Alternate version cells 0. Missing cells 0.",
-          "renderSummary": "Tiles loaded 15/15 visible cellsDirect tiles 15  |  Parent-derived 0  |  Missing 0Versions used i.360Selection handling preferred 15  |  alternate 0  |  best-valid 0",
-          "overlayCount": 15,
-          "downloadLogCount": 15,
-          "downloadStatusCounts": {
-            "ok": 15
-          },
-          "passed": true,
-          "failureReasons": []
-        },
-        {
-          "entry": {
-            "id": "2002-04-26|6|fa49a",
-            "date": "2002-04-26",
-            "iCode": 6,
-            "fToken": "fa49a",
-            "pathCount": 6
-          },
-          "statusText": "Loaded 6/15 visible cells for 2002-04-26. Some cells could not be resolved.",
-          "selectionText": "Showing 2002-04-26. The server prefers i.6 and only switches version when that preferred tile is not valid for a visible cell. Coverage 9/15 visible cells. Alternate version cells 3. Missing cells 6.",
-          "renderSummary": "Tiles loaded 6/15 visible cellsDirect tiles 6  |  Parent-derived 0  |  Missing 9Versions used i.366, i.6Selection handling preferred 3  |  alternate 3  |  best-valid 0",
-          "overlayCount": 6,
-          "downloadLogCount": 21,
-          "downloadStatusCounts": {
-            "missing": 15,
-            "ok": 6
-          },
-          "passed": true,
-          "failureReasons": []
-        }
+      "metadataErrorCount": 15,
+      "metadataErrorSample": "All flatfile hosts failed. https://kh.google.com/flatfile?db=tm: fetch failed (ENOTFOUND) | https://cmpmap.com/flatfile?db=tm: fetch failed (ENOTFOUND)",
+      "oldestDate": null,
+      "newestDate": null,
+      "selectedEntry": null,
+      "overlayCount": 0,
+      "downloadLogCount": 0,
+      "downloadStatusCounts": {},
+      "clickResults": [],
+      "failureReasons": [
+        "metadata-fetch-failed"
       ],
-      "failureReasons": [],
       "firstPath": {
-        "path": "0312133033113303",
-        "sourcePath": "0312133033113303",
-        "packetUrl": "https://kh.google.com/flatfile?db=tm&qp-0312133033113303-q.366",
-        "parserMode": "framed",
-        "entryCount": 81
+        "path": "020303010312033",
+        "sourcePath": null,
+        "packetUrl": null,
+        "parserMode": "error",
+        "entryCount": 0
       }
     },
     {
-      "label": "New York",
+      "label": "Random (-76.7236, 95.9027)",
       "center": [
-        40.7128,
-        -74.006
+        -76.7236424703151,
+        95.90272824279964
+      ],
+      "zoom": 17,
+      "statusText": "Live metadata fetch failed for all visible paths: All flatfile hosts failed. https://kh.google.com/flatfile?db=tm: fetch failed (ENOTFOUND) | https://cmpmap.com/flatfile?db=tm: fetch failed (ENOTFOUND)",
+      "selectionText": "Pick a date to load historical imagery for the current map view.",
+      "renderSummary": "No historical imagery loaded.",
+      "catalogEntryCount": 0,
+      "requestedPathCount": 10,
+      "resolvedPathCount": 0,
+      "unresolvedPathCount": 10,
+      "parserModes": {
+        "error": 10
+      },
+      "metadataErrorCount": 10,
+      "metadataErrorSample": "All flatfile hosts failed. https://kh.google.com/flatfile?db=tm: fetch failed (ENOTFOUND) | https://cmpmap.com/flatfile?db=tm: fetch failed (ENOTFOUND)",
+      "oldestDate": null,
+      "newestDate": null,
+      "selectedEntry": null,
+      "overlayCount": 0,
+      "downloadLogCount": 0,
+      "downloadStatusCounts": {},
+      "clickResults": [],
+      "failureReasons": [
+        "metadata-fetch-failed"
+      ],
+      "firstPath": {
+        "path": "012003103032200012",
+        "sourcePath": null,
+        "packetUrl": null,
+        "parserMode": "error",
+        "entryCount": 0
+      }
+    },
+    {
+      "label": "Random (58.5040, -14.4234)",
+      "center": [
+        58.50404731929302,
+        -14.423445537686348
+      ],
+      "zoom": 17,
+      "statusText": "Live metadata fetch failed for all visible paths: All flatfile hosts failed. https://kh.google.com/flatfile?db=tm: fetch failed (ENOTFOUND) | https://cmpmap.com/flatfile?db=tm: fetch failed (ENOTFOUND)",
+      "selectionText": "Pick a date to load historical imagery for the current map view.",
+      "renderSummary": "No historical imagery loaded.",
+      "catalogEntryCount": 0,
+      "requestedPathCount": 15,
+      "resolvedPathCount": 0,
+      "unresolvedPathCount": 15,
+      "parserModes": {
+        "error": 15
+      },
+      "metadataErrorCount": 15,
+      "metadataErrorSample": "All flatfile hosts failed. https://kh.google.com/flatfile?db=tm: fetch failed (ENOTFOUND) | https://cmpmap.com/flatfile?db=tm: fetch failed (ENOTFOUND)",
+      "oldestDate": null,
+      "newestDate": null,
+      "selectedEntry": null,
+      "overlayCount": 0,
+      "downloadLogCount": 0,
+      "downloadStatusCounts": {},
+      "clickResults": [],
+      "failureReasons": [
+        "metadata-fetch-failed"
+      ],
+      "firstPath": {
+        "path": "031213102201221023",
+        "sourcePath": null,
+        "packetUrl": null,
+        "parserMode": "error",
+        "entryCount": 0
+      }
+    },
+    {
+      "label": "Random (70.3121, 168.9637)",
+      "center": [
+        70.31214741524309,
+        168.9637267962098
       ],
       "zoom": 15,
-      "statusText": "Loaded 7/20 visible cells for 1994-04-04. Some cells could not be resolved.",
-      "selectionText": "Showing 1994-04-04. The server prefers i.7 and only switches version when that preferred tile is not valid for a visible cell. Coverage 11/20 visible cells. Alternate version cells 3. Missing cells 9.",
-      "renderSummary": "Tiles loaded 7/20 visible cellsDirect tiles 7  |  Parent-derived 0  |  Missing 13Versions used i.272Selection handling preferred 4  |  alternate 3  |  best-valid 0",
-      "catalogEntryCount": 182,
+      "statusText": "Live metadata fetch failed for all visible paths: All flatfile hosts failed. https://kh.google.com/flatfile?db=tm: fetch failed (ENOTFOUND) | https://cmpmap.com/flatfile?db=tm: fetch failed (ENOTFOUND)",
+      "selectionText": "Pick a date to load historical imagery for the current map view.",
+      "renderSummary": "No historical imagery loaded.",
+      "catalogEntryCount": 0,
+      "requestedPathCount": 10,
+      "resolvedPathCount": 0,
+      "unresolvedPathCount": 10,
+      "parserModes": {
+        "error": 10
+      },
+      "metadataErrorCount": 10,
+      "metadataErrorSample": "All flatfile hosts failed. https://kh.google.com/flatfile?db=tm: fetch failed (ENOTFOUND) | https://cmpmap.com/flatfile?db=tm: fetch failed (ENOTFOUND)",
+      "oldestDate": null,
+      "newestDate": null,
+      "selectedEntry": null,
+      "overlayCount": 0,
+      "downloadLogCount": 0,
+      "downloadStatusCounts": {},
+      "clickResults": [],
+      "failureReasons": [
+        "metadata-fetch-failed"
+      ],
+      "firstPath": {
+        "path": "0212210033323332",
+        "sourcePath": null,
+        "packetUrl": null,
+        "parserMode": "error",
+        "entryCount": 0
+      }
+    },
+    {
+      "label": "Random (-45.2114, -9.5966)",
+      "center": [
+        -45.21137856412679,
+        -9.596577901393175
+      ],
+      "zoom": 13,
+      "statusText": "Live metadata fetch failed for all visible paths: All flatfile hosts failed. https://kh.google.com/flatfile?db=tm: fetch failed (ENOTFOUND) | https://cmpmap.com/flatfile?db=tm: fetch failed (ENOTFOUND)",
+      "selectionText": "Pick a date to load historical imagery for the current map view.",
+      "renderSummary": "No historical imagery loaded.",
+      "catalogEntryCount": 0,
       "requestedPathCount": 20,
-      "resolvedPathCount": 20,
-      "unresolvedPathCount": 0,
+      "resolvedPathCount": 0,
+      "unresolvedPathCount": 20,
       "parserModes": {
-        "framed": 20
+        "error": 20
       },
-      "metadataErrorCount": 0,
-      "metadataErrorSample": null,
-      "oldestDate": "1994-04-04",
-      "newestDate": "2025-09-11",
-      "selectedEntry": {
-        "id": "1994-04-04|7|f9484",
-        "date": "1994-04-04",
-        "iCode": 7,
-        "fToken": "f9484"
-      },
-      "overlayCount": 7,
-      "downloadLogCount": 26,
-      "downloadStatusCounts": {
-        "missing": 19,
-        "ok": 7
-      },
-      "clickResults": [
-        {
-          "entry": {
-            "id": "2025-09-11|365|fd32b",
-            "date": "2025-09-11",
-            "iCode": 365,
-            "fToken": "fd32b",
-            "pathCount": 20
-          },
-          "statusText": "Loaded 20/20 visible cells for 2025-09-11.",
-          "selectionText": "Showing 2025-09-11. The server prefers i.365 and only switches version when that preferred tile is not valid for a visible cell. Coverage 20/20 visible cells. Alternate version cells 0. Missing cells 0.",
-          "renderSummary": "Tiles loaded 20/20 visible cellsDirect tiles 20  |  Parent-derived 0  |  Missing 0Versions used i.365Selection handling preferred 20  |  alternate 0  |  best-valid 0",
-          "overlayCount": 20,
-          "downloadLogCount": 20,
-          "downloadStatusCounts": {
-            "ok": 20
-          },
-          "passed": true,
-          "failureReasons": []
-        },
-        {
-          "entry": {
-            "id": "1994-04-04|7|f9484",
-            "date": "1994-04-04",
-            "iCode": 7,
-            "fToken": "f9484",
-            "pathCount": 8
-          },
-          "statusText": "Loaded 7/20 visible cells for 1994-04-04. Some cells could not be resolved.",
-          "selectionText": "Showing 1994-04-04. The server prefers i.7 and only switches version when that preferred tile is not valid for a visible cell. Coverage 11/20 visible cells. Alternate version cells 3. Missing cells 9.",
-          "renderSummary": "Tiles loaded 7/20 visible cellsDirect tiles 7  |  Parent-derived 0  |  Missing 13Versions used i.272Selection handling preferred 4  |  alternate 3  |  best-valid 0",
-          "overlayCount": 7,
-          "downloadLogCount": 26,
-          "downloadStatusCounts": {
-            "missing": 19,
-            "ok": 7
-          },
-          "passed": true,
-          "failureReasons": []
-        }
+      "metadataErrorCount": 20,
+      "metadataErrorSample": "All flatfile hosts failed. https://kh.google.com/flatfile?db=tm: fetch failed (ENOTFOUND) | https://cmpmap.com/flatfile?db=tm: fetch failed (ENOTFOUND)",
+      "oldestDate": null,
+      "newestDate": null,
+      "selectedEntry": null,
+      "overlayCount": 0,
+      "downloadLogCount": 0,
+      "downloadStatusCounts": {},
+      "clickResults": [],
+      "failureReasons": [
+        "metadata-fetch-failed"
       ],
-      "failureReasons": [],
       "firstPath": {
-        "path": "0310323113232101",
-        "sourcePath": "0310323113232101",
-        "packetUrl": "https://kh.google.com/flatfile?db=tm&qp-0310323113232101-q.366",
-        "parserMode": "framed",
-        "entryCount": 145
+        "path": "00212233233012",
+        "sourcePath": null,
+        "packetUrl": null,
+        "parserMode": "error",
+        "entryCount": 0
       }
     },
     {
-      "label": "Buenos Aires",
+      "label": "Random (49.0354, 131.4630)",
       "center": [
-        -34.6037,
-        -58.3816
+        49.035426252521574,
+        131.46295563317835
       ],
       "zoom": 15,
-      "statusText": "Loaded 20/24 visible cells for 2000-04-21. Some cells could not be resolved.",
-      "selectionText": "Showing 2000-04-21. The server prefers i.10 and only switches version when that preferred tile is not valid for a visible cell. Coverage 24/24 visible cells. Alternate version cells 4. Missing cells 0.",
-      "renderSummary": "Tiles loaded 20/24 visible cellsDirect tiles 20  |  Parent-derived 0  |  Missing 4Versions used i.272, i.17, i.10Selection handling preferred 16  |  alternate 4  |  best-valid 0",
-      "catalogEntryCount": 112,
+      "statusText": "Live metadata fetch failed for all visible paths: All flatfile hosts failed. https://kh.google.com/flatfile?db=tm: fetch failed (ENOTFOUND) | https://cmpmap.com/flatfile?db=tm: fetch failed (ENOTFOUND)",
+      "selectionText": "Pick a date to load historical imagery for the current map view.",
+      "renderSummary": "No historical imagery loaded.",
+      "catalogEntryCount": 0,
+      "requestedPathCount": 18,
+      "resolvedPathCount": 0,
+      "unresolvedPathCount": 18,
+      "parserModes": {
+        "error": 18
+      },
+      "metadataErrorCount": 18,
+      "metadataErrorSample": "All flatfile hosts failed. https://kh.google.com/flatfile?db=tm: fetch failed (ENOTFOUND) | https://cmpmap.com/flatfile?db=tm: fetch failed (ENOTFOUND)",
+      "oldestDate": null,
+      "newestDate": null,
+      "selectedEntry": null,
+      "overlayCount": 0,
+      "downloadLogCount": 0,
+      "downloadStatusCounts": {},
+      "clickResults": [],
+      "failureReasons": [
+        "metadata-fetch-failed"
+      ],
+      "firstPath": {
+        "path": "0213111313212321",
+        "sourcePath": null,
+        "packetUrl": null,
+        "parserMode": "error",
+        "entryCount": 0
+      }
+    },
+    {
+      "label": "Random (50.4269, 103.4352)",
+      "center": [
+        50.42691882234067,
+        103.43516542576253
+      ],
+      "zoom": 15,
+      "statusText": "Live metadata fetch failed for all visible paths: All flatfile hosts failed. https://kh.google.com/flatfile?db=tm: fetch failed (ENOTFOUND) | https://cmpmap.com/flatfile?db=tm: fetch failed (ENOTFOUND)",
+      "selectionText": "Pick a date to load historical imagery for the current map view.",
+      "renderSummary": "No historical imagery loaded.",
+      "catalogEntryCount": 0,
       "requestedPathCount": 24,
-      "resolvedPathCount": 24,
-      "unresolvedPathCount": 0,
+      "resolvedPathCount": 0,
+      "unresolvedPathCount": 24,
       "parserModes": {
-        "framed": 24
+        "error": 24
       },
-      "metadataErrorCount": 0,
-      "metadataErrorSample": null,
-      "oldestDate": "2000-04-21",
-      "newestDate": "2025-11-26",
-      "selectedEntry": {
-        "id": "2000-04-21|10|fa095",
-        "date": "2000-04-21",
-        "iCode": 10,
-        "fToken": "fa095"
-      },
-      "overlayCount": 20,
-      "downloadLogCount": 28,
-      "downloadStatusCounts": {
-        "ok": 20,
-        "missing": 8
-      },
-      "clickResults": [
-        {
-          "entry": {
-            "id": "2025-11-26|366|fd37a",
-            "date": "2025-11-26",
-            "iCode": 366,
-            "fToken": "fd37a",
-            "pathCount": 24
-          },
-          "statusText": "Loaded 24/24 visible cells for 2025-11-26.",
-          "selectionText": "Showing 2025-11-26. The server prefers i.366 and only switches version when that preferred tile is not valid for a visible cell. Coverage 24/24 visible cells. Alternate version cells 0. Missing cells 0.",
-          "renderSummary": "Tiles loaded 24/24 visible cellsDirect tiles 24  |  Parent-derived 0  |  Missing 0Versions used i.366Selection handling preferred 24  |  alternate 0  |  best-valid 0",
-          "overlayCount": 24,
-          "downloadLogCount": 24,
-          "downloadStatusCounts": {
-            "ok": 24
-          },
-          "passed": true,
-          "failureReasons": []
-        },
-        {
-          "entry": {
-            "id": "2000-04-21|10|fa095",
-            "date": "2000-04-21",
-            "iCode": 10,
-            "fToken": "fa095",
-            "pathCount": 20
-          },
-          "statusText": "Loaded 20/24 visible cells for 2000-04-21. Some cells could not be resolved.",
-          "selectionText": "Showing 2000-04-21. The server prefers i.10 and only switches version when that preferred tile is not valid for a visible cell. Coverage 24/24 visible cells. Alternate version cells 4. Missing cells 0.",
-          "renderSummary": "Tiles loaded 20/24 visible cellsDirect tiles 20  |  Parent-derived 0  |  Missing 4Versions used i.272, i.17, i.10Selection handling preferred 16  |  alternate 4  |  best-valid 0",
-          "overlayCount": 20,
-          "downloadLogCount": 28,
-          "downloadStatusCounts": {
-            "ok": 20,
-            "missing": 8
-          },
-          "passed": true,
-          "failureReasons": []
-        }
+      "metadataErrorCount": 24,
+      "metadataErrorSample": "All flatfile hosts failed. https://kh.google.com/flatfile?db=tm: fetch failed (ENOTFOUND) | https://cmpmap.com/flatfile?db=tm: fetch failed (ENOTFOUND)",
+      "oldestDate": null,
+      "newestDate": null,
+      "selectedEntry": null,
+      "overlayCount": 0,
+      "downloadLogCount": 0,
+      "downloadStatusCounts": {},
+      "clickResults": [],
+      "failureReasons": [
+        "metadata-fetch-failed"
       ],
-      "failureReasons": [],
       "firstPath": {
-        "path": "0023102230221011",
-        "sourcePath": "0023102230221011",
-        "packetUrl": "https://kh.google.com/flatfile?db=tm&qp-0023102230221011-q.366",
-        "parserMode": "framed",
-        "entryCount": 71
+        "path": "0213010322303200",
+        "sourcePath": null,
+        "packetUrl": null,
+        "parserMode": "error",
+        "entryCount": 0
       }
     },
     {
-      "label": "Cairo",
+      "label": "Random (-8.4526, -153.5868)",
       "center": [
-        30.0444,
-        31.2357
+        -8.45258470159024,
+        -153.58678872697055
       ],
-      "zoom": 15,
-      "statusText": "Loaded 20/20 visible cells for 2000-07-10.",
-      "selectionText": "Showing 2000-07-10. The server prefers i.10 and only switches version when that preferred tile is not valid for a visible cell. Coverage 20/20 visible cells. Alternate version cells 0. Missing cells 0.",
-      "renderSummary": "Tiles loaded 20/20 visible cellsDirect tiles 20  |  Parent-derived 0  |  Missing 0Versions used i.10Selection handling preferred 20  |  alternate 0  |  best-valid 0",
-      "catalogEntryCount": 143,
-      "requestedPathCount": 20,
-      "resolvedPathCount": 20,
-      "unresolvedPathCount": 0,
+      "zoom": 13,
+      "statusText": "Live metadata fetch failed for all visible paths: All flatfile hosts failed. https://kh.google.com/flatfile?db=tm: fetch failed (ENOTFOUND) | https://cmpmap.com/flatfile?db=tm: fetch failed (ENOTFOUND)",
+      "selectionText": "Pick a date to load historical imagery for the current map view.",
+      "renderSummary": "No historical imagery loaded.",
+      "catalogEntryCount": 0,
+      "requestedPathCount": 30,
+      "resolvedPathCount": 0,
+      "unresolvedPathCount": 30,
       "parserModes": {
-        "framed": 20
+        "error": 30
       },
-      "metadataErrorCount": 0,
-      "metadataErrorSample": null,
-      "oldestDate": "2000-07-10",
-      "newestDate": "2025-05-30",
-      "selectedEntry": {
-        "id": "2000-07-10|10|fa0ea",
-        "date": "2000-07-10",
-        "iCode": 10,
-        "fToken": "fa0ea"
-      },
-      "overlayCount": 20,
-      "downloadLogCount": 20,
-      "downloadStatusCounts": {
-        "ok": 20
-      },
-      "clickResults": [
-        {
-          "entry": {
-            "id": "2025-05-30|360|fd2be",
-            "date": "2025-05-30",
-            "iCode": 360,
-            "fToken": "fd2be",
-            "pathCount": 20
-          },
-          "statusText": "Loaded 20/20 visible cells for 2025-05-30.",
-          "selectionText": "Showing 2025-05-30. The server prefers i.360 and only switches version when that preferred tile is not valid for a visible cell. Coverage 20/20 visible cells. Alternate version cells 0. Missing cells 0.",
-          "renderSummary": "Tiles loaded 20/20 visible cellsDirect tiles 20  |  Parent-derived 0  |  Missing 0Versions used i.360Selection handling preferred 20  |  alternate 0  |  best-valid 0",
-          "overlayCount": 20,
-          "downloadLogCount": 20,
-          "downloadStatusCounts": {
-            "ok": 20
-          },
-          "passed": true,
-          "failureReasons": []
-        },
-        {
-          "entry": {
-            "id": "2000-07-10|10|fa0ea",
-            "date": "2000-07-10",
-            "iCode": 10,
-            "fToken": "fa0ea",
-            "pathCount": 20
-          },
-          "statusText": "Loaded 20/20 visible cells for 2000-07-10.",
-          "selectionText": "Showing 2000-07-10. The server prefers i.10 and only switches version when that preferred tile is not valid for a visible cell. Coverage 20/20 visible cells. Alternate version cells 0. Missing cells 0.",
-          "renderSummary": "Tiles loaded 20/20 visible cellsDirect tiles 20  |  Parent-derived 0  |  Missing 0Versions used i.10Selection handling preferred 20  |  alternate 0  |  best-valid 0",
-          "overlayCount": 20,
-          "downloadLogCount": 20,
-          "downloadStatusCounts": {
-            "ok": 20
-          },
-          "passed": true,
-          "failureReasons": []
-        }
+      "metadataErrorCount": 30,
+      "metadataErrorSample": "All flatfile hosts failed. https://kh.google.com/flatfile?db=tm: fetch failed (ENOTFOUND) | https://cmpmap.com/flatfile?db=tm: fetch failed (ENOTFOUND)",
+      "oldestDate": null,
+      "newestDate": null,
+      "selectedEntry": null,
+      "overlayCount": 0,
+      "downloadLogCount": 0,
+      "downloadStatusCounts": {},
+      "clickResults": [],
+      "failureReasons": [
+        "metadata-fetch-failed"
       ],
-      "failureReasons": [],
       "firstPath": {
-        "path": "0200202130312302",
-        "sourcePath": "0200202130312302",
-        "packetUrl": "https://kh.google.com/flatfile?db=tm&qp-0200202130312302-q.366",
-        "parserMode": "framed",
-        "entryCount": 122
+        "path": "00332301323213",
+        "sourcePath": null,
+        "packetUrl": null,
+        "parserMode": "error",
+        "entryCount": 0
+      }
+    },
+    {
+      "label": "Random (-52.9945, 90.8046)",
+      "center": [
+        -52.99447371158749,
+        90.80458936281502
+      ],
+      "zoom": 12,
+      "statusText": "Live metadata fetch failed for all visible paths: All flatfile hosts failed. https://kh.google.com/flatfile?db=tm: fetch failed (ENOTFOUND) | https://cmpmap.com/flatfile?db=tm: fetch failed (ENOTFOUND)",
+      "selectionText": "Pick a date to load historical imagery for the current map view.",
+      "renderSummary": "No historical imagery loaded.",
+      "catalogEntryCount": 0,
+      "requestedPathCount": 20,
+      "resolvedPathCount": 0,
+      "unresolvedPathCount": 20,
+      "parserModes": {
+        "error": 20
+      },
+      "metadataErrorCount": 20,
+      "metadataErrorSample": "All flatfile hosts failed. https://kh.google.com/flatfile?db=tm: fetch failed (ENOTFOUND) | https://cmpmap.com/flatfile?db=tm: fetch failed (ENOTFOUND)",
+      "oldestDate": null,
+      "newestDate": null,
+      "selectedEntry": null,
+      "overlayCount": 0,
+      "downloadLogCount": 0,
+      "downloadStatusCounts": {},
+      "clickResults": [],
+      "failureReasons": [
+        "metadata-fetch-failed"
+      ],
+      "firstPath": {
+        "path": "0120330300122",
+        "sourcePath": null,
+        "packetUrl": null,
+        "parserMode": "error",
+        "entryCount": 0
       }
     }
   ]

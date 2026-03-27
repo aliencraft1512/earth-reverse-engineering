@@ -9,8 +9,14 @@ let overlayAbortController = null;
 let currentSelectionDiagnostics = null;
 let currentDownloadLog = [];
 
-const DEFAULT_CENTER = [35.1723, 33.3667];
-const DEFAULT_ZOOM = 15;
+function getRandomCoordinates() {
+  const lat = (Math.random() * 180) - 90;
+  const lon = (Math.random() * 360) - 180;
+  return [lat, lon];
+}
+
+const DEFAULT_CENTER = getRandomCoordinates();
+const DEFAULT_ZOOM = Math.floor(Math.random() * 6) + 12; // Start at random zoom between 12 and 17
 const FIXED_FIDELITY_MODE = 'allow-ancestor-derived';
 
 const { makeEntryId, reconcileSelection } = window.HistoricalSelection;
@@ -42,7 +48,7 @@ function initMap() {
 }
 
 function getCatalogZoom() {
-  return Math.min(18, Math.max(10, Math.round(map.getZoom())));
+  return Math.min(14, Math.max(10, Math.round(map.getZoom())));
 }
 
 function getBoundsPayload() {
