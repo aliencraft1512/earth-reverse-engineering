@@ -4,7 +4,8 @@
   },
   "scripts": {
     "test": "node --test exporter/historical/test/*.test.js",
-    "test:historical-live": "node exporter/historical/test/liveNavigationSmoke.js"
+    "test:historical-live": "node exporter/historical/test/liveNavigationSmoke.js --strict --limit=4 --clicks=2",
+    "test:historical-health": "node exporter/historical/test/healthCheck.js"
   },
   "devDependencies": {
     "playwright": "^1.58.2"

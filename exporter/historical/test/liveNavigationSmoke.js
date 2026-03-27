@@ -9,6 +9,7 @@ const DEFAULT_HOST = '127.0.0.1';
 const DEFAULT_TIMEOUT_MS = 60000;
 const DEFAULT_LIMIT = 6;
 const DEFAULT_SEED = 20260327;
+const DEFAULT_CLICKS_PER_TARGET = 2;
 const REPORT_DIRECTORY = path.join(__dirname, '..', 'output');
 
 const WORLD_TARGETS = [
@@ -28,7 +29,9 @@ function parseCliArgs(argv) {
   const options = {
     seed: DEFAULT_SEED,
     limit: DEFAULT_LIMIT,
+    clicksPerTarget: DEFAULT_CLICKS_PER_TARGET,
     reportPath: null,
+    strict: false,
   };
 
   for (const argument of argv) {
@@ -44,6 +47,16 @@ function parseCliArgs(argv) {
 
     if (argument.startsWith('--report=')) {
       options.reportPath = path.resolve(argument.slice('--report='.length));
+      continue;
+    }
+
+    if (argument.startsWith('--clicks=')) {
+      options.clicksPerTarget = Number.parseInt(argument.slice('--clicks='.length), 10);
+      continue;
+    }
+
+    if (argument === '--strict') {
+      options.strict = true;
     }
   }
 
@@ -53,6 +66,10 @@ function parseCliArgs(argv) {
 
   if (!Number.isFinite(options.limit) || options.limit < 1) {
     options.limit = DEFAULT_LIMIT;
+  }
+
+  if (!Number.isFinite(options.clicksPerTarget) || options.clicksPerTarget < 1) {
+    options.clicksPerTarget = DEFAULT_CLICKS_PER_TARGET;
   }
 
   return options;
@@ -79,6 +96,57 @@ function shuffleTargets(targets, seed) {
   }
 
   return shuffled;
+}
+
+function buildEntryId(entry) {
+  return `${entry.date}|${entry.iCode}|${entry.fToken}`;
+}
+
+function compareCoverageDesc(left, right) {
+  const leftPathCount = Number.isFinite(left?.pathCount) ? left.pathCount : 0;
+  const rightPathCount = Number.isFinite(right?.pathCount) ? right.pathCount : 0;
+
+  if (leftPathCount !== rightPathCount) {
+    return rightPathCount - leftPathCount;
+  }
+
+  if (left?.date !== right?.date) {
+    return String(right?.date || '').localeCompare(String(left?.date || ''));
+  }
+
+  return (right?.iCode || 0) - (left?.iCode || 0);
+}
+
+function compareAgeAsc(left, right) {
+  if (left?.date !== right?.date) {
+    return String(left?.date || '').localeCompare(String(right?.date || ''));
+  }
+
+  return compareCoverageDesc(left, right);
+}
+
+function pickEntriesToTest(entries, clickCount = DEFAULT_CLICKS_PER_TARGET) {
+  if (!Array.isArray(entries) || entries.length === 0) {
+    return [];
+  }
+
+  const uniqueEntries = new Map();
+  const byCoverage = [...entries].sort(compareCoverageDesc);
+  const byAge = [...entries].sort(compareAgeAsc);
+
+  for (const candidate of [byCoverage[0], byAge[0], ...byCoverage]) {
+    if (!candidate) {
+      continue;
+    }
+
+    uniqueEntries.set(buildEntryId(candidate), candidate);
+
+    if (uniqueEntries.size >= clickCount) {
+      break;
+    }
+  }
+
+  return Array.from(uniqueEntries.values()).slice(0, clickCount);
 }
 
 async function waitForServer(baseUrl, timeoutMs = DEFAULT_TIMEOUT_MS) {
@@ -173,12 +241,80 @@ function summarizeDownloadLog(downloadLog) {
   return statusCounts;
 }
 
-function summarizeLocationResult(target, state) {
+async function clickEntryAndCollectState(page, entry) {
+  const entryId = buildEntryId(entry);
+  const locator = page.locator(`#dateList .date-item[data-entry-id="${entryId}"]`);
+  await locator.click();
+  await waitForRenderAttempt(page);
+  const state = await collectLocationState(page);
+  const downloadStatusCounts = summarizeDownloadLog(state.downloadLog);
+  const selectedEntryId = state.selectedEntry ? buildEntryId(state.selectedEntry) : null;
+  const failureReasons = [];
+
+  if (selectedEntryId !== entryId) {
+    failureReasons.push('selection-mismatch');
+  }
+
+  if (state.downloadLog.length === 0) {
+    failureReasons.push('no-download-log');
+  }
+
+  if ((downloadStatusCounts.ok || 0) === 0) {
+    failureReasons.push('no-successful-tiles');
+  }
+
+  if (state.overlayCount === 0) {
+    failureReasons.push('no-overlays');
+  }
+
+  if (/Error rendering historical imagery/i.test(state.statusText)) {
+    failureReasons.push('render-error');
+  }
+
+  return {
+    entry: {
+      id: entryId,
+      date: entry.date,
+      iCode: entry.iCode,
+      fToken: entry.fToken,
+      pathCount: entry.pathCount,
+    },
+    statusText: state.statusText,
+    selectionText: state.selectionText,
+    renderSummary: state.renderSummary,
+    overlayCount: state.overlayCount,
+    downloadLogCount: state.downloadLog.length,
+    downloadStatusCounts,
+    passed: failureReasons.length === 0,
+    failureReasons,
+  };
+}
+
+function summarizeLocationResult(target, state, clickResults = []) {
   const catalog = state.catalog || { entries: [], verification: {}, paths: [] };
   const entries = catalog.entries || [];
   const dates = entries.map(entry => entry.date).sort();
   const parserModes = catalog.verification?.parserModes || {};
   const errorPaths = (catalog.paths || []).filter(pathInfo => pathInfo.parser?.mode === 'error');
+  const failureReasons = [];
+
+  if (
+    errorPaths.length === (catalog.verification?.requestedPathCount || 0) &&
+    errorPaths.length > 0
+  ) {
+    failureReasons.push('metadata-fetch-failed');
+  } else if (entries.length === 0) {
+    failureReasons.push('no-dates-returned');
+  }
+
+  if (entries.length > 0 && clickResults.length === 0) {
+    failureReasons.push('no-render-attempt');
+  }
+
+  const failingClicks = clickResults.filter(result => !result.passed);
+  if (entries.length > 0 && failingClicks.length === clickResults.length && clickResults.length > 0) {
+    failureReasons.push('all-clicks-failed');
+  }
 
   return {
     label: target.label,
@@ -197,7 +333,7 @@ function summarizeLocationResult(target, state) {
     oldestDate: dates[0] || null,
     newestDate: dates[dates.length - 1] || null,
     selectedEntry: state.selectedEntry ? {
-      id: state.selectedEntry.id,
+      id: buildEntryId(state.selectedEntry),
       date: state.selectedEntry.date,
       iCode: state.selectedEntry.iCode,
       fToken: state.selectedEntry.fToken,
@@ -205,6 +341,8 @@ function summarizeLocationResult(target, state) {
     overlayCount: state.overlayCount,
     downloadLogCount: state.downloadLog.length,
     downloadStatusCounts: summarizeDownloadLog(state.downloadLog),
+    clickResults,
+    failureReasons,
     firstPath: catalog.paths?.[0] ? {
       path: catalog.paths[0].path,
       sourcePath: catalog.paths[0].sourcePath,
@@ -220,8 +358,13 @@ function buildSummary(results) {
     targetCount: results.length,
     targetsWithEntries: 0,
     targetsWithRenderedOverlays: 0,
+    targetsWithSuccessfulClicks: 0,
     targetsWithMetadataErrors: 0,
+    clickAttempts: 0,
+    clickFailures: 0,
+    targetFailures: 0,
     parserModes: {},
+    failures: [],
   };
 
   for (const result of results) {
@@ -233,12 +376,34 @@ function buildSummary(results) {
       totals.targetsWithRenderedOverlays += 1;
     }
 
+    if (result.clickResults.some(click => click.passed)) {
+      totals.targetsWithSuccessfulClicks += 1;
+    }
+
     if (
       result.metadataErrorCount > 0 ||
       (result.downloadStatusCounts.error || 0) > 0 ||
       /Error verifying historical metadata|Live metadata fetch failed/i.test(result.statusText)
     ) {
       totals.targetsWithMetadataErrors += 1;
+    }
+
+    totals.clickAttempts += result.clickResults.length;
+    totals.clickFailures += result.clickResults.filter(click => !click.passed).length;
+
+    if (result.failureReasons.length > 0 || result.clickResults.some(click => !click.passed)) {
+      totals.targetFailures += 1;
+      totals.failures.push({
+        label: result.label,
+        failureReasons: result.failureReasons,
+        clickFailures: result.clickResults
+          .filter(click => !click.passed)
+          .map(click => ({
+            entry: click.entry,
+            failureReasons: click.failureReasons,
+            statusText: click.statusText,
+          })),
+      });
     }
 
     for (const [mode, count] of Object.entries(result.parserModes)) {
@@ -283,22 +448,30 @@ async function run() {
       await waitForCatalogRefresh(page, previousNonce);
 
       let state = await collectLocationState(page);
+      const clickResults = [];
 
       if (state.catalog?.entries?.length > 0) {
-        await page.locator('#dateList .date-item:not(.empty)').first().click();
-        await waitForRenderAttempt(page);
         state = await collectLocationState(page);
+
+        for (const entry of pickEntriesToTest(state.catalog.entries, options.clicksPerTarget)) {
+          const clickResult = await clickEntryAndCollectState(page, entry);
+          clickResults.push(clickResult);
+          state = await collectLocationState(page);
+        }
       }
 
-      results.push(summarizeLocationResult(target, state));
+      results.push(summarizeLocationResult(target, state, clickResults));
     }
 
+    const summary = buildSummary(results);
     const report = {
       generatedAt: new Date().toISOString(),
       seed: options.seed,
       limit: options.limit,
+      clicksPerTarget: options.clicksPerTarget,
+      strict: options.strict,
       baseUrl,
-      summary: buildSummary(results),
+      summary,
       results,
     };
 
@@ -307,7 +480,7 @@ async function run() {
     fs.writeFileSync(reportPath, `${JSON.stringify(report, null, 2)}\n`);
     console.log(JSON.stringify({ reportPath, ...report }, null, 2));
 
-    if (report.summary.targetsWithEntries === 0) {
+    if (report.summary.targetsWithEntries === 0 || (options.strict && report.summary.failures.length > 0)) {
       process.exitCode = 1;
     }
   } finally {

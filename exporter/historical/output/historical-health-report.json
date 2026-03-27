@@ -1,0 +1,376 @@
+{
+  "generatedAt": "2026-03-27T17:49:24.791Z",
+  "seed": 20260327,
+  "limit": 4,
+  "clicksPerTarget": 2,
+  "strict": true,
+  "baseUrl": "http://127.0.0.1:61550",
+  "summary": {
+    "targetCount": 4,
+    "targetsWithEntries": 4,
+    "targetsWithRenderedOverlays": 3,
+    "targetsWithSuccessfulClicks": 4,
+    "targetsWithMetadataErrors": 0,
+    "clickAttempts": 8,
+    "clickFailures": 1,
+    "targetFailures": 1,
+    "parserModes": {
+      "framed": 79
+    },
+    "failures": [
+      {
+        "label": "New York",
+        "failureReasons": [],
+        "clickFailures": [
+          {
+            "entry": {
+              "id": "1974-10-24|13|f6d58",
+              "date": "1974-10-24",
+              "iCode": 13,
+              "fToken": "f6d58",
+              "pathCount": 6
+            },
+            "failureReasons": [
+              "no-successful-tiles",
+              "no-overlays"
+            ],
+            "statusText": "Loaded 0/20 visible cells for 1974-10-24. Some cells could not be resolved."
+          }
+        ]
+      }
+    ]
+  },
+  "results": [
+    {
+      "label": "Reykjavik",
+      "center": [
+        64.1466,
+        -21.9426
+      ],
+      "zoom": 15,
+      "statusText": "Loaded 15/15 visible cells for 2002-04-26.",
+      "selectionText": "Showing 2002-04-26. The server prefers i.272 and only switches version when that preferred tile is not valid for a visible cell. Coverage 9/15 visible cells. Alternate version cells 3. Missing cells 6.",
+      "renderSummary": "Tiles loaded 15/15 visible cellsDirect tiles 6  |  Parent-derived 9  |  Missing 0Versions used i.366, i.272, i.6Selection handling preferred 6  |  alternate 3  |  best-valid 0",
+      "catalogEntryCount": 87,
+      "requestedPathCount": 15,
+      "resolvedPathCount": 15,
+      "unresolvedPathCount": 0,
+      "parserModes": {
+        "framed": 15
+      },
+      "metadataErrorCount": 0,
+      "metadataErrorSample": null,
+      "oldestDate": "2002-04-26",
+      "newestDate": "2025-05-31",
+      "selectedEntry": {
+        "id": "2002-04-26|272|fa49a",
+        "date": "2002-04-26",
+        "iCode": 272,
+        "fToken": "fa49a"
+      },
+      "overlayCount": 15,
+      "downloadLogCount": 30,
+      "downloadStatusCounts": {
+        "missing": 15,
+        "ok": 15
+      },
+      "clickResults": [
+        {
+          "entry": {
+            "id": "2025-05-30|360|fd2be",
+            "date": "2025-05-30",
+            "iCode": 360,
+            "fToken": "fd2be",
+            "pathCount": 15
+          },
+          "statusText": "Loaded 15/15 visible cells for 2025-05-30.",
+          "selectionText": "Showing 2025-05-30. The server prefers i.360 and only switches version when that preferred tile is not valid for a visible cell. Coverage 15/15 visible cells. Alternate version cells 0. Missing cells 0.",
+          "renderSummary": "Tiles loaded 15/15 visible cellsDirect tiles 15  |  Parent-derived 0  |  Missing 0Versions used i.360Selection handling preferred 15  |  alternate 0  |  best-valid 0",
+          "overlayCount": 15,
+          "downloadLogCount": 15,
+          "downloadStatusCounts": {
+            "ok": 15
+          },
+          "passed": true,
+          "failureReasons": []
+        },
+        {
+          "entry": {
+            "id": "2002-04-26|272|fa49a",
+            "date": "2002-04-26",
+            "iCode": 272,
+            "fToken": "fa49a",
+            "pathCount": 6
+          },
+          "statusText": "Loaded 15/15 visible cells for 2002-04-26.",
+          "selectionText": "Showing 2002-04-26. The server prefers i.272 and only switches version when that preferred tile is not valid for a visible cell. Coverage 9/15 visible cells. Alternate version cells 3. Missing cells 6.",
+          "renderSummary": "Tiles loaded 15/15 visible cellsDirect tiles 6  |  Parent-derived 9  |  Missing 0Versions used i.366, i.272, i.6Selection handling preferred 6  |  alternate 3  |  best-valid 0",
+          "overlayCount": 15,
+          "downloadLogCount": 30,
+          "downloadStatusCounts": {
+            "missing": 15,
+            "ok": 15
+          },
+          "passed": true,
+          "failureReasons": []
+        }
+      ],
+      "failureReasons": [],
+      "firstPath": {
+        "path": "0312133033113303",
+        "sourcePath": "0312133033113303",
+        "packetUrl": "https://kh.google.com/flatfile?db=tm&qp-0312133033113303-q.366",
+        "parserMode": "framed",
+        "entryCount": 81
+      }
+    },
+    {
+      "label": "New York",
+      "center": [
+        40.7128,
+        -74.006
+      ],
+      "zoom": 15,
+      "statusText": "Loaded 0/20 visible cells for 1974-10-24. Some cells could not be resolved.",
+      "selectionText": "Showing 1974-10-24. The server prefers i.13 and only switches version when that preferred tile is not valid for a visible cell. Coverage 6/20 visible cells. Alternate version cells 0. Missing cells 14.",
+      "renderSummary": "Tiles loaded 0/20 visible cellsDirect tiles 0  |  Parent-derived 0  |  Missing 20Versions used noneSelection handling preferred 0  |  alternate 0  |  best-valid 0",
+      "catalogEntryCount": 213,
+      "requestedPathCount": 20,
+      "resolvedPathCount": 20,
+      "unresolvedPathCount": 0,
+      "parserModes": {
+        "framed": 20
+      },
+      "metadataErrorCount": 0,
+      "metadataErrorSample": null,
+      "oldestDate": "1974-10-24",
+      "newestDate": "2025-09-11",
+      "selectedEntry": {
+        "id": "1974-10-24|13|f6d58",
+        "date": "1974-10-24",
+        "iCode": 13,
+        "fToken": "f6d58"
+      },
+      "overlayCount": 0,
+      "downloadLogCount": 240,
+      "downloadStatusCounts": {
+        "missing": 240
+      },
+      "clickResults": [
+        {
+          "entry": {
+            "id": "2025-09-11|365|fd32b",
+            "date": "2025-09-11",
+            "iCode": 365,
+            "fToken": "fd32b",
+            "pathCount": 20
+          },
+          "statusText": "Loaded 20/20 visible cells for 2025-09-11.",
+          "selectionText": "Showing 2025-09-11. The server prefers i.365 and only switches version when that preferred tile is not valid for a visible cell. Coverage 20/20 visible cells. Alternate version cells 0. Missing cells 0.",
+          "renderSummary": "Tiles loaded 20/20 visible cellsDirect tiles 20  |  Parent-derived 0  |  Missing 0Versions used i.365Selection handling preferred 20  |  alternate 0  |  best-valid 0",
+          "overlayCount": 20,
+          "downloadLogCount": 20,
+          "downloadStatusCounts": {
+            "ok": 20
+          },
+          "passed": true,
+          "failureReasons": []
+        },
+        {
+          "entry": {
+            "id": "1974-10-24|13|f6d58",
+            "date": "1974-10-24",
+            "iCode": 13,
+            "fToken": "f6d58",
+            "pathCount": 6
+          },
+          "statusText": "Loaded 0/20 visible cells for 1974-10-24. Some cells could not be resolved.",
+          "selectionText": "Showing 1974-10-24. The server prefers i.13 and only switches version when that preferred tile is not valid for a visible cell. Coverage 6/20 visible cells. Alternate version cells 0. Missing cells 14.",
+          "renderSummary": "Tiles loaded 0/20 visible cellsDirect tiles 0  |  Parent-derived 0  |  Missing 20Versions used noneSelection handling preferred 0  |  alternate 0  |  best-valid 0",
+          "overlayCount": 0,
+          "downloadLogCount": 240,
+          "downloadStatusCounts": {
+            "missing": 240
+          },
+          "passed": false,
+          "failureReasons": [
+            "no-successful-tiles",
+            "no-overlays"
+          ]
+        }
+      ],
+      "failureReasons": [],
+      "firstPath": {
+        "path": "0310323113232101",
+        "sourcePath": "0310323113232101",
+        "packetUrl": "https://kh.google.com/flatfile?db=tm&qp-0310323113232101-q.366",
+        "parserMode": "framed",
+        "entryCount": 145
+      }
+    },
+    {
+      "label": "Buenos Aires",
+      "center": [
+        -34.6037,
+        -58.3816
+      ],
+      "zoom": 15,
+      "statusText": "Loaded 20/24 visible cells for 2000-04-21. Some cells could not be resolved.",
+      "selectionText": "Showing 2000-04-21. The server prefers i.10 and only switches version when that preferred tile is not valid for a visible cell. Coverage 24/24 visible cells. Alternate version cells 4. Missing cells 0.",
+      "renderSummary": "Tiles loaded 20/24 visible cellsDirect tiles 20  |  Parent-derived 0  |  Missing 4Versions used i.272, i.17, i.10Selection handling preferred 16  |  alternate 4  |  best-valid 0",
+      "catalogEntryCount": 121,
+      "requestedPathCount": 24,
+      "resolvedPathCount": 24,
+      "unresolvedPathCount": 0,
+      "parserModes": {
+        "framed": 24
+      },
+      "metadataErrorCount": 0,
+      "metadataErrorSample": null,
+      "oldestDate": "2000-04-21",
+      "newestDate": "2025-11-26",
+      "selectedEntry": {
+        "id": "2000-04-21|10|fa095",
+        "date": "2000-04-21",
+        "iCode": 10,
+        "fToken": "fa095"
+      },
+      "overlayCount": 20,
+      "downloadLogCount": 72,
+      "downloadStatusCounts": {
+        "ok": 20,
+        "missing": 52
+      },
+      "clickResults": [
+        {
+          "entry": {
+            "id": "2025-11-26|366|fd37a",
+            "date": "2025-11-26",
+            "iCode": 366,
+            "fToken": "fd37a",
+            "pathCount": 24
+          },
+          "statusText": "Loaded 24/24 visible cells for 2025-11-26.",
+          "selectionText": "Showing 2025-11-26. The server prefers i.366 and only switches version when that preferred tile is not valid for a visible cell.",
+          "renderSummary": "Tiles loaded 24/24 visible cellsDirect tiles 24  |  Parent-derived 0  |  Missing 0Versions used i.366Selection handling preferred 24  |  alternate 0  |  best-valid 0",
+          "overlayCount": 24,
+          "downloadLogCount": 24,
+          "downloadStatusCounts": {
+            "ok": 24
+          },
+          "passed": true,
+          "failureReasons": []
+        },
+        {
+          "entry": {
+            "id": "2000-04-21|10|fa095",
+            "date": "2000-04-21",
+            "iCode": 10,
+            "fToken": "fa095",
+            "pathCount": 20
+          },
+          "statusText": "Loaded 20/24 visible cells for 2000-04-21. Some cells could not be resolved.",
+          "selectionText": "Showing 2000-04-21. The server prefers i.10 and only switches version when that preferred tile is not valid for a visible cell. Coverage 24/24 visible cells. Alternate version cells 4. Missing cells 0.",
+          "renderSummary": "Tiles loaded 20/24 visible cellsDirect tiles 20  |  Parent-derived 0  |  Missing 4Versions used i.272, i.17, i.10Selection handling preferred 16  |  alternate 4  |  best-valid 0",
+          "overlayCount": 20,
+          "downloadLogCount": 72,
+          "downloadStatusCounts": {
+            "ok": 20,
+            "missing": 52
+          },
+          "passed": true,
+          "failureReasons": []
+        }
+      ],
+      "failureReasons": [],
+      "firstPath": {
+        "path": "0023102230221011",
+        "sourcePath": "0023102230221011",
+        "packetUrl": "https://kh.google.com/flatfile?db=tm&qp-0023102230221011-q.366",
+        "parserMode": "framed",
+        "entryCount": 71
+      }
+    },
+    {
+      "label": "Cairo",
+      "center": [
+        30.0444,
+        31.2357
+      ],
+      "zoom": 15,
+      "statusText": "Loaded 20/20 visible cells for 2000-07-10.",
+      "selectionText": "Showing 2000-07-10. The server prefers i.10 and only switches version when that preferred tile is not valid for a visible cell. Coverage 20/20 visible cells. Alternate version cells 0. Missing cells 0.",
+      "renderSummary": "Tiles loaded 20/20 visible cellsDirect tiles 20  |  Parent-derived 0  |  Missing 0Versions used i.10Selection handling preferred 20  |  alternate 0  |  best-valid 0",
+      "catalogEntryCount": 148,
+      "requestedPathCount": 20,
+      "resolvedPathCount": 20,
+      "unresolvedPathCount": 0,
+      "parserModes": {
+        "framed": 20
+      },
+      "metadataErrorCount": 0,
+      "metadataErrorSample": null,
+      "oldestDate": "2000-07-10",
+      "newestDate": "2025-05-30",
+      "selectedEntry": {
+        "id": "2000-07-10|10|fa0ea",
+        "date": "2000-07-10",
+        "iCode": 10,
+        "fToken": "fa0ea"
+      },
+      "overlayCount": 20,
+      "downloadLogCount": 20,
+      "downloadStatusCounts": {
+        "ok": 20
+      },
+      "clickResults": [
+        {
+          "entry": {
+            "id": "2025-05-30|360|fd2be",
+            "date": "2025-05-30",
+            "iCode": 360,
+            "fToken": "fd2be",
+            "pathCount": 20
+          },
+          "statusText": "Loaded 20/20 visible cells for 2025-05-30.",
+          "selectionText": "Showing 2025-05-30. The server prefers i.360 and only switches version when that preferred tile is not valid for a visible cell. Coverage 20/20 visible cells. Alternate version cells 0. Missing cells 0.",
+          "renderSummary": "Tiles loaded 20/20 visible cellsDirect tiles 20  |  Parent-derived 0  |  Missing 0Versions used i.360Selection handling preferred 20  |  alternate 0  |  best-valid 0",
+          "overlayCount": 20,
+          "downloadLogCount": 20,
+          "downloadStatusCounts": {
+            "ok": 20
+          },
+          "passed": true,
+          "failureReasons": []
+        },
+        {
+          "entry": {
+            "id": "2000-07-10|10|fa0ea",
+            "date": "2000-07-10",
+            "iCode": 10,
+            "fToken": "fa0ea",
+            "pathCount": 20
+          },
+          "statusText": "Loaded 20/20 visible cells for 2000-07-10.",
+          "selectionText": "Showing 2000-07-10. The server prefers i.10 and only switches version when that preferred tile is not valid for a visible cell. Coverage 20/20 visible cells. Alternate version cells 0. Missing cells 0.",
+          "renderSummary": "Tiles loaded 20/20 visible cellsDirect tiles 20  |  Parent-derived 0  |  Missing 0Versions used i.10Selection handling preferred 20  |  alternate 0  |  best-valid 0",
+          "overlayCount": 20,
+          "downloadLogCount": 20,
+          "downloadStatusCounts": {
+            "ok": 20
+          },
+          "passed": true,
+          "failureReasons": []
+        }
+      ],
+      "failureReasons": [],
+      "firstPath": {
+        "path": "0200202130312302",
+        "sourcePath": "0200202130312302",
+        "packetUrl": "https://kh.google.com/flatfile?db=tm&qp-0200202130312302-q.366",
+        "parserMode": "framed",
+        "entryCount": 122
+      }
+    }
+  ]
+}
