@@ -125,11 +125,13 @@ async function updateMetadataForCurrentView() {
     document.getElementById('loading-indicator').style.display = 'block';
     
     try {
-        const res = await fetch(`/api/metadata-at?lat=${center.lat}&lon=${center.lng}&zoom=14`);
+        // Fetch metadata for the actual zoom level (up to Z16)
+        const fetchZoom = Math.min(zoom, 16);
+        const res = await fetch(`/api/metadata-at?lat=${center.lat}&lon=${center.lng}&zoom=${fetchZoom}`);
         const data = await res.json();
         
         currentMetadata = data;
-        document.getElementById('status-bar').firstChild.textContent = `Path: ${data.pathCode} | Lat: ${center.lat.toFixed(4)} Lon: ${center.lng.toFixed(4)} `;
+        document.getElementById('status-bar').firstChild.textContent = `Path: ${data.pathCode} (Z${fetchZoom}) | Lat: ${center.lat.toFixed(4)} Lon: ${center.lng.toFixed(4)} `;
         
         renderMetadataTable(data.entries);
     } catch (e) {
