@@ -2,7 +2,7 @@ const axios = require('axios');
 const fs = require('fs-extra');
 const path = require('path');
 const crypto = require('crypto');
-const { Jimp } = require('jimp');
+const sharp = require('sharp');
 
 const { HistoricalCatalog } = require('../historical/catalog');
 const { slippyTileToCenter } = require('../historical/pathUtils');
@@ -16,15 +16,6 @@ const REQUEST_HEADERS = {
 const ZeroTileGeoSize = 360;
 const ValidBoundRc = [-180.0, 180.0, 180.0, -180.0];
 
-// PRIORITY MAPPING FROM OLD SOCKET.JS
-const LEGACY_MAPPING = {
-  "2008-04-23": { v: 10,  token: "fb097" },
-  "2013-10-24": { v: 115, token: "fbb58" },
-  "2016-04-05": { v: 152, token: "fc085" },
-  "2020-06-09": { v: 272, token: "fc8c9" },
-  "2022-06-11": { v: 346, token: "fcccb" }
-};
-
 class MetadataManager {
     constructor(workDir) {
         this.workDir = workDir;
@@ -32,11 +23,12 @@ class MetadataManager {
         this.tileCacheDir = path.join(this.cacheDir, 'tiles');
         this.secretKey = null;
         this.catalog = null;
+        this.probeCache = new Map();
         fs.ensureDirSync(this.tileCacheDir);
     }
 
     async init() {
-        console.log("Initializing Universal Hybrid Engine...");
+        console.log("Initializing Lightning-Fast Engine...");
         await this.refreshDbRoot();
         this.catalog = new HistoricalCatalog({
             baseUrls: BASE_URLS,
@@ -72,11 +64,15 @@ class MetadataManager {
             }
             fs.writeFile(path.join(this.workDir, 'dbRoot.v5'), raw, () => {});
         } catch (e) {
-            this.secretKey = Buffer.concat([Buffer.alloc(8), fs.readFileSync(path.join(this.workDir, 'dbRoot.v5')).subarray(0, 1016)]);
+            const dbRootPath = path.join(this.workDir, 'dbRoot.v5');
+            if (fs.existsSync(dbRootPath)) {
+                this.secretKey = Buffer.concat([Buffer.alloc(8), fs.readFileSync(dbRootPath).subarray(0, 1016)]);
+            }
         }
     }
 
-    decryptXOR(source) {
+    decryptTile(buffer) {
+        const source = Buffer.isBuffer(buffer) ? buffer : Buffer.from(buffer);
         const out = Buffer.alloc(source.length);
         let j = 16;
         for (let i = 0; i < source.length; i++) {
@@ -100,37 +96,35 @@ class MetadataManager {
     }
 
     getRowColInfoStr(lat, lon, zoom) {
-        let str = "";
+        const worldSize = Math.pow(2, zoom);
+        let col = Math.floor((lon + 180) / 360 * worldSize);
+        let row = Math.floor((180 - lat) / 360 * worldSize); 
+        let path = "";
         for (let i = 0; i <= zoom; i++) {
-            const size = this.getTileGeoSize(i);
-            const col = Math.floor((lon - ValidBoundRc[0]) / size);
-            const row = Math.floor((lat - ValidBoundRc[3]) / size);
-            str += this.getRowColInfoChar(row, col);
+            const sizeAtLevel = Math.pow(2, zoom - i);
+            const r = Math.floor(row / sizeAtLevel) % 2;
+            const c = Math.floor(col / sizeAtLevel) % 2;
+            if (r > 0 && c > 0) path += "2";
+            else if (r > 0 && c === 0) path += "3";
+            else if (r === 0 && c === 0) path += "0";
+            else path += "1";
         }
-        return str;
+        return path;
     }
 
     async fetchMetadata(pathCode) {
         const cacheFile = path.join(this.cacheDir, `qp-${pathCode}.json`);
         if (fs.existsSync(cacheFile)) return fs.readJsonSync(cacheFile);
         const result = await this.catalog.fetchMetadataForPath(pathCode);
-        
-        // Priority Overwrite: Use legacy mapping for known problematic dates
-        result.entries = result.entries.map(e => {
-            const legacy = LEGACY_MAPPING[e.date];
-            if (legacy) return { ...e, iCode: legacy.v, fToken: legacy.token };
-            return e;
-        });
-
         fs.writeJson(cacheFile, result, () => {});
         return result;
     }
 
-    async fetchTile(z, x, y, iCode, fToken, sourcePath = null) {
-        const center = slippyTileToCenter(z, x, y);
-        const fullPath = this.getRowColInfoStr(center.lat, center.lon, z);
+    async fetchTileWithCropping(zoom, x, y, iCode, fToken, sourcePath = null) {
+        const center = slippyTileToCenter(zoom, x, y);
+        const fullPath = this.getRowColInfoStr(center.lat, center.lon, zoom);
         
-        const procName = `proc-${z}-${x}-${y}-${fullPath}-${iCode}.jpg`;
+        const procName = `p-${zoom}-${x}-${y}-${iCode}-${fToken}.jpg`;
         const procPath = path.join(this.tileCacheDir, procName);
         if (fs.existsSync(procPath)) return fs.readFileSync(procPath);
 
@@ -141,18 +135,16 @@ class MetadataManager {
             const isAncestor = len < fullPath.length;
             
             const tileUrl = `${BASE_URLS[0]}&f1-${currentPath}-i.${iCode}-${fToken}`;
-            const rawPath = path.join(this.tileCacheDir, this.md5(tileUrl) + ".jpg");
+            const rawCacheName = this.md5(tileUrl) + ".jpg";
+            const rawPath = path.join(this.tileCacheDir, rawCacheName);
 
             let buffer;
             if (fs.existsSync(rawPath)) {
                 buffer = fs.readFileSync(rawPath);
             } else {
                 try {
-                    const data = await Promise.any(BASE_URLS.map(base => {
-                        const url = `${base}&f1-${currentPath}-i.${iCode}-${fToken}`;
-                        return axios.get(url, { responseType: 'arraybuffer', headers: REQUEST_HEADERS, timeout: 5000 }).then(r => r.data);
-                    }));
-                    buffer = this.decryptXOR(Buffer.from(data));
+                    const res = await axios.get(tileUrl, { responseType: 'arraybuffer', headers: REQUEST_HEADERS, timeout: 5000 });
+                    buffer = this.decryptTile(Buffer.from(res.data));
                     fs.writeFile(rawPath, buffer, () => {});
                 } catch (e) {
                     if (len === 5) throw new Error("404");
@@ -161,7 +153,6 @@ class MetadataManager {
             }
 
             if (isAncestor) {
-                const image = await Jimp.read(buffer);
                 const diff = fullPath.length - len;
                 let top = 0, left = 0, size = 256;
                 for (let i = 0; i < diff; i++) {
@@ -171,15 +162,19 @@ class MetadataManager {
                     else if (char === '2') { left += size; top += size; }
                     else if (char === '3') top += size;
                 }
-                image.crop({ x: Math.round(left), y: Math.round(top), w: Math.max(1, Math.round(size)), h: Math.max(1, Math.round(size)) });
-                image.resize({ w: 256, h: 256 });
-                const out = await image.getBuffer("image/jpeg");
+                const out = await sharp(buffer)
+                    .extract({ left: Math.round(left), top: Math.round(top), width: Math.max(1, Math.round(size)), height: Math.max(1, Math.round(size)) })
+                    .resize(256, 256, { kernel: 'nearest' })
+                    .toBuffer();
                 fs.writeFile(procPath, out, () => {});
                 return out;
             }
             return buffer;
         }
         throw new Error("404");
+    }
+    latLonToPath(lat, lon, zoom) {
+        return this.getRowColInfoStr(lat, lon, zoom);
     }
 }
 
