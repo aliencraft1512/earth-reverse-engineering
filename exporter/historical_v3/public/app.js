@@ -12,9 +12,95 @@ L.HistoricalLayer = L.TileLayer.extend({
     getTileUrl: function(coords) {
         if (!activeSelection) return "";
         const zoom = coords.z;
-        return `/api/tile/${zoom}/${coords.x}/${coords.y}?iCode=${activeSelection.iCode}&fToken=${activeSelection.fToken}&sourcePath=${activeSelection.sourcePath}`;
+        // Direct API tile fetch (fallback/standard)
+        return `/api/tile/${zoom}/${coords.x}/${coords.y}?iCode=${activeSelection.iCode}&fToken=${activeSelection.fToken}&sourcePath=${activeSelection.sourcePath || ''}`;
+    },
+
+    _prefetched: new Set(),
+
+    createTile: function (coords, done) {
+        const tile = document.createElement('img');
+        const zoom = coords.z;
+
+        // HIGH SPEED BATCH LOGIC FOR Z17+
+        if (zoom >= 17 && activeSelection) {
+            const bounds = map.getBounds();
+            const viewKey = `${activeSelection.date}-${zoom}-${bounds.getNorth().toFixed(3)}-${bounds.getWest().toFixed(3)}`;
+            
+            if (!this._prefetched.has(viewKey)) {
+                this._prefetched.add(viewKey);
+                console.log("UI: Triggering Batch Fetch for Z" + zoom);
+                fetch('/tiles', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        date: activeSelection.date,
+                        zoom: zoom,
+                        bounds: {
+                            north: bounds.getNorth(),
+                            south: bounds.getSouth(),
+                            east: bounds.getEast(),
+                            west: bounds.getWest()
+                        }
+                    })
+                }).then(() => {
+                    console.log("UI: Batch fetch complete.");
+                    // Re-request tile after batch might have cached it
+                    tile.src = this.getTileUrl(coords);
+                });
+            }
+        }
+
+        tile.onload = () => done(null, tile);
+        tile.onerror = () => done(null, tile);
+        tile.src = this.getTileUrl(coords);
+        return tile;
     }
 });
+
+async function refreshDbRoot() {
+    const btn = document.getElementById('refresh-dbroot-btn');
+    if (btn) btn.disabled = true;
+    console.log("UI: Refreshing dbRoot...");
+    try {
+        const res = await fetch('/api/refresh-dbroot', { method: 'POST' });
+        const data = await res.json();
+        alert(data.message || data.error);
+    } catch (e) {
+        alert("Refresh failed: " + e.message);
+    } finally {
+        if (btn) btn.disabled = false;
+    }
+}
+
+async function discoverDatesInView() {
+    const bounds = map.getBounds();
+    const zoom = Math.max(14, map.getZoom());
+    
+    try {
+        const res = await fetch('/api/available-dates', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                zoom: Math.floor(zoom),
+                bounds: {
+                    north: bounds.getNorth(),
+                    south: bounds.getSouth(),
+                    east: bounds.getEast(),
+                    west: bounds.getWest()
+                }
+            })
+        });
+        const data = await res.json();
+        if (data.availableDates && data.availableDates.length > 0) {
+            console.log("UI: Discovered dates:", data.availableDates.length);
+            const formatted = data.availableDates.map(d => ({ date: d }));
+            updateSliderWithLocalDates(formatted);
+        }
+    } catch (e) {
+        console.warn("UI: Date discovery failed", e);
+    }
+}
 
 async function initMap() {
     console.log("UI: Initializing Map...");
@@ -25,11 +111,18 @@ async function initMap() {
         attribution: '© OpenStreetMap'
     }).addTo(map);
 
+    // Bind refresh button if exists
+    const refreshBtn = document.getElementById('refresh-dbroot-btn');
+    if (refreshBtn) refreshBtn.onclick = refreshDbRoot;
+
     // Test Server Connection
     fetch('/api/regions').then(r => console.log("UI: Server Connection OK")).catch(e => console.error("UI: Server Connection FAILED", e));
 
     map.on('zoom', () => {
         document.getElementById('zoom-indicator').innerText = `ZOOM: ${map.getZoom().toFixed(1)}`;
+        if (map.getZoom() >= 17 && activeSelection) {
+            refreshHistoricalLayer();
+        }
     });
 
     let moveTimeout;
@@ -37,6 +130,7 @@ async function initMap() {
         clearTimeout(moveTimeout);
         moveTimeout = setTimeout(() => {
             updateMetadataForCurrentView();
+            if (map.getZoom() >= 14) discoverDatesInView();
         }, 300);
     });
 
@@ -188,13 +282,16 @@ function refreshHistoricalLayer() {
         historicalLayer = null;
     }
     if (!activeSelection) return;
-    const zoom = map.getZoom();
-    if (zoom < 17) {
-        document.getElementById('status-bar').firstChild.textContent += ` | Zoom to 17+ to see tiles.`;
-        return;
-    }
-    const tileUrlTemplate = `/api/tile/{z}/{x}/{y}?iCode=${activeSelection.iCode}&fToken=${activeSelection.fToken}&sourcePath=${activeSelection.sourcePath}`;
-    historicalLayer = new L.HistoricalLayer(tileUrlTemplate, { maxZoom: 21, minZoom: 1, opacity: 1.0, attribution: '© Google Earth' }).addTo(map);
+    
+    // REMOVED ZOOM RESTRICTION to allow viewing at any level
+    const tileUrlTemplate = `/api/tile/{z}/{x}/{y}?iCode=${activeSelection.iCode}&fToken=${activeSelection.fToken}&sourcePath=${activeSelection.sourcePath || ''}`;
+    console.log("UI: Refreshing Layer with URL:", tileUrlTemplate);
+    historicalLayer = new L.HistoricalLayer(tileUrlTemplate, { 
+        maxZoom: 22, 
+        minZoom: 1, 
+        opacity: 1.0, 
+        attribution: '© Google Earth' 
+    }).addTo(map);
 }
 
 function copyToClipboard(text, btn, tr) {

@@ -1,0 +1,515 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - banner [ref=e2]:
+    - 'heading "Historical V3: Interactive Map Explorer" [level=1] [ref=e3]'
+    - button "Refresh dbRoot" [ref=e4] [cursor=pointer]
+  - generic [ref=e5]:
+    - text: "Path: 0200231121011120 (Z15) | Lat: 35.1856 Lon: 33.3823 | Zoom to 17+ to see tiles. | Zoom to 17+ to see tiles."
+    - generic [ref=e6]: Global Index Active
+  - generic [ref=e7]:
+    - generic [ref=e8]: 2025-07-02
+    - generic [ref=e9]:
+      - slider [ref=e12]
+      - generic [ref=e14]:
+        - generic [ref=e16]: "2008"
+        - generic [ref=e30]: "2018"
+        - generic [ref=e44]: "2025"
+  - generic [ref=e45]:
+    - generic [ref=e46]:
+      - generic: "ZOOM: 15.0"
+      - generic:
+        - generic [ref=e47]:
+          - button "Zoom in" [ref=e48] [cursor=pointer]: +
+          - button "Zoom out" [ref=e49] [cursor=pointer]: −
+        - generic [ref=e50]:
+          - link "Leaflet" [ref=e51] [cursor=pointer]:
+            - /url: https://leafletjs.com
+            - img [ref=e52]
+            - text: Leaflet
+          - text: "| © OpenStreetMap"
+    - generic [ref=e56]:
+      - generic [ref=e57]:
+        - heading "Predefined Shortcuts" [level=3] [ref=e58]
+        - generic [ref=e59]:
+          - generic [ref=e60] [cursor=pointer]: Nicosia
+          - generic [ref=e61] [cursor=pointer]: Athens
+          - generic [ref=e62] [cursor=pointer]: London
+      - heading "Available Dates (Z14+)" [level=3] [ref=e63]
+      - table [ref=e65]:
+        - rowgroup [ref=e66]:
+          - row "Date v. Token" [ref=e67]:
+            - columnheader "Date" [ref=e68]
+            - columnheader "v." [ref=e69]
+            - columnheader "Token" [ref=e70]
+        - rowgroup [ref=e71]:
+          - row "2025-07-02 📋 364 fd2e2" [ref=e72] [cursor=pointer]:
+            - cell "2025-07-02 📋" [ref=e73]:
+              - text: 2025-07-02
+              - button "📋" [ref=e74]
+            - cell "364" [ref=e75]
+            - cell "fd2e2" [ref=e76]
+          - row "2025-07-02 📋 362 fd2e2" [ref=e77] [cursor=pointer]:
+            - cell "2025-07-02 📋" [ref=e78]:
+              - text: 2025-07-02
+              - button "📋" [ref=e79]
+            - cell "362" [ref=e80]
+            - cell "fd2e2" [ref=e81]
+          - row "2025-06-30 📋 362 fd2de" [ref=e82] [cursor=pointer]:
+            - cell "2025-06-30 📋" [ref=e83]:
+              - text: 2025-06-30
+              - button "📋" [ref=e84]
+            - cell "362" [ref=e85]
+            - cell "fd2de" [ref=e86]
+          - row "2025-06-09 📋 361 fd2c9" [ref=e87] [cursor=pointer]:
+            - cell "2025-06-09 📋" [ref=e88]:
+              - text: 2025-06-09
+              - button "📋" [ref=e89]
+            - cell "361" [ref=e90]
+            - cell "fd2c9" [ref=e91]
+          - row "2025-04-12 📋 359 fd28c" [ref=e92] [cursor=pointer]:
+            - cell "2025-04-12 📋" [ref=e93]:
+              - text: 2025-04-12
+              - button "📋" [ref=e94]
+            - cell "359" [ref=e95]
+            - cell "fd28c" [ref=e96]
+          - row "2024-11-21 📋 353 fd175" [ref=e97] [cursor=pointer]:
+            - cell "2024-11-21 📋" [ref=e98]:
+              - text: 2024-11-21
+              - button "📋" [ref=e99]
+            - cell "353" [ref=e100]
+            - cell "fd175" [ref=e101]
+          - row "2024-10-10 📋 350 fd14a" [ref=e102] [cursor=pointer]:
+            - cell "2024-10-10 📋" [ref=e103]:
+              - text: 2024-10-10
+              - button "📋" [ref=e104]
+            - cell "350" [ref=e105]
+            - cell "fd14a" [ref=e106]
+          - row "2024-05-20 📋 350 fd0b4" [ref=e107] [cursor=pointer]:
+            - cell "2024-05-20 📋" [ref=e108]:
+              - text: 2024-05-20
+              - button "📋" [ref=e109]
+            - cell "350" [ref=e110]
+            - cell "fd0b4" [ref=e111]
+          - row "2024-05-20 📋 345 fd0b4" [ref=e112] [cursor=pointer]:
+            - cell "2024-05-20 📋" [ref=e113]:
+              - text: 2024-05-20
+              - button "📋" [ref=e114]
+            - cell "345" [ref=e115]
+            - cell "fd0b4" [ref=e116]
+          - row "2024-04-06 📋 346 fd086" [ref=e117] [cursor=pointer]:
+            - cell "2024-04-06 📋" [ref=e118]:
+              - text: 2024-04-06
+              - button "📋" [ref=e119]
+            - cell "346" [ref=e120]
+            - cell "fd086" [ref=e121]
+          - row "2024-04-06 📋 344 fd086" [ref=e122] [cursor=pointer]:
+            - cell "2024-04-06 📋" [ref=e123]:
+              - text: 2024-04-06
+              - button "📋" [ref=e124]
+            - cell "344" [ref=e125]
+            - cell "fd086" [ref=e126]
+          - row "2023-05-16 📋 346 fceb0" [ref=e127] [cursor=pointer]:
+            - cell "2023-05-16 📋" [ref=e128]:
+              - text: 2023-05-16
+              - button "📋" [ref=e129]
+            - cell "346" [ref=e130]
+            - cell "fceb0" [ref=e131]
+          - row "2023-05-16 📋 345 fceb0" [ref=e132] [cursor=pointer]:
+            - cell "2023-05-16 📋" [ref=e133]:
+              - text: 2023-05-16
+              - button "📋" [ref=e134]
+            - cell "345" [ref=e135]
+            - cell "fceb0" [ref=e136]
+          - row "2023-05-16 📋 318 fceb0" [ref=e137] [cursor=pointer]:
+            - cell "2023-05-16 📋" [ref=e138]:
+              - text: 2023-05-16
+              - button "📋" [ref=e139]
+            - cell "318" [ref=e140]
+            - cell "fceb0" [ref=e141]
+          - row "2023-04-18 📋 320 fce92" [ref=e142] [cursor=pointer]:
+            - cell "2023-04-18 📋" [ref=e143]:
+              - text: 2023-04-18
+              - button "📋" [ref=e144]
+            - cell "320" [ref=e145]
+            - cell "fce92" [ref=e146]
+          - row "2023-04-18 📋 318 fce92" [ref=e147] [cursor=pointer]:
+            - cell "2023-04-18 📋" [ref=e148]:
+              - text: 2023-04-18
+              - button "📋" [ref=e149]
+            - cell "318" [ref=e150]
+            - cell "fce92" [ref=e151]
+          - row "2022-09-04 📋 298 fcd24" [ref=e152] [cursor=pointer]:
+            - cell "2022-09-04 📋" [ref=e153]:
+              - text: 2022-09-04
+              - button "📋" [ref=e154]
+            - cell "298" [ref=e155]
+            - cell "fcd24" [ref=e156]
+          - row "2022-09-01 📋 299 fcd21" [ref=e157] [cursor=pointer]:
+            - cell "2022-09-01 📋" [ref=e158]:
+              - text: 2022-09-01
+              - button "📋" [ref=e159]
+            - cell "299" [ref=e160]
+            - cell "fcd21" [ref=e161]
+          - row "2022-08-24 📋 345 fcd18" [ref=e162] [cursor=pointer]:
+            - cell "2022-08-24 📋" [ref=e163]:
+              - text: 2022-08-24
+              - button "📋" [ref=e164]
+            - cell "345" [ref=e165]
+            - cell "fcd18" [ref=e166]
+          - row "2022-08-22 📋 305 fcd16" [ref=e167] [cursor=pointer]:
+            - cell "2022-08-22 📋" [ref=e168]:
+              - text: 2022-08-22
+              - button "📋" [ref=e169]
+            - cell "305" [ref=e170]
+            - cell "fcd16" [ref=e171]
+          - row "2022-08-22 📋 297 fcd16" [ref=e172] [cursor=pointer]:
+            - cell "2022-08-22 📋" [ref=e173]:
+              - text: 2022-08-22
+              - button "📋" [ref=e174]
+            - cell "297" [ref=e175]
+            - cell "fcd16" [ref=e176]
+          - row "2022-05-21 📋 305 fccb5" [ref=e177] [cursor=pointer]:
+            - cell "2022-05-21 📋" [ref=e178]:
+              - text: 2022-05-21
+              - button "📋" [ref=e179]
+            - cell "305" [ref=e180]
+            - cell "fccb5" [ref=e181]
+          - row "2022-05-13 📋 305 fccad" [ref=e182] [cursor=pointer]:
+            - cell "2022-05-13 📋" [ref=e183]:
+              - text: 2022-05-13
+              - button "📋" [ref=e184]
+            - cell "305" [ref=e185]
+            - cell "fccad" [ref=e186]
+          - row "2022-02-12 📋 304 fcc4c" [ref=e187] [cursor=pointer]:
+            - cell "2022-02-12 📋" [ref=e188]:
+              - text: 2022-02-12
+              - button "📋" [ref=e189]
+            - cell "304" [ref=e190]
+            - cell "fcc4c" [ref=e191]
+          - row "2021-11-30 📋 346 fcb7e" [ref=e192] [cursor=pointer]:
+            - cell "2021-11-30 📋" [ref=e193]:
+              - text: 2021-11-30
+              - button "📋" [ref=e194]
+            - cell "346" [ref=e195]
+            - cell "fcb7e" [ref=e196]
+          - row "2021-11-30 📋 305 fcb7e" [ref=e197] [cursor=pointer]:
+            - cell "2021-11-30 📋" [ref=e198]:
+              - text: 2021-11-30
+              - button "📋" [ref=e199]
+            - cell "305" [ref=e200]
+            - cell "fcb7e" [ref=e201]
+          - row "2021-10-02 📋 278 fcb42" [ref=e202] [cursor=pointer]:
+            - cell "2021-10-02 📋" [ref=e203]:
+              - text: 2021-10-02
+              - button "📋" [ref=e204]
+            - cell "278" [ref=e205]
+            - cell "fcb42" [ref=e206]
+          - row "2021-09-04 📋 280 fcb24" [ref=e207] [cursor=pointer]:
+            - cell "2021-09-04 📋" [ref=e208]:
+              - text: 2021-09-04
+              - button "📋" [ref=e209]
+            - cell "280" [ref=e210]
+            - cell "fcb24" [ref=e211]
+          - row "2020-10-01 📋 288 fc941" [ref=e212] [cursor=pointer]:
+            - cell "2020-10-01 📋" [ref=e213]:
+              - text: 2020-10-01
+              - button "📋" [ref=e214]
+            - cell "288" [ref=e215]
+            - cell "fc941" [ref=e216]
+          - row "2020-08-16 📋 288 fc910" [ref=e217] [cursor=pointer]:
+            - cell "2020-08-16 📋" [ref=e218]:
+              - text: 2020-08-16
+              - button "📋" [ref=e219]
+            - cell "288" [ref=e220]
+            - cell "fc910" [ref=e221]
+          - row "2020-06-28 📋 288 fc8dc" [ref=e222] [cursor=pointer]:
+            - cell "2020-06-28 📋" [ref=e223]:
+              - text: 2020-06-28
+              - button "📋" [ref=e224]
+            - cell "288" [ref=e225]
+            - cell "fc8dc" [ref=e226]
+          - row "2020-05-21 📋 288 fc8b5" [ref=e227] [cursor=pointer]:
+            - cell "2020-05-21 📋" [ref=e228]:
+              - text: 2020-05-21
+              - button "📋" [ref=e229]
+            - cell "288" [ref=e230]
+            - cell "fc8b5" [ref=e231]
+          - row "2020-05-16 📋 288 fc8b0" [ref=e232] [cursor=pointer]:
+            - cell "2020-05-16 📋" [ref=e233]:
+              - text: 2020-05-16
+              - button "📋" [ref=e234]
+            - cell "288" [ref=e235]
+            - cell "fc8b0" [ref=e236]
+          - row "2020-04-13 📋 288 fc88d" [ref=e237] [cursor=pointer]:
+            - cell "2020-04-13 📋" [ref=e238]:
+              - text: 2020-04-13
+              - button "📋" [ref=e239]
+            - cell "288" [ref=e240]
+            - cell "fc88d" [ref=e241]
+          - row "2020-02-17 📋 288 fc851" [ref=e242] [cursor=pointer]:
+            - cell "2020-02-17 📋" [ref=e243]:
+              - text: 2020-02-17
+              - button "📋" [ref=e244]
+            - cell "288" [ref=e245]
+            - cell "fc851" [ref=e246]
+          - row "2019-09-28 📋 288 fc73c" [ref=e247] [cursor=pointer]:
+            - cell "2019-09-28 📋" [ref=e248]:
+              - text: 2019-09-28
+              - button "📋" [ref=e249]
+            - cell "288" [ref=e250]
+            - cell "fc73c" [ref=e251]
+          - row "2019-08-26 📋 288 fc71a" [ref=e252] [cursor=pointer]:
+            - cell "2019-08-26 📋" [ref=e253]:
+              - text: 2019-08-26
+              - button "📋" [ref=e254]
+            - cell "288" [ref=e255]
+            - cell "fc71a" [ref=e256]
+          - row "2019-08-15 📋 288 fc70f" [ref=e257] [cursor=pointer]:
+            - cell "2019-08-15 📋" [ref=e258]:
+              - text: 2019-08-15
+              - button "📋" [ref=e259]
+            - cell "288" [ref=e260]
+            - cell "fc70f" [ref=e261]
+          - row "2019-08-13 📋 288 fc70d" [ref=e262] [cursor=pointer]:
+            - cell "2019-08-13 📋" [ref=e263]:
+              - text: 2019-08-13
+              - button "📋" [ref=e264]
+            - cell "288" [ref=e265]
+            - cell "fc70d" [ref=e266]
+          - row "2019-08-10 📋 288 fc70a" [ref=e267] [cursor=pointer]:
+            - cell "2019-08-10 📋" [ref=e268]:
+              - text: 2019-08-10
+              - button "📋" [ref=e269]
+            - cell "288" [ref=e270]
+            - cell "fc70a" [ref=e271]
+          - row "2019-07-08 📋 288 fc6e8" [ref=e272] [cursor=pointer]:
+            - cell "2019-07-08 📋" [ref=e273]:
+              - text: 2019-07-08
+              - button "📋" [ref=e274]
+            - cell "288" [ref=e275]
+            - cell "fc6e8" [ref=e276]
+          - row "2018-10-28 📋 253 fc55c" [ref=e277] [cursor=pointer]:
+            - cell "2018-10-28 📋" [ref=e278]:
+              - text: 2018-10-28
+              - button "📋" [ref=e279]
+            - cell "253" [ref=e280]
+            - cell "fc55c" [ref=e281]
+          - row "2018-10-28 📋 240 fc55c" [ref=e282] [cursor=pointer]:
+            - cell "2018-10-28 📋" [ref=e283]:
+              - text: 2018-10-28
+              - button "📋" [ref=e284]
+            - cell "240" [ref=e285]
+            - cell "fc55c" [ref=e286]
+          - row "2018-09-23 📋 288 fc537" [ref=e287] [cursor=pointer]:
+            - cell "2018-09-23 📋" [ref=e288]:
+              - text: 2018-09-23
+              - button "📋" [ref=e289]
+            - cell "288" [ref=e290]
+            - cell "fc537" [ref=e291]
+          - row "2018-04-05 📋 288 fc485" [ref=e292] [cursor=pointer]:
+            - cell "2018-04-05 📋" [ref=e293]:
+              - text: 2018-04-05
+              - button "📋" [ref=e294]
+            - cell "288" [ref=e295]
+            - cell "fc485" [ref=e296]
+          - row "2018-03-11 📋 288 fc46b" [ref=e297] [cursor=pointer]:
+            - cell "2018-03-11 📋" [ref=e298]:
+              - text: 2018-03-11
+              - button "📋" [ref=e299]
+            - cell "288" [ref=e300]
+            - cell "fc46b" [ref=e301]
+          - row "2018-03-03 📋 288 fc463" [ref=e302] [cursor=pointer]:
+            - cell "2018-03-03 📋" [ref=e303]:
+              - text: 2018-03-03
+              - button "📋" [ref=e304]
+            - cell "288" [ref=e305]
+            - cell "fc463" [ref=e306]
+          - row "2018-02-28 📋 288 fc45c" [ref=e307] [cursor=pointer]:
+            - cell "2018-02-28 📋" [ref=e308]:
+              - text: 2018-02-28
+              - button "📋" [ref=e309]
+            - cell "288" [ref=e310]
+            - cell "fc45c" [ref=e311]
+          - row "2018-02-28 📋 233 fc45c" [ref=e312] [cursor=pointer]:
+            - cell "2018-02-28 📋" [ref=e313]:
+              - text: 2018-02-28
+              - button "📋" [ref=e314]
+            - cell "233" [ref=e315]
+            - cell "fc45c" [ref=e316]
+          - row "2017-10-21 📋 288 fc355" [ref=e317] [cursor=pointer]:
+            - cell "2017-10-21 📋" [ref=e318]:
+              - text: 2017-10-21
+              - button "📋" [ref=e319]
+            - cell "288" [ref=e320]
+            - cell "fc355" [ref=e321]
+          - row "2017-05-11 📋 288 fc2ab" [ref=e322] [cursor=pointer]:
+            - cell "2017-05-11 📋" [ref=e323]:
+              - text: 2017-05-11
+              - button "📋" [ref=e324]
+            - cell "288" [ref=e325]
+            - cell "fc2ab" [ref=e326]
+          - row "2017-05-03 📋 288 fc2a3" [ref=e327] [cursor=pointer]:
+            - cell "2017-05-03 📋" [ref=e328]:
+              - text: 2017-05-03
+              - button "📋" [ref=e329]
+            - cell "288" [ref=e330]
+            - cell "fc2a3" [ref=e331]
+          - row "2017-04-11 📋 288 fc28b" [ref=e332] [cursor=pointer]:
+            - cell "2017-04-11 📋" [ref=e333]:
+              - text: 2017-04-11
+              - button "📋" [ref=e334]
+            - cell "288" [ref=e335]
+            - cell "fc28b" [ref=e336]
+          - row "2017-01-28 📋 294 fc23c" [ref=e337] [cursor=pointer]:
+            - cell "2017-01-28 📋" [ref=e338]:
+              - text: 2017-01-28
+              - button "📋" [ref=e339]
+            - cell "294" [ref=e340]
+            - cell "fc23c" [ref=e341]
+          - row "2016-09-28 📋 288 fc13c" [ref=e342] [cursor=pointer]:
+            - cell "2016-09-28 📋" [ref=e343]:
+              - text: 2016-09-28
+              - button "📋" [ref=e344]
+            - cell "288" [ref=e345]
+            - cell "fc13c" [ref=e346]
+          - row "2016-09-24 📋 288 fc138" [ref=e347] [cursor=pointer]:
+            - cell "2016-09-24 📋" [ref=e348]:
+              - text: 2016-09-24
+              - button "📋" [ref=e349]
+            - cell "288" [ref=e350]
+            - cell "fc138" [ref=e351]
+          - row "2016-09-13 📋 288 fc12d" [ref=e352] [cursor=pointer]:
+            - cell "2016-09-13 📋" [ref=e353]:
+              - text: 2016-09-13
+              - button "📋" [ref=e354]
+            - cell "288" [ref=e355]
+            - cell "fc12d" [ref=e356]
+          - row "2016-06-07 📋 288 fc0c7" [ref=e357] [cursor=pointer]:
+            - cell "2016-06-07 📋" [ref=e358]:
+              - text: 2016-06-07
+              - button "📋" [ref=e359]
+            - cell "288" [ref=e360]
+            - cell "fc0c7" [ref=e361]
+          - row "2016-04-05 📋 288 fc085" [ref=e362] [cursor=pointer]:
+            - cell "2016-04-05 📋" [ref=e363]:
+              - text: 2016-04-05
+              - button "📋" [ref=e364]
+            - cell "288" [ref=e365]
+            - cell "fc085" [ref=e366]
+          - row "2016-01-09 📋 288 fc029" [ref=e367] [cursor=pointer]:
+            - cell "2016-01-09 📋" [ref=e368]:
+              - text: 2016-01-09
+              - button "📋" [ref=e369]
+            - cell "288" [ref=e370]
+            - cell "fc029" [ref=e371]
+          - row "2015-04-13 📋 288 fbe8d" [ref=e372] [cursor=pointer]:
+            - cell "2015-04-13 📋" [ref=e373]:
+              - text: 2015-04-13
+              - button "📋" [ref=e374]
+            - cell "288" [ref=e375]
+            - cell "fbe8d" [ref=e376]
+          - row "2015-03-22 📋 126 fbe76" [ref=e377] [cursor=pointer]:
+            - cell "2015-03-22 📋" [ref=e378]:
+              - text: 2015-03-22
+              - button "📋" [ref=e379]
+            - cell "126" [ref=e380]
+            - cell "fbe76" [ref=e381]
+          - row "2015-02-16 📋 288 fbe50" [ref=e382] [cursor=pointer]:
+            - cell "2015-02-16 📋" [ref=e383]:
+              - text: 2015-02-16
+              - button "📋" [ref=e384]
+            - cell "288" [ref=e385]
+            - cell "fbe50" [ref=e386]
+          - row "2015-01-24 📋 288 fbe38" [ref=e387] [cursor=pointer]:
+            - cell "2015-01-24 📋" [ref=e388]:
+              - text: 2015-01-24
+              - button "📋" [ref=e389]
+            - cell "288" [ref=e390]
+            - cell "fbe38" [ref=e391]
+          - row "2014-12-01 📋 126 fbd81" [ref=e392] [cursor=pointer]:
+            - cell "2014-12-01 📋" [ref=e393]:
+              - text: 2014-12-01
+              - button "📋" [ref=e394]
+            - cell "126" [ref=e395]
+            - cell "fbd81" [ref=e396]
+          - row "2014-07-13 📋 288 fbced" [ref=e397] [cursor=pointer]:
+            - cell "2014-07-13 📋" [ref=e398]:
+              - text: 2014-07-13
+              - button "📋" [ref=e399]
+            - cell "288" [ref=e400]
+            - cell "fbced" [ref=e401]
+          - row "2014-03-21 📋 122 fbc75" [ref=e402] [cursor=pointer]:
+            - cell "2014-03-21 📋" [ref=e403]:
+              - text: 2014-03-21
+              - button "📋" [ref=e404]
+            - cell "122" [ref=e405]
+            - cell "fbc75" [ref=e406]
+          - row "2014-02-05 📋 288 fbc45" [ref=e407] [cursor=pointer]:
+            - cell "2014-02-05 📋" [ref=e408]:
+              - text: 2014-02-05
+              - button "📋" [ref=e409]
+            - cell "288" [ref=e410]
+            - cell "fbc45" [ref=e411]
+          - row "2013-12-09 📋 288 fbb89" [ref=e412] [cursor=pointer]:
+            - cell "2013-12-09 📋" [ref=e413]:
+              - text: 2013-12-09
+              - button "📋" [ref=e414]
+            - cell "288" [ref=e415]
+            - cell "fbb89" [ref=e416]
+          - row "2013-11-10 📋 288 fbb6a" [ref=e417] [cursor=pointer]:
+            - cell "2013-11-10 📋" [ref=e418]:
+              - text: 2013-11-10
+              - button "📋" [ref=e419]
+            - cell "288" [ref=e420]
+            - cell "fbb6a" [ref=e421]
+          - row "2013-10-24 📋 119 fbb58" [ref=e422] [cursor=pointer]:
+            - cell "2013-10-24 📋" [ref=e423]:
+              - text: 2013-10-24
+              - button "📋" [ref=e424]
+            - cell "119" [ref=e425]
+            - cell "fbb58" [ref=e426]
+          - row "2013-10-24 📋 115 fbb58" [ref=e427] [cursor=pointer]:
+            - cell "2013-10-24 📋" [ref=e428]:
+              - text: 2013-10-24
+              - button "📋" [ref=e429]
+            - cell "115" [ref=e430]
+            - cell "fbb58" [ref=e431]
+          - row "2013-04-29 📋 288 fba9d" [ref=e432] [cursor=pointer]:
+            - cell "2013-04-29 📋" [ref=e433]:
+              - text: 2013-04-29
+              - button "📋" [ref=e434]
+            - cell "288" [ref=e435]
+            - cell "fba9d" [ref=e436]
+          - row "2012-07-12 📋 288 fb8ec" [ref=e437] [cursor=pointer]:
+            - cell "2012-07-12 📋" [ref=e438]:
+              - text: 2012-07-12
+              - button "📋" [ref=e439]
+            - cell "288" [ref=e440]
+            - cell "fb8ec" [ref=e441]
+          - row "2012-07-05 📋 288 fb8e5" [ref=e442] [cursor=pointer]:
+            - cell "2012-07-05 📋" [ref=e443]:
+              - text: 2012-07-05
+              - button "📋" [ref=e444]
+            - cell "288" [ref=e445]
+            - cell "fb8e5" [ref=e446]
+          - row "2011-06-20 📋 288 fb6d4" [ref=e447] [cursor=pointer]:
+            - cell "2011-06-20 📋" [ref=e448]:
+              - text: 2011-06-20
+              - button "📋" [ref=e449]
+            - cell "288" [ref=e450]
+            - cell "fb6d4" [ref=e451]
+          - row "2011-05-10 📋 288 fb6aa" [ref=e452] [cursor=pointer]:
+            - cell "2011-05-10 📋" [ref=e453]:
+              - text: 2011-05-10
+              - button "📋" [ref=e454]
+            - cell "288" [ref=e455]
+            - cell "fb6aa" [ref=e456]
+          - row "2008-04-23 📋 73 fb097" [ref=e457] [cursor=pointer]:
+            - cell "2008-04-23 📋" [ref=e458]:
+              - text: 2008-04-23
+              - button "📋" [ref=e459]
+            - cell "73" [ref=e460]
+            - cell "fb097" [ref=e461]
+```

@@ -37,8 +37,16 @@ async function runDiagnostics() {
                 const y = Math.floor((1 - Math.log(Math.tan(lat * Math.PI / 180) + 1 / Math.cos(lat * Math.PI / 180)) / Math.PI) / 2 * n);
                 
                 console.log(`[Diagnostic] Attempting tile fetch for ${z}/${x}/${y} (i.${first.iCode})`);
-                const tilePath = await manager.fetchTile(z, x, y, first.iCode, first.fToken); 
-                console.log(`SUCCESS: Tile fetched and decrypted to ${tilePath}`);
+                const tileBuffer = await manager.fetchTile(z, x, y, first.iCode, first.fToken); 
+                console.log(`SUCCESS: Tile fetched, size: ${tileBuffer.length} bytes`);
+                
+                const magic = tileBuffer.slice(0, 3).toString('hex');
+                console.log(`Magic Number: ${magic}`);
+                if (magic === 'ffd8ff') {
+                    console.log("Verified as valid JPEG.");
+                } else {
+                    console.error("NOT a valid JPEG.");
+                }
             } catch (e) {
                 console.error(`FAILURE: Tile fetch failed: ${e.message}`);
             }
