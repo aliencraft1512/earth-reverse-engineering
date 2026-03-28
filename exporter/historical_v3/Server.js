@@ -9,98 +9,116 @@ const PORT = 3003;
 const manager = new MetadataManager(__dirname);
 const syncEngine = new SyncEngine(__dirname);
 
-// Predefined regions for the "Load-and-Index" hypothesis
-const PREDEFINED_REGIONS = [
-    { name: "Cyprus (Whole)", pathCode: "02020023" }, // Z6
-    { name: "Nicosia", pathCode: "0202002311211002" }, // Z14
-    { name: "Athens", pathCode: "0311222013132223" }, // Z14
-    { name: "London", pathCode: "0211330120203222" }, // Z14
-    { name: "New York", pathCode: "0310323113223003" } // Z14
-];
-
+app.use(express.json({ limit: "5mb" }));
 app.use(express.static(path.join(__dirname, 'public')));
+
+// serve cached tiles directly if requested by old index.js logic
+app.use("/tile_cache", express.static(path.join(__dirname, "cache/tiles"), {
+  setHeaders(res) { res.setHeader("Content-Type", "image/jpeg"); }
+}));
 
 app.get('/api/world-index', (req, res) => {
     const indexPath = path.join(__dirname, 'public', 'world_index.json');
-    if (fs.existsSync(indexPath)) {
-        res.json(fs.readJsonSync(indexPath));
-    } else {
-        res.status(404).json({ error: "World index not generated yet." });
-    }
+    if (fs.existsSync(indexPath)) res.json(fs.readJsonSync(indexPath));
+    else res.status(404).json({ error: "No index." });
 });
 
-app.get('/api/metadata/:pathCode', async (req, res) => {
-    const data = await manager.fetchMetadata(req.params.pathCode);
-    res.json(data);
+// --- NEW HIGH-SPEED BATCH ENDPOINT (FOR PREVIOUS MECHANISM) ---
+app.post("/tiles", async (req, res) => {
+    const { date, bounds, zoom, iCode, fToken, sourcePath } = req.body || {};
+    if (!bounds || !zoom) return res.status(400).send("Missing data");
+
+    const { north, south, east, west } = bounds;
+    const tileSize = manager.getTileGeoSize(zoom);
+    const colLeft = Math.floor((west - (-180.0)) / tileSize);
+    const colRight = Math.floor((east - (-180.0)) / tileSize);
+    const rowBottom = Math.floor((south - (-180.0)) / tileSize);
+    const rowTop = Math.floor((north - (-180.0)) / tileSize);
+
+    const tileResults = [];
+    const promises = [];
+
+    for (let row = rowBottom; row <= rowTop; row++) {
+        for (let col = colLeft; col <= colRight; col++) {
+            const s = row * tileSize - 180.0;
+            const w = col * tileSize - 180.0;
+            const n = s + tileSize;
+            const e = w + tileSize;
+
+            // Generate slippy coords for fetchTileWithCropping
+            const centerLat = (s + n) / 2;
+            const centerLon = (w + e) / 2;
+            const n_slippy = Math.pow(2, zoom);
+            const sx = Math.floor((centerLon + 180) / 360 * n_slippy);
+            const sy = Math.floor((1 - Math.log(Math.tan(centerLat * Math.PI / 180) + 1 / Math.cos(centerLat * Math.PI / 180)) / Math.PI) / 2 * n_slippy);
+
+            // We use our existing high-speed fetch but wrap it for batch output
+            const p = manager.fetchTileWithCropping(zoom, sx, sy, iCode, fToken, sourcePath).then(() => {
+                // Return URL to the cached file
+                // We recreate the same URL logic as socket.js for the MD5
+                const version = `i.${iCode}`;
+                const rowColStr = manager.getRowColInfoStr((s+n)/2, (w+e)/2, zoom);
+                const tileUrl = `https://khmdb.google.com/flatfile?db=tm&f1-${rowColStr}-${version}-${fToken}`;
+                const cacheName = manager.md5(tileUrl) + ".jpg";
+                
+                tileResults.push({
+                    url: `/tile_cache/${cacheName}`,
+                    bounds: { north: n, south: s, east: e, west: w }
+                });
+            }).catch(() => {});
+            promises.push(p);
+        }
+    }
+
+    await Promise.all(promises);
+    res.json(tileResults);
 });
 
 app.get('/api/metadata-at', async (req, res) => {
     const { lat, lon, zoom } = req.query;
-    if (!lat || !lon || !zoom) return res.status(400).json({ error: "Missing lat/lon/zoom" });
     const pathCode = manager.latLonToPath(parseFloat(lat), parseFloat(lon), parseInt(zoom));
     const data = await manager.fetchMetadata(pathCode);
-    
-    // Enrich entries with the sourcePath of the packet they came from
-    const enrichedEntries = data.entries.map(e => ({
-        ...e,
-        sourcePath: data.sourcePath || pathCode
-    }));
-
-    res.json({ pathCode, ...data, entries: enrichedEntries });
+    const enriched = data.entries.map(e => ({ ...e, sourcePath: data.sourcePath || pathCode }));
+    res.json({ pathCode, ...data, entries: enriched });
 });
 
 app.get('/api/tile/:z/:x/:y', async (req, res) => {
-    const { z, x, y } = req.params;
-    const { iCode, fToken, sourcePath } = req.query; // Added sourcePath
-    if (!iCode || !fToken) return res.status(400).send("Missing iCode or fToken");
-
     try {
-        const tileBuffer = await manager.fetchTile(parseInt(z), parseInt(x), parseInt(y), iCode, fToken, sourcePath);
-        res.set('Content-Type', 'image/jpeg');
-        res.send(tileBuffer);
-    } catch (e) {
-        res.status(500).send(e.message);
-    }
+        const buffer = await manager.fetchTileWithCropping(parseInt(req.params.z), parseInt(req.params.x), parseInt(req.params.y), req.query.iCode, req.query.fToken, req.query.sourcePath);
+        res.set('Content-Type', 'image/jpeg').send(buffer);
+    } catch (e) { res.status(500).send(e.message); }
 });
 
-// Utility to refresh dbRoot manually
-app.post('/api/refresh', async (req, res) => {
+app.post('/api/log', (req, res) => {
+    const { type, message, data } = req.body;
+    const logPath = path.join(__dirname, 'session_log.txt');
+    const logEntry = `[${new Date().toISOString()}] [${type}] ${message} ${data ? JSON.stringify(data) : ''}\n`;
+    
     try {
-        await manager.refreshDbRoot();
-        res.json({ status: "ok", message: "dbRoot refreshed from kh.google.com" });
+        if (!fs.existsSync(logPath)) fs.writeFileSync(logPath, "");
+        fs.appendFileSync(logPath, logEntry);
+        res.json({ status: "ok" });
     } catch (e) {
-        res.status(500).json({ status: "error", message: e.message });
+        console.error("Log error:", e.message);
+        res.status(500).json({ error: e.message });
     }
 });
 
 async function start() {
     await manager.init();
     
-    // Start background world sync (Don't await)
-    syncEngine.startBackgroundSync().then(() => {
-        console.log("[Sync] Background discovery task finished. Server remains active.");
-    }).catch(e => {
-        console.error("[Sync] Background discovery error:", e.message);
-    });
+    // Startup check for log file
+    const logPath = path.join(__dirname, 'session_log.txt');
+    try {
+        fs.appendFileSync(logPath, `[${new Date().toISOString()}] Server Started\n`);
+        console.log(`[BOOT] Logging active at: ${logPath}`);
+    } catch (e) {
+        console.error(`[BOOT] Logging disabled: ${e.message}`);
+    }
 
+    syncEngine.startBackgroundSync();
     app.listen(PORT, () => {
-        console.log(`Historical V3 Server running at http://localhost:${PORT}`);
-        console.log(`Pre-indexing ${PREDEFINED_REGIONS.length} regions in background...`);
-        
-        // Use Promise.all to track pre-indexing completion
-        const indexingPromises = PREDEFINED_REGIONS.map(async r => {
-            try {
-                await manager.fetchMetadata(r.pathCode);
-                console.log(`[Cache] Indexed ${r.name}`);
-            } catch (e) {
-                console.warn(`[Cache] Failed for ${r.name}`);
-            }
-        });
-
-        Promise.all(indexingPromises).then(() => {
-            console.log("--- All pre-indexing complete. Server is fully ready. ---");
-        });
+        console.log(`Universal Historical Server at http://localhost:${PORT}`);
     });
 }
-
 start().catch(console.error);

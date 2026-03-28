@@ -5,8 +5,19 @@ let worldIndex = null;
 let highlightLayers = [];
 let historicalLayer = null; 
 let activeSelection = null;
+let timelineSlider = null;
 
-function initMap() {
+// --- CUSTOM PLATE CARREE TILE LAYER ---
+L.HistoricalLayer = L.TileLayer.extend({
+    getTileUrl: function(coords) {
+        if (!activeSelection) return "";
+        const zoom = coords.z;
+        return `/api/tile/${zoom}/${coords.x}/${coords.y}?iCode=${activeSelection.iCode}&fToken=${activeSelection.fToken}&sourcePath=${activeSelection.sourcePath}`;
+    }
+});
+
+async function initMap() {
+    console.log("UI: Initializing Map...");
     map = L.map('map').setView([35.1856, 33.3823], 14);
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -14,12 +25,27 @@ function initMap() {
         attribution: '© OpenStreetMap'
     }).addTo(map);
 
+    // Test Server Connection
+    fetch('/api/regions').then(r => console.log("UI: Server Connection OK")).catch(e => console.error("UI: Server Connection FAILED", e));
+
+    map.on('zoom', () => {
+        document.getElementById('zoom-indicator').innerText = `ZOOM: ${map.getZoom().toFixed(1)}`;
+    });
+
     let moveTimeout;
     map.on('moveend', () => {
         clearTimeout(moveTimeout);
         moveTimeout = setTimeout(() => {
             updateMetadataForCurrentView();
         }, 300);
+    });
+
+    const sliderDiv = document.getElementById('timeline-slider');
+    timelineSlider = noUiSlider.create(sliderDiv, {
+        start: [0],
+        range: { min: 0, max: 1 },
+        step: 1,
+        pips: { mode: 'count', values: 2 }
     });
 
     updateMetadataForCurrentView();
@@ -31,65 +57,81 @@ async function loadWorldIndex() {
         const res = await fetch('/api/world-index');
         if (!res.ok) throw new Error("Index not found");
         worldIndex = await res.json();
-        document.getElementById('timeline-container').style.display = 'block';
         document.getElementById('global-status').innerText = `Global Index Active`;
-        setupTimeline();
+        const dates = Object.keys(worldIndex.dates).sort().map(d => ({ date: d }));
+        updateSliderWithLocalDates(dates);
     } catch (e) {
         document.getElementById('global-status').innerText = "Global Index: Not found";
     }
 }
 
-function setupTimeline() {
-    const slider = document.getElementById('timeline-slider');
-    const dates = Object.keys(worldIndex.dates).sort();
-    slider.min = 0; slider.max = dates.length - 1; slider.value = dates.length - 1;
-    slider.oninput = () => {
-        const date = dates[slider.value];
-        document.getElementById('timeline-current').innerText = date;
-        highlightWorldAreas(date);
-    };
-}
-
-function highlightWorldAreas(date) {
-    highlightLayers.forEach(l => map.removeLayer(l));
-    highlightLayers = [];
-    const paths = worldIndex.dates[date] || [];
-    paths.forEach(pathCode => {
-        const bounds = getBoundsForPath(pathCode);
-        const rect = L.rectangle(bounds, { color: "#ff7800", weight: 1, fillOpacity: 0.15 }).addTo(map);
-        highlightLayers.push(rect);
-    });
-}
-
-function getBoundsForPath(pathCode) {
-    const ValidBoundRc = [-180.0, 180.0, 180.0, -180.0];
-    let west = ValidBoundRc[0], east = ValidBoundRc[1], north = ValidBoundRc[2], south = ValidBoundRc[3];
-    for (let i = 0; i < pathCode.length; i++) {
-        const midLon = (west + east) / 2;
-        const midLat = (south + north) / 2;
-        const char = pathCode[i];
-        if (char === '0') { north = midLat; east = midLon; }
-        else if (char === '1') { north = midLat; west = midLon; }
-        else if (char === '2') { south = midLat; west = midLon; }
-        else if (char === '3') { south = midLat; east = midLon; }
+async function remoteLog(type, message, data = null) {
+    try {
+        const res = await fetch('/api/log', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ type, message, data })
+        });
+        if (!res.ok) console.warn("Remote log failed status:", res.status);
+    } catch (e) {
+        console.error("Remote log error:", e.message);
     }
-    return [[south, west], [north, east]];
+}
+
+function updateSliderWithLocalDates(entries) {
+    if (!entries || entries.length === 0) return;
+    const container = document.getElementById('timeline-container');
+    container.style.display = 'block';
+
+    const uniqueDatesMap = new Map();
+    entries.forEach(e => {
+        if (!uniqueDatesMap.has(e.date) || e.iCode > (uniqueDatesMap.get(e.date).iCode || 0)) {
+            uniqueDatesMap.set(e.date, e);
+        }
+    });
+    const sorted = [...uniqueDatesMap.values()].sort((a, b) => a.date.localeCompare(b.date));
+    
+    timelineSlider.updateOptions({
+        range: { min: 0, max: sorted.length - 1 },
+        start: [sorted.length - 1],
+        pips: {
+            mode: 'values',
+            values: [0, Math.floor(sorted.length / 2), sorted.length - 1],
+            density: 4,
+            format: { to: (val) => sorted[Math.round(val)]?.date.substring(0, 4) || "" }
+        }
+    }, true);
+
+    timelineSlider.off('update');
+    timelineSlider.on('update', (values, handle) => {
+        const index = Math.round(values[handle]);
+        const entry = sorted[index];
+        if (!entry) return;
+        document.getElementById('timeline-current').innerText = entry.date;
+        if (entry.iCode) {
+            selectHistoricalDate(entry);
+        }
+    });
 }
 
 async function updateMetadataForCurrentView() {
     const zoom = map.getZoom();
     const center = map.getCenter();
+    
+    // RESTORED: Metadata threshold Z14
     if (zoom < 14) {
-        document.getElementById('status-bar').firstChild.textContent = `Zoom in (Z14+) `;
+        document.getElementById('status-bar').firstChild.textContent = `Current zoom: ${zoom.toFixed(1)}. Zoom to 14+ to explore historical dates. `;
+        document.getElementById('metadata-body').innerHTML = '<tr><td colspan="3">Zoom in further (Z14+)</td></tr>';
         return;
     }
+
     document.getElementById('loading-indicator').style.display = 'block';
     try {
         const fetchZoom = Math.min(zoom, 16);
         const res = await fetch(`/api/metadata-at?lat=${center.lat}&lon=${center.lng}&zoom=${fetchZoom}`);
         const data = await res.json();
         currentMetadata = data;
-        document.getElementById('status-bar').firstChild.textContent = `Path: ${data.pathCode} (Z${fetchZoom}) `;
+        document.getElementById('status-bar').firstChild.textContent = `Path: ${data.pathCode} (Z${fetchZoom}) | Lat: ${center.lat.toFixed(4)} Lon: ${center.lng.toFixed(4)} `;
         renderMetadataTable(data.entries);
     } catch (e) { console.error(e); }
     finally { document.getElementById('loading-indicator').style.display = 'none'; }
@@ -100,10 +142,14 @@ function renderMetadataTable(entries) {
     body.innerHTML = '';
     if (!entries || entries.length === 0) return;
     
-    entries.sort((a, b) => b.date.localeCompare(a.date)).forEach(e => {
+    const sorted = entries.sort((a, b) => b.date.localeCompare(a.date));
+    updateSliderWithLocalDates([...sorted]);
+
+    sorted.forEach(e => {
         const tr = document.createElement('tr');
         tr.className = 'metadata-row';
-        if (activeSelection && activeSelection.date === e.date) tr.classList.add('active');
+        tr.id = `row-${e.date}-${e.iCode}`;
+        if (activeSelection && activeSelection.date === e.date && activeSelection.iCode === e.iCode) tr.classList.add('active');
         
         const dateTd = document.createElement('td');
         dateTd.innerHTML = `<span style="margin-right:10px">${e.date}</span>`;
@@ -112,39 +158,43 @@ function renderMetadataTable(entries) {
         copyBtn.innerText = '📋';
         copyBtn.onclick = (event) => {
             event.stopPropagation();
-            copyToClipboard(`${e.date} (v.${e.iCode}, ${e.fToken})`, copyBtn, tr);
+            copyToClipboard(`${e.date}📋${e.iCode}${e.fToken}`, copyBtn, tr);
         };
         dateTd.appendChild(copyBtn);
         tr.appendChild(dateTd);
 
         tr.innerHTML += `<td>${e.iCode}</td><td>${e.fToken}</td>`;
-        
-        tr.onclick = () => {
-            activeSelection = e;
-            document.querySelectorAll('.metadata-row').forEach(el => el.classList.remove('active'));
-            tr.classList.add('active');
-            refreshHistoricalLayer();
-        };
+        tr.onclick = () => selectHistoricalDate(e);
         body.appendChild(tr);
+    });
+}
+
+function selectHistoricalDate(entry) {
+    activeSelection = entry;
+    document.querySelectorAll('.metadata-row').forEach(el => el.classList.remove('active'));
+    const activeRow = document.getElementById(`row-${entry.date}-${entry.iCode}`);
+    if (activeRow) activeRow.classList.add('active');
+
+    refreshHistoricalLayer();
+    
+    remoteLog('SELECT', `Viewed ${entry.date} v.${entry.iCode}`, { 
+        iCode: entry.iCode, fToken: entry.fToken, zoom: map.getZoom(), center: map.getCenter()
     });
 }
 
 function refreshHistoricalLayer() {
     if (historicalLayer) {
         map.removeLayer(historicalLayer);
+        historicalLayer = null;
     }
     if (!activeSelection) return;
-
-    // Use L.tileLayer for parallel loading speed
-    // We pass sourcePath to the backend so it knows when to crop
-    const tileUrl = `/api/tile/{z}/{x}/{y}?iCode=${activeSelection.iCode}&fToken=${activeSelection.fToken}&sourcePath=${activeSelection.sourcePath}`;
-    
-    historicalLayer = L.tileLayer(tileUrl, {
-        maxZoom: 21,
-        minZoom: 5,
-        opacity: 1.0,
-        attribution: '© Google Earth'
-    }).addTo(map);
+    const zoom = map.getZoom();
+    if (zoom < 17) {
+        document.getElementById('status-bar').firstChild.textContent += ` | Zoom to 17+ to see tiles.`;
+        return;
+    }
+    const tileUrlTemplate = `/api/tile/{z}/{x}/{y}?iCode=${activeSelection.iCode}&fToken=${activeSelection.fToken}&sourcePath=${activeSelection.sourcePath}`;
+    historicalLayer = new L.HistoricalLayer(tileUrlTemplate, { maxZoom: 21, minZoom: 1, opacity: 1.0, attribution: '© Google Earth' }).addTo(map);
 }
 
 function copyToClipboard(text, btn, tr) {

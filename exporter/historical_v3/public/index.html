@@ -3,9 +3,10 @@
 <head>
     <title>Historical Imagery V3 - Interactive Map</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/15.7.1/nouislider.min.css" />
     <style>
         body { font-family: sans-serif; margin: 0; padding: 0; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
-        header { padding: 10px 20px; background: #333; color: white; display: flex; justify-content: space-between; align-items: center; }
+        header { padding: 10px 20px; background: #333; color: white; display: flex; justify-content: space-between; align-items: center; z-index: 1000; }
         #main-container { display: flex; flex: 1; overflow: hidden; }
         #map { flex: 1; background: #ddd; }
         #sidebar { width: 350px; background: white; padding: 15px; border-left: 1px solid #ccc; overflow-y: auto; display: flex; flex-direction: column; }
@@ -29,6 +30,13 @@
         .controls { margin-bottom: 15px; }
         .refresh-btn { background: #4caf50; color: white; border: none; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 0.75rem; }
         #date-list-container { flex: 1; overflow-y: auto; border: 1px solid #eee; margin-top: 10px; }
+        
+        /* noUiSlider Customization */
+        #timeline-container { background: #444; padding: 20px 40px 45px 40px; display: none; }
+        .noUi-pips-horizontal { color: #ccc; font-size: 10px; }
+        .noUi-value-horizontal { transform: translate(-50%, 15px); }
+        .noUi-marker-horizontal.noUi-marker-large { background: #888; height: 10px; }
+        #timeline-current { color: white; font-weight: bold; margin-bottom: 10px; display: block; text-align: center; }
     </style>
 </head>
 <body>
@@ -40,17 +48,16 @@
         Zoom to 14+ to see available dates for the center of the map.
         <span id="global-status" style="float:right"></span>
     </div>
-    <div id="timeline-container" style="background: #444; padding: 10px 20px; display: none;">
-        <label style="color: white; font-size: 0.8rem;">Global Timeline (Scrub to see imagery exists in this year):</label>
-        <input type="range" id="timeline-slider" style="width: 100%; margin-top: 5px;" min="0" max="100" value="0">
-        <div style="display: flex; justify-content: space-between; color: #ccc; font-size: 0.7rem;">
-            <span id="timeline-start">1945</span>
-            <span id="timeline-current" style="color: white; font-weight: bold;">Select a year</span>
-            <span id="timeline-end">2025</span>
-        </div>
+    <div id="timeline-container">
+        <span id="timeline-current">Select a date</span>
+        <div id="timeline-slider"></div>
     </div>
     <div id="main-container">
-        <div id="map"></div>
+        <div id="map">
+            <div id="zoom-indicator" style="position: absolute; bottom: 20px; left: 10px; z-index: 1000; background: rgba(0,0,0,0.7); color: #0f0; padding: 5px 10px; border-radius: 5px; font-family: monospace; font-size: 14px; pointer-events: none; border: 1px solid #333;">
+                ZOOM: 14.0
+            </div>
+        </div>
         <div id="sidebar">
             <div class="controls">
                 <h3>Predefined Shortcuts</h3>
@@ -76,6 +83,7 @@
     </div>
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/15.7.1/nouislider.min.js"></script>
     <script src="app.js"></script>
 </body>
 </html>
