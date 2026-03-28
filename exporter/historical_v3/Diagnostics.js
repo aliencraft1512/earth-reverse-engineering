@@ -37,7 +37,7 @@ async function runDiagnostics() {
                 const y = Math.floor((1 - Math.log(Math.tan(lat * Math.PI / 180) + 1 / Math.cos(lat * Math.PI / 180)) / Math.PI) / 2 * n);
                 
                 console.log(`[Diagnostic] Attempting tile fetch for ${z}/${x}/${y} (i.${first.iCode})`);
-                const tilePath = await manager.fetchTile(z, x, y, first.iCode, first.fToken); 
+                const tilePath = await manager.fetchTileWithCropping(z, x, y, first.iCode, first.fToken); 
                 console.log(`SUCCESS: Tile fetched and decrypted to ${tilePath}`);
             } catch (e) {
                 console.error(`FAILURE: Tile fetch failed: ${e.message}`);

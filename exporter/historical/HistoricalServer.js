@@ -659,24 +659,15 @@ async function filterRenderableEntriesFromCatalog(catalog, options = {}) {
       validation: await checkEntryRenderable(entry, catalog, options),
     })
   );
+
   const filteredOut = validations
     .filter(result => result.validation.renderable === false)
     .map(result => result.entry.id);
 
-  if (filteredOut.length === 0) {
-    catalog.entries = validations.map(result => ({
-      ...result.entry,
-      renderability: result.validation,
-    }));
-  } else {
-    const filteredSet = new Set(filteredOut);
-    catalog.entries = validations
-      .filter(result => !filteredSet.has(result.entry.id))
-      .map(result => ({
-        ...result.entry,
-        renderability: result.validation,
-      }));
-  }
+  catalog.entries = validations.map(result => ({
+    ...result.entry,
+    renderability: result.validation,
+  }));
 
   catalog.verification = {
     ...(catalog.verification || {}),
@@ -1221,5 +1212,23 @@ module.exports = {
   getRawTileCachePath,
   resolveEntrySignature,
   resolveTileImage,
+  startServer,
+};
+orts = {
+  app,
+  buildSelectionDecision,
+  buildSelectionDiagnostics,
+  checkEntryRenderable,
+  filterRenderableEntriesFromCatalog,
+  historicalCatalog,
+  buildOverlayPayload,
+  normalizeCatalogZoom,
+  getDerivedTileCachePath,
+  getRawTileCachePath,
+  resolveEntrySignature,
+  resolveTileImage,
+  startServer,
+};
+ge,
   startServer,
 };

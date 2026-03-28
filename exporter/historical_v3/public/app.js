@@ -52,7 +52,7 @@ async function loadWorldIndex() {
     try {
         const res = await fetch('/api/world-index');
         worldIndex = await res.json();
-        const dates = Object.keys(worldIndex.dates).sort().map(d => ({ date: d }));
+        const dates = Object.keys(worldIndex.dates).sort().map(d => ({ date: d, iCode: worldIndex.dates[d][0] }));
         updateSliderWithLocalDates(dates);
     } catch (e) {}
 }

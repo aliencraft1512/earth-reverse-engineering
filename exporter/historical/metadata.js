@@ -28,7 +28,37 @@ function readSecretKey(dbRootPath) {
     return null;
   }
 
-  return fs.readFileSync(dbRootPath);
+  const buffer = fs.readFileSync(dbRootPath);
+  let offset = 0;
+
+  while (offset < buffer.length) {
+    const { value: key, next: keyEnd } = readVarint(buffer, offset);
+    const fieldNumber = key >> 3;
+    const wireType = key & 7;
+
+    if (fieldNumber === 2 && wireType === 2) {
+      const { value: length, next: lengthEnd } = readVarint(buffer, keyEnd);
+      return Buffer.concat([
+        Buffer.alloc(8),
+        buffer.subarray(lengthEnd, lengthEnd + length),
+      ]);
+    }
+
+    if (wireType === 0) {
+      offset = readVarint(buffer, keyEnd).next;
+    } else if (wireType === 1) {
+      offset = keyEnd + 8;
+    } else if (wireType === 2) {
+      const { value: length, next: lengthEnd } = readVarint(buffer, keyEnd);
+      offset = lengthEnd + length;
+    } else if (wireType === 5) {
+      offset = keyEnd + 4;
+    } else {
+      offset = keyEnd + 1;
+    }
+  }
+
+  return null;
 }
 
 function decryptXOR(buffer, secretKey) {
@@ -58,23 +88,17 @@ function decryptXOR(buffer, secretKey) {
 }
 
 function readVarint(buffer, offset) {
-  let result = 0n;
-  let shift = 0n;
+  let result = 0;
+  let shift = 0;
   let cursor = offset;
 
   while (cursor < buffer.length) {
-    const byte = BigInt(buffer[cursor]);
-    cursor += 1;
-    result |= (byte & 0x7fn) << shift;
-
-    if ((byte & 0x80n) === 0n) {
-      return { value: Number(result), next: cursor };
-    }
-
-    shift += 7n;
+    const byte = buffer[cursor++];
+    result |= (byte & 0x7f) << shift;
+    if ((byte & 0x80) === 0) return { value: result >>> 0, next: cursor };
+    shift += 7;
   }
-
-  return { value: Number(result), next: cursor, error: 'EOF' };
+  return { value: result, next: cursor };
 }
 
 function pushUniqueEntry(results, entry, seen) {

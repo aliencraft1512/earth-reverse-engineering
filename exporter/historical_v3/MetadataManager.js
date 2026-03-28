@@ -5,7 +5,8 @@ const crypto = require('crypto');
 const sharp = require('sharp');
 
 const { HistoricalCatalog } = require('../historical/catalog');
-const { slippyTileToCenter } = require('../historical/pathUtils');
+const { readSecretKey, decryptXOR } = require('../historical/metadata');
+const { slippyTileToCenter, latLonToPath } = require('../historical/pathUtils');
 
 const BASE_URLS = ["https://khmdb.google.com/flatfile?db=tm", "https://cmpmap.com/flatfile?db=tm"];
 const REQUEST_HEADERS = {
@@ -39,50 +40,20 @@ class MetadataManager {
     }
 
     async refreshDbRoot() {
+        const dbRootPath = path.join(this.workDir, 'dbRoot.v5');
         try {
             const res = await axios.get("https://kh.google.com/dbRoot.v5?hl=el&gl=cy&output=proto&cv=7.3.6.10201&ct=pro", { responseType: 'arraybuffer', headers: REQUEST_HEADERS });
             const raw = Buffer.from(res.data);
-            let i = 0;
-            const readVar = (b, o) => {
-                let r = 0, s = 0, j = o;
-                while (j < b.length) {
-                    const x = b[j++];
-                    r |= (x & 0x7f) << s;
-                    if ((x & 0x80) === 0) return { v: r >>> 0, n: j };
-                    s += 7;
-                }
-                return { v: r, n: j };
-            };
-            while (i < raw.length) {
-                const { v: key, n: next } = readVar(raw, i);
-                if ((key >> 3) === 2) {
-                    const { v: len, n: start } = readVar(raw, next);
-                    this.secretKey = Buffer.concat([Buffer.alloc(8), raw.subarray(start, start + len)]);
-                    break;
-                }
-                i = (key & 7) === 2 ? readVar(raw, next).n + readVar(raw, next).v : next + 1;
-            }
-            fs.writeFile(path.join(this.workDir, 'dbRoot.v5'), raw, () => {});
+            fs.writeFileSync(dbRootPath, raw);
+            this.secretKey = readSecretKey(dbRootPath);
         } catch (e) {
-            const dbRootPath = path.join(this.workDir, 'dbRoot.v5');
             if (fs.existsSync(dbRootPath)) {
-                this.secretKey = Buffer.concat([Buffer.alloc(8), fs.readFileSync(dbRootPath).subarray(0, 1016)]);
+                this.secretKey = readSecretKey(dbRootPath);
             }
         }
     }
 
-    decryptTile(buffer) {
-        const source = Buffer.isBuffer(buffer) ? buffer : Buffer.from(buffer);
-        const out = Buffer.alloc(source.length);
-        let j = 16;
-        for (let i = 0; i < source.length; i++) {
-            out[i] = source[i] ^ this.secretKey[(j + 8) % this.secretKey.length];
-            j++;
-            if (j % 8 === 0) j += 16;
-            if (j >= 1016) j = (j + 8) % 24;
-        }
-        return out;
-    }
+    decryptTile(buffer) { return decryptXOR(buffer, this.secretKey); }
 
     md5(s) { return crypto.createHash("md5").update(s).digest("hex"); }
     getTileGeoSize(level) { return ZeroTileGeoSize / Math.pow(2, level); }
@@ -95,26 +66,14 @@ class MetadataManager {
         return "1";
     }
 
-    getRowColInfoStr(lat, lon, zoom) {
-        const worldSize = Math.pow(2, zoom);
-        let col = Math.floor((lon + 180) / 360 * worldSize);
-        let row = Math.floor((180 - lat) / 360 * worldSize); 
-        let path = "";
-        for (let i = 0; i <= zoom; i++) {
-            const sizeAtLevel = Math.pow(2, zoom - i);
-            const r = Math.floor(row / sizeAtLevel) % 2;
-            const c = Math.floor(col / sizeAtLevel) % 2;
-            if (r > 0 && c > 0) path += "2";
-            else if (r > 0 && c === 0) path += "3";
-            else if (r === 0 && c === 0) path += "0";
-            else path += "1";
-        }
-        return path;
-    }
+    getRowColInfoStr(lat, lon, zoom) { return latLonToPath(lat, lon, zoom); }
 
     async fetchMetadata(pathCode) {
         const cacheFile = path.join(this.cacheDir, `qp-${pathCode}.json`);
-        if (fs.existsSync(cacheFile)) return fs.readJsonSync(cacheFile);
+        if (fs.existsSync(cacheFile)) {
+            const data = fs.readJsonSync(cacheFile);
+            if (data.entries && data.entries.length > 0) return data;
+        }
         const result = await this.catalog.fetchMetadataForPath(pathCode);
         fs.writeJson(cacheFile, result, () => {});
         return result;
@@ -123,18 +82,20 @@ class MetadataManager {
     async fetchTileWithCropping(zoom, x, y, iCode, fToken, sourcePath = null) {
         const center = slippyTileToCenter(zoom, x, y);
         const fullPath = this.getRowColInfoStr(center.lat, center.lon, zoom);
-        
+
         const procName = `p-${zoom}-${x}-${y}-${iCode}-${fToken}.jpg`;
         const procPath = path.join(this.tileCacheDir, procName);
         if (fs.existsSync(procPath)) return fs.readFileSync(procPath);
 
         let targetDepth = sourcePath ? Math.min(sourcePath.length, fullPath.length) : fullPath.length;
 
+        
+        console.log('[FetchTile] Center Path: ' + fullPath + ' Target Depth: ' + targetDepth + ' URL: &f1-' + fullPath + '-i.' + iCode + '-' + fToken);
         for (let len = targetDepth; len >= 5; len--) {
             const currentPath = fullPath.slice(0, len);
             const isAncestor = len < fullPath.length;
-            
-            const tileUrl = `${BASE_URLS[0]}&f1-${currentPath}-i.${iCode}-${fToken}`;
+
+            const tileUrl = `&f1-${currentPath}-i.${iCode}-${fToken}`;
             const rawCacheName = this.md5(tileUrl) + ".jpg";
             const rawPath = path.join(this.tileCacheDir, rawCacheName);
 
@@ -142,13 +103,16 @@ class MetadataManager {
             if (fs.existsSync(rawPath)) {
                 buffer = fs.readFileSync(rawPath);
             } else {
-                try {
-                    const res = await axios.get(tileUrl, { responseType: 'arraybuffer', headers: REQUEST_HEADERS, timeout: 5000 });
-                    buffer = this.decryptTile(Buffer.from(res.data));
+                                try {
+                    const data = await Promise.any(BASE_URLS.map(base => {
+                        const url = `&f1--i.-`;
+                        return axios.get(url, { responseType: 'arraybuffer', headers: REQUEST_HEADERS, timeout: 5000 }).then(r => r.data);
+                    }));
+                    buffer = this.decryptTile(Buffer.from(data));
                     fs.writeFile(rawPath, buffer, () => {});
                 } catch (e) {
                     if (len === 5) throw new Error("404");
-                    continue; 
+                    continue;
                 }
             }
 
