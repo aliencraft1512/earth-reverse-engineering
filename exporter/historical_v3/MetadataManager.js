@@ -14,6 +14,8 @@ const REQUEST_HEADERS = {
   'Accept-Encoding': 'gzip, deflate, gfe',
 };
 
+const DBROOT_URL = "https://kh.google.com/dbRoot.v5?hl=el&gl=cy&output=proto&cv=7.3.6.10201&ct=pro";
+
 const ZeroTileGeoSize = 360;
 const ValidBoundRc = [-180.0, 180.0, 180.0, -180.0];
 
@@ -24,12 +26,11 @@ class MetadataManager {
         this.tileCacheDir = path.join(this.cacheDir, 'tiles');
         this.secretKey = null;
         this.catalog = null;
-        this.probeCache = new Map();
         fs.ensureDirSync(this.tileCacheDir);
     }
 
     async init() {
-        console.log("Initializing Lightning-Fast Engine...");
+        console.log("Initializing Stable V3 Engine...");
         await this.refreshDbRoot();
         this.catalog = new HistoricalCatalog({
             baseUrls: BASE_URLS,
@@ -41,32 +42,55 @@ class MetadataManager {
 
     async refreshDbRoot() {
         const dbRootPath = path.join(this.workDir, 'dbRoot.v5');
+        
+        // 1. Always try to fetch the LATEST dbRoot first
         try {
-            const res = await axios.get("https://kh.google.com/dbRoot.v5?hl=el&gl=cy&output=proto&cv=7.3.6.10201&ct=pro", { responseType: 'arraybuffer', headers: REQUEST_HEADERS });
+            console.log("[MetadataManager] Fetching latest dbRoot.v5...");
+            const res = await axios.get(DBROOT_URL, { 
+                responseType: 'arraybuffer', 
+                headers: REQUEST_HEADERS,
+                timeout: 5000 
+            });
             const raw = Buffer.from(res.data);
             fs.writeFileSync(dbRootPath, raw);
-            this.secretKey = readSecretKey(dbRootPath);
+            console.log("[MetadataManager] Latest dbRoot.v5 saved locally.");
         } catch (e) {
-            if (fs.existsSync(dbRootPath)) {
-                this.secretKey = readSecretKey(dbRootPath);
+            console.warn("[MetadataManager] Remote fetch failed, using local fallback:", e.message);
+        }
+
+        // 2. Extract key from the best available file
+        if (fs.existsSync(dbRootPath)) {
+            this.secretKey = readSecretKey(dbRootPath);
+            if (this.secretKey && this.secretKey.length === 1016) {
+                console.log("[MetadataManager] Successfully extracted 1016-byte key.");
+                return;
             }
+        }
+
+        // 3. Final fallback to parent directory if local extraction failed
+        const parentDbRoot = path.join(this.workDir, '..', 'dbRoot.v5');
+        if (fs.existsSync(parentDbRoot)) {
+            this.secretKey = readSecretKey(parentDbRoot);
+            if (this.secretKey && this.secretKey.length === 1016) {
+                console.log("[MetadataManager] Found valid key in parent directory.");
+            }
+        }
+        
+        if (!this.secretKey) {
+            console.error("[MetadataManager] CRITICAL: No valid XOR key could be obtained!");
         }
     }
 
-    decryptTile(buffer) { return decryptXOR(buffer, this.secretKey); }
+    decryptTile(buffer) {
+        return decryptXOR(buffer, this.secretKey);
+    }
 
     md5(s) { return crypto.createHash("md5").update(s).digest("hex"); }
     getTileGeoSize(level) { return ZeroTileGeoSize / Math.pow(2, level); }
-    getRowColInfoChar(rowIndex, colIndex) {
-        const r = Math.abs(rowIndex) % 2;
-        const c = Math.abs(colIndex) % 2;
-        if (r > 0 && c > 0) return "2";
-        if (r > 0 && c === 0) return "3";
-        if (r === 0 && c === 0) return "0";
-        return "1";
+    
+    getRowColInfoStr(lat, lon, zoom) {
+        return latLonToPath(lat, lon, zoom);
     }
-
-    getRowColInfoStr(lat, lon, zoom) { return latLonToPath(lat, lon, zoom); }
 
     async fetchMetadata(pathCode) {
         const cacheFile = path.join(this.cacheDir, `qp-${pathCode}.json`);
@@ -83,60 +107,79 @@ class MetadataManager {
         const center = slippyTileToCenter(zoom, x, y);
         const fullPath = this.getRowColInfoStr(center.lat, center.lon, zoom);
 
-        const procName = `p-${zoom}-${x}-${y}-${iCode}-${fToken}.jpg`;
+        const versionStr = `i.${iCode}`;
+        const buildUrl = (base, p) => `&f1-${p}-${versionStr}-${fToken}`;
+        
+        const procName = `tile-${zoom}-${x}-${y}-${iCode}-${fToken}.jpg`;
         const procPath = path.join(this.tileCacheDir, procName);
         if (fs.existsSync(procPath)) return fs.readFileSync(procPath);
 
-        let targetDepth = sourcePath ? Math.min(sourcePath.length, fullPath.length) : fullPath.length;
-
-        
-        console.log('[FetchTile] Center Path: ' + fullPath + ' Target Depth: ' + targetDepth + ' URL: &f1-' + fullPath + '-i.' + iCode + '-' + fToken);
-        for (let len = targetDepth; len >= 5; len--) {
-            const currentPath = fullPath.slice(0, len);
-            const isAncestor = len < fullPath.length;
-
-            const tileUrl = `&f1-${currentPath}-i.${iCode}-${fToken}`;
-            const rawCacheName = this.md5(tileUrl) + ".jpg";
+        // 1. DIRECT FETCH
+        try {
+            const directUrl = buildUrl(BASE_URLS[0], fullPath);
+            const rawCacheName = this.md5(directUrl) + ".jpg";
             const rawPath = path.join(this.tileCacheDir, rawCacheName);
 
             let buffer;
             if (fs.existsSync(rawPath)) {
                 buffer = fs.readFileSync(rawPath);
             } else {
-                                try {
+                const data = await Promise.any(BASE_URLS.map(base => {
+                    const url = buildUrl(base, fullPath);
+                    return axios.get(url, { responseType: 'arraybuffer', headers: REQUEST_HEADERS, timeout: 2500 }).then(r => r.data);
+                }));
+                buffer = this.decryptTile(Buffer.from(data));
+                fs.writeFileSync(rawPath, buffer);
+            }
+            fs.writeFileSync(procPath, buffer);
+            return buffer;
+        } catch (e) { }
+
+        // 2. ANCESTOR FETCH
+        let targetDepth = sourcePath ? Math.min(sourcePath.length, fullPath.length) : fullPath.length;
+        if (targetDepth > 21) targetDepth = 21;
+
+        for (let len = targetDepth - 1; len >= 5; len--) {
+            const currentPath = fullPath.slice(0, len);
+            const isAncestor = len < fullPath.length;
+
+            const ancestorUrl = buildUrl(BASE_URLS[0], currentPath);
+            const rawCacheName = this.md5(ancestorUrl) + ".jpg";
+            const rawPath = path.join(this.tileCacheDir, rawCacheName);
+
+            let buffer;
+            if (fs.existsSync(rawPath)) {
+                buffer = fs.readFileSync(rawPath);
+            } else {
+                try {
                     const data = await Promise.any(BASE_URLS.map(base => {
-                        const url = `&f1--i.-`;
-                        return axios.get(url, { responseType: 'arraybuffer', headers: REQUEST_HEADERS, timeout: 5000 }).then(r => r.data);
+                        const url = buildUrl(base, currentPath);
+                        return axios.get(url, { responseType: 'arraybuffer', headers: REQUEST_HEADERS, timeout: 4000 }).then(r => r.data);
                     }));
                     buffer = this.decryptTile(Buffer.from(data));
-                    fs.writeFile(rawPath, buffer, () => {});
-                } catch (e) {
-                    if (len === 5) throw new Error("404");
-                    continue;
-                }
+                    fs.writeFileSync(rawPath, buffer);
+                } catch (e) { continue; }
             }
 
-            if (isAncestor) {
-                const diff = fullPath.length - len;
-                let top = 0, left = 0, size = 256;
-                for (let i = 0; i < diff; i++) {
-                    const char = fullPath[len + i];
-                    size /= 2;
-                    if (char === '1') left += size;
-                    else if (char === '2') { left += size; top += size; }
-                    else if (char === '3') top += size;
-                }
-                const out = await sharp(buffer)
-                    .extract({ left: Math.round(left), top: Math.round(top), width: Math.max(1, Math.round(size)), height: Math.max(1, Math.round(size)) })
-                    .resize(256, 256, { kernel: 'nearest' })
-                    .toBuffer();
-                fs.writeFile(procPath, out, () => {});
-                return out;
+            const diff = fullPath.length - len;
+            let top = 0, left = 0, size = 256;
+            for (let i = 0; i < diff; i++) {
+                const char = fullPath[len + i];
+                size /= 2;
+                if (char === '1') left += size;
+                else if (char === '2') { left += size; top += size; }
+                else if (char === '3') top += size;
             }
-            return buffer;
+            const out = await sharp(buffer)
+                .extract({ left: Math.round(left), top: Math.round(top), width: Math.max(1, Math.round(size)), height: Math.max(1, Math.round(size)) })
+                .resize(256, 256, { kernel: 'nearest' })
+                .toBuffer();
+            fs.writeFileSync(procPath, out);
+            return out;
         }
         throw new Error("404");
     }
+    
     latLonToPath(lat, lon, zoom) {
         return this.getRowColInfoStr(lat, lon, zoom);
     }

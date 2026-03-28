@@ -75,3 +75,8 @@ client/cache
 /exporter/test/tile_cache
 /exporter/historical/tile_cache
 /exporter/historical_v3/cache
+/exporter/historical_v3/cache/tiles
+/exporter/historical_v3/cache/tiles
+/exporter/historical_v3/cache
+/exporter/historical_v3/cache
+/exporter/historical_v3/cache

@@ -101,7 +101,7 @@ async function updateMetadataForCurrentView() {
 
     document.getElementById('loading-indicator').style.display = 'block';
     try {
-        const fetchZoom = Math.min(Math.floor(zoom), 16);
+        const fetchZoom = Math.min(Math.floor(zoom), 21);
         const res = await fetch(`/api/metadata-at?lat=${center.lat}&lon=${center.lng}&zoom=${fetchZoom}&_=${Date.now()}`);
         const data = await res.json();
         currentMetadata = data;
@@ -148,7 +148,7 @@ function refreshHistoricalLayer() {
         historicalLayer = null;
     }
     if (!activeSelection) return;
-    if (map.getZoom() < 17) return;
+    if (map.getZoom() < 14) return;
 
     // Fixed: Pass a real URL template to the custom layer
     const url = `/api/tile/{z}/{x}/{y}?iCode=${activeSelection.iCode}&fToken=${activeSelection.fToken}&sourcePath=${activeSelection.sourcePath}`;

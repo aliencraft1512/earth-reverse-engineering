@@ -83,10 +83,14 @@ app.get('/api/metadata-at', async (req, res) => {
 });
 
 app.get('/api/tile/:z/:x/:y', async (req, res) => {
+    res.set('Access-Control-Allow-Origin', '*');
     try {
         const buffer = await manager.fetchTileWithCropping(parseInt(req.params.z), parseInt(req.params.x), parseInt(req.params.y), req.query.iCode, req.query.fToken, req.query.sourcePath);
         res.set('Content-Type', 'image/jpeg').send(buffer);
-    } catch (e) { res.status(500).send(e.message); }
+    } catch (e) {
+        if (e.message !== "404") console.error("[TileError] \/\/\:", e.message);
+        res.status(404).send(e.message);
+    }
 });
 
 app.post('/api/log', (req, res) => {
