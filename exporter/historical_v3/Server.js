@@ -39,17 +39,25 @@ app.get('/api/metadata-at', async (req, res) => {
     if (!lat || !lon || !zoom) return res.status(400).json({ error: "Missing lat/lon/zoom" });
     const pathCode = manager.latLonToPath(parseFloat(lat), parseFloat(lon), parseInt(zoom));
     const data = await manager.fetchMetadata(pathCode);
-    res.json({ pathCode, ...data });
+    
+    // Enrich entries with the sourcePath of the packet they came from
+    const enrichedEntries = data.entries.map(e => ({
+        ...e,
+        sourcePath: data.sourcePath || pathCode
+    }));
+
+    res.json({ pathCode, ...data, entries: enrichedEntries });
 });
 
 app.get('/api/tile/:z/:x/:y', async (req, res) => {
     const { z, x, y } = req.params;
-    const { iCode, fToken } = req.query;
+    const { iCode, fToken, sourcePath } = req.query; // Added sourcePath
     if (!iCode || !fToken) return res.status(400).send("Missing iCode or fToken");
 
     try {
-        const tilePath = await manager.fetchTile(parseInt(z), parseInt(x), parseInt(y), iCode, fToken);
-        res.sendFile(tilePath);
+        const tileBuffer = await manager.fetchTile(parseInt(z), parseInt(x), parseInt(y), iCode, fToken, sourcePath);
+        res.set('Content-Type', 'image/jpeg');
+        res.send(tileBuffer);
     } catch (e) {
         res.status(500).send(e.message);
     }
@@ -68,19 +76,29 @@ app.post('/api/refresh', async (req, res) => {
 async function start() {
     await manager.init();
     
-    // Start background world sync
-    syncEngine.startBackgroundSync();
+    // Start background world sync (Don't await)
+    syncEngine.startBackgroundSync().then(() => {
+        console.log("[Sync] Background discovery task finished. Server remains active.");
+    }).catch(e => {
+        console.error("[Sync] Background discovery error:", e.message);
+    });
 
     app.listen(PORT, () => {
         console.log(`Historical V3 Server running at http://localhost:${PORT}`);
         console.log(`Pre-indexing ${PREDEFINED_REGIONS.length} regions in background...`);
-        PREDEFINED_REGIONS.forEach(async r => {
+        
+        // Use Promise.all to track pre-indexing completion
+        const indexingPromises = PREDEFINED_REGIONS.map(async r => {
             try {
                 await manager.fetchMetadata(r.pathCode);
                 console.log(`[Cache] Indexed ${r.name}`);
             } catch (e) {
                 console.warn(`[Cache] Failed for ${r.name}`);
             }
+        });
+
+        Promise.all(indexingPromises).then(() => {
+            console.log("--- All pre-indexing complete. Server is fully ready. ---");
         });
     });
 }

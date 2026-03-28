@@ -1,195 +1,167 @@
 const axios = require('axios');
 const fs = require('fs-extra');
 const path = require('path');
-const zlib = require('zlib');
+const crypto = require('crypto');
+const { Jimp } = require('jimp');
 
 const { HistoricalCatalog } = require('../historical/catalog');
 const { latLonToPath, slippyTileToCenter } = require('../historical/pathUtils');
 
-const DBROOT_URLS = [
-    "https://kh.google.com/dbRoot.v5?hl=el&gl=cy&output=proto&cv=7.3.6.10201&ct=pro",
-    "https://khmdb.google.com/dbRoot.v5?hl=el&gl=cy&output=proto&cv=7.3.6.10201&ct=pro"
-];
+const DBROOT_URLS = ["https://kh.google.com/dbRoot.v5?hl=el&gl=cy&output=proto&cv=7.3.6.10201&ct=pro"];
 const BASE_URLS = [
     "https://khmdb.google.com/flatfile?db=tm",
-    "https://cmpmap.com/flatfile?db=tm",
-    "https://kh.google.com/flatfile?db=tm"
+    "https://cmpmap.com/flatfile?db=tm"
 ];
-const ROOT_VERSION = 366;
 
 const REQUEST_HEADERS = {
   'User-Agent': 'GoogleEarth/7.3.6.9796(Windows;Microsoft Windows (6.2.9200.0);el;kml:2.2;client:Pro;type:default)',
   'Accept-Encoding': 'gzip, deflate, gfe',
 };
 
-const sleep = (ms) => new Promise(r => setTimeout(r, ms));
-
 class MetadataManager {
     constructor(workDir) {
         this.workDir = workDir;
         this.cacheDir = path.join(workDir, 'cache');
+        this.tileCacheDir = path.join(this.cacheDir, 'tiles');
         this.secretKey = null;
         this.catalog = null;
-        fs.ensureDirSync(this.cacheDir);
+        fs.ensureDirSync(this.tileCacheDir);
     }
 
     async init() {
-        console.log("Initializing MetadataManager...");
+        console.log("Initializing Streaming Metadata Engine...");
         await this.refreshDbRoot();
-        
         this.catalog = new HistoricalCatalog({
             baseUrls: BASE_URLS,
-            rootVersion: ROOT_VERSION,
+            rootVersion: 366,
             secretKey: this.secretKey,
             requestHeaders: REQUEST_HEADERS
         });
     }
 
-    async fetchWithRetry(urls, responseType = 'arraybuffer') {
-        let lastError = null;
-        for (const url of urls) {
-            for (let attempt = 1; attempt <= 3; attempt++) {
-                try {
-                    const res = await axios.get(url, { responseType, headers: REQUEST_HEADERS, timeout: 10000 });
-                    if (res.status === 200) return res.data;
-                } catch (e) {
-                    lastError = e;
-                    if (e.response && (e.response.status === 403 || e.response.status === 429)) {
-                        await sleep(attempt * 2000);
-                    } else if (e.response && e.response.status === 404) {
-                        break; 
-                    } else {
-                        await sleep(500);
-                    }
+    async refreshDbRoot() {
+        try {
+            const res = await axios.get(DBROOT_URLS[0], { responseType: 'arraybuffer', headers: REQUEST_HEADERS });
+            const raw = Buffer.from(res.data);
+            let i = 0;
+            const readVar = (b, o) => {
+                let r = 0, s = 0, j = o;
+                while (j < b.length) {
+                    const x = b[j++];
+                    r |= (x & 0x7f) << s;
+                    if ((x & 0x80) === 0) return { v: r >>> 0, n: j };
+                    s += 7;
                 }
+                return { v: r, n: j };
+            };
+            while (i < raw.length) {
+                const { v: key, n: next } = readVar(raw, i);
+                if ((key >> 3) === 2) {
+                    const { v: len, n: start } = readVar(raw, next);
+                    this.secretKey = Buffer.concat([Buffer.alloc(8), raw.subarray(start, start + len)]);
+                    break;
+                }
+                i = (key & 7) === 2 ? readVar(raw, next).n + readVar(raw, next).v : next + 1;
+            }
+            fs.writeFile(path.join(this.workDir, 'dbRoot.v5'), raw, () => {});
+        } catch (e) {
+            const dbRootPath = path.join(this.workDir, 'dbRoot.v5');
+            if (fs.existsSync(dbRootPath)) {
+                this.secretKey = Buffer.concat([Buffer.alloc(8), fs.readFileSync(dbRootPath).subarray(0, 1016)]);
             }
         }
-        throw new Error(`All fetch attempts failed. Last error: ${lastError ? lastError.message : 'Unknown'}`);
     }
 
-    async refreshDbRoot() {
-        console.log(`Downloading fresh dbRoot...`);
-        let raw;
-        try {
-            const data = await this.fetchWithRetry(DBROOT_URLS);
-            raw = Buffer.from(data);
-        } catch (e) {
-            console.error("Failed to download dbRoot. Using cached version.");
-            const dbRootPath = path.join(this.workDir, 'dbRoot.v5');
-            if (fs.existsSync(dbRootPath)) raw = fs.readFileSync(dbRootPath);
-            else throw new Error("No dbRoot available.");
+    decryptXOR(source) {
+        const out = Buffer.alloc(source.length);
+        let j = 16;
+        for (let i = 0; i < source.length; i++) {
+            out[i] = source[i] ^ this.secretKey[(j + 8) % this.secretKey.length];
+            j++;
+            if (j % 8 === 0) j += 16;
+            if (j >= 1016) j = (j + 8) % 24;
         }
-        
-        // Extract secret key field 2
-        let i = 0;
-        const readVarint = (buf, off) => {
-            let res = 0, shift = 0, j = off;
-            while (j < buf.length) {
-                const b = buf[j++];
-                res |= (b & 0x7f) << shift;
-                if ((b & 0x80) === 0) return { value: res >>> 0, next: j };
-                shift += 7;
-            }
-            return { value: res, next: j };
-        };
+        return out;
+    }
 
-        while (i < raw.length) {
-            const { value: key, next: afterKey } = readVarint(raw, i);
-            const field = key >> 3;
-            const wireType = key & 7;
-            if (field === 2 && wireType === 2) {
-                const { value: len, next: afterLen } = readVarint(raw, afterKey);
-                this.secretKey = raw.subarray(afterLen, afterLen + len);
-                break;
-            }
-            if (wireType === 0) i = readVarint(raw, afterKey).next;
-            else if (wireType === 2) {
-                const { value: len, next: afterLen } = readVarint(raw, afterKey);
-                i = afterLen + len;
-            } else i++;
-        }
-        if (this.secretKey && this.secretKey.length === 1016) {
-            // Prepend 8 dummy bytes to align with the (j + 8) logic in the project's decryptXOR
-            const legacyAlignedKey = Buffer.concat([Buffer.alloc(8), this.secretKey]);
-            this.secretKey = legacyAlignedKey;
-            console.log("Aligned secretKey to legacy format (1024 bytes)");
-        } else if (!this.secretKey) {
-            this.secretKey = raw;
-        }
-        fs.writeFileSync(path.join(this.workDir, 'dbRoot.v5'), raw);
+    md5(s) {
+        return crypto.createHash("md5").update(s).digest("hex");
     }
 
     async fetchMetadata(pathCode) {
         const cacheFile = path.join(this.cacheDir, `qp-${pathCode}.json`);
         if (fs.existsSync(cacheFile)) return fs.readJsonSync(cacheFile);
-
-        try {
-            const result = await this.catalog.fetchMetadataForPath(pathCode);
-            fs.writeJsonSync(cacheFile, result);
-            return result;
-        } catch (e) {
-            console.error(`[Metadata] Failed for ${pathCode}: ${e.message}`);
-            return { requestedPath: pathCode, entries: [], error: e.message };
-        }
+        const result = await this.catalog.fetchMetadataForPath(pathCode);
+        fs.writeJson(cacheFile, result, () => {});
+        return result;
     }
 
-    async fetchTile(z, x, y, iCode, fToken) {
+    async fetchTile(z, x, y, iCode, fToken, forcedSourcePath = null) {
+        // 1. IMMEDIATE HIT: Processed small tile (FASTEST)
+        const processedName = `proc-${z}-${x}-${y}-${iCode}-${fToken}.jpg`;
+        const processedPath = path.join(this.tileCacheDir, processedName);
+        if (fs.existsSync(processedPath)) return fs.readFileSync(processedPath);
+
         const center = slippyTileToCenter(z, x, y);
         const fullPath = latLonToPath(center.lat, center.lon, z);
-        const tileCacheDir = path.join(this.cacheDir, 'tiles');
-        fs.ensureDirSync(tileCacheDir);
+        let startLen = forcedSourcePath ? Math.min(forcedSourcePath.length, fullPath.length) : fullPath.length;
 
-        for (let length = fullPath.length; length >= 5; length--) {
-            const currentPath = fullPath.slice(0, length);
-            const isAncestor = length < fullPath.length;
-            const tileName = `tile-${currentPath}-i.${iCode}-${fToken}.jpg`;
-            const tilePath = path.join(tileCacheDir, tileName);
+        for (let len = startLen; len >= 5; len--) {
+            const currentPath = fullPath.slice(0, len);
+            const isAncestor = len < fullPath.length;
+            
+            // 2. CACHE CHECK: Raw Large Tile
+            const version = `i.${iCode}`;
+            const tileUrl = `${BASE_URLS[0]}&f1-${currentPath}-${version}-${fToken}`;
+            const cacheName = this.md5(tileUrl) + ".jpg";
+            const rawTilePath = path.join(this.tileCacheDir, cacheName);
 
             let buffer;
-            if (fs.existsSync(tilePath)) {
-                buffer = fs.readFileSync(tilePath);
+            if (fs.existsSync(rawTilePath)) {
+                buffer = fs.readFileSync(rawTilePath);
             } else {
-                const urls = BASE_URLS.map(base => `${base}&f1-${currentPath}-i.${iCode}-${fToken}`);
+                // Racing Mirrors for maximum network speed
                 try {
-                    const data = await this.fetchWithRetry(urls);
-                    buffer = require('../historical/metadata').decryptXOR(Buffer.from(data), this.secretKey);
-                    // Only cache the raw original tile to save space
-                    fs.writeFileSync(tilePath, buffer);
+                    const data = await Promise.any(BASE_URLS.map(base => {
+                        const url = `${base}&f1-${currentPath}-${version}-${fToken}`;
+                        return axios.get(url, { responseType: 'arraybuffer', headers: REQUEST_HEADERS, timeout: 4000 }).then(r => r.data);
+                    }));
+                    buffer = this.decryptXOR(Buffer.from(data));
+                    fs.writeFile(rawTilePath, buffer, () => {});
                 } catch (e) {
-                    if (e.message.includes('404')) continue;
-                    throw e;
+                    if (len === 5) throw new Error("404");
+                    continue; 
                 }
             }
 
             if (isAncestor) {
-                // CROP LOGIC: We have a parent tile, we need a child quadrant
-                const sharp = require('sharp');
-                const diff = fullPath.length - length;
+                // If we need to crop, do it asynchronously and return the buffer immediately
+                const image = await Jimp.read(buffer);
+                const diff = fullPath.length - len;
                 let top = 0, left = 0, size = 256;
-                
-                // Recalculate relative position within the ancestor
                 for (let i = 0; i < diff; i++) {
-                    const char = fullPath[length + i];
+                    const char = fullPath[len + i];
                     size /= 2;
                     if (char === '1') left += size;
                     else if (char === '2') { left += size; top += size; }
                     else if (char === '3') top += size;
                 }
                 
-                return await sharp(buffer)
-                    .extract({ left: Math.round(left), top: Math.round(top), width: Math.round(size), height: Math.round(size) })
-                    .resize(256, 256)
-                    .toBuffer();
+                image.crop({ x: Math.round(left), y: Math.round(top), w: Math.max(1, Math.round(size)), h: Math.max(1, Math.round(size)) });
+                image.resize({ w: 256, h: 256 });
+                const processedBuffer = await image.getBuffer("image/jpeg");
+                fs.writeFile(processedPath, processedBuffer, () => {}); // Async background write
+                return processedBuffer;
             }
-
+            
             return buffer;
         }
-        throw new Error(`Tile not found for ${fullPath}`);
+        throw new Error("404");
     }
 
     latLonToPath(lat, lon, zoom) {
-        const { latLonToPath: actualLatLonToPath } = require('../historical/pathUtils');
-        return actualLatLonToPath(lat, lon, zoom);
+        const { latLonToPath: actual } = require('../historical/pathUtils');
+        return actual(lat, lon, zoom);
     }
 }
 
