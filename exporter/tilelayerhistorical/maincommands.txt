@@ -1,0 +1,91 @@
+Main commands
+1. Estimate how many cells an area has
+Cyprus with bbox
+node scripts/coverage-crawler.js area-info --bbox 32.1,34.45,34.95,35.85 --zoom-min 14 --zoom-max 16
+Any area from GeoJSON
+node scripts/coverage-crawler.js area-info --geojson ./areas/cyprus.geojson --zoom-min 14 --zoom-max 16
+2. Probe metadata only
+
+This finds the historical date + iCode + fToken entries.
+
+node scripts/coverage-crawler.js probe-metadata --bbox 32.1,34.45,34.95,35.85 --zoom-min 14 --zoom-max 16
+Better version
+node scripts/coverage-crawler.js probe-metadata --bbox 32.1,34.45,34.95,35.85 --zoom-min 14 --zoom-max 16 --force true --verbose true
+
+Use --force true if you want to reprobe instead of skipping existing records.
+
+3. Verify tiles only
+
+This is the step that should produce real tile fetch/decrypt attempts and write verification records.
+
+node scripts/coverage-crawler.js verify-tiles
+Better version
+node scripts/coverage-crawler.js verify-tiles --force true --verbose true
+4. Build the index only
+node scripts/coverage-crawler.js build-index
+5. Export GeoJSON
+node scripts/coverage-crawler.js export-geojson
+Verified-only export
+node scripts/coverage-crawler.js export-geojson --verified-only
+6. Full run
+
+This does:
+
+probe metadata
+verify tiles
+build index
+export GeoJSON
+node scripts/coverage-crawler.js full-run --bbox 32.1,34.45,34.95,35.85 --zoom-min 14 --zoom-max 16
+Best practical version
+node scripts/coverage-crawler.js full-run --bbox 32.1,34.45,34.95,35.85 --zoom-min 14 --zoom-max 16 --force true --verbose true
+Your most useful commands right now
+Reprobe everything cleanly
+node scripts/coverage-crawler.js probe-metadata --bbox 32.1,34.45,34.95,35.85 --zoom-min 14 --zoom-max 16 --force true --verbose true
+Then verify tiles cleanly
+node scripts/coverage-crawler.js verify-tiles --force true --verbose true
+
+That split is better than full-run while debugging.
+
+What each one writes
+Metadata probing
+
+Writes to:
+
+cache\metadata\
+workspace\coverage\metadata_records\
+Tile verification
+
+Writes to:
+
+workspace\coverage\verified_records\
+tile_cache\
+Index and export
+
+Writes to:
+
+workspace\coverage\coverage_index.json
+workspace\coverage\exports\
+Important note from your log
+
+Because you are seeing lots of:
+
+probe-metadata skip existing
+
+you should use:
+
+--force true
+
+otherwise it will keep skipping old records.
+
+Recommended debugging sequence
+node scripts/coverage-crawler.js probe-metadata --bbox 32.1,34.45,34.95,35.85 --zoom-min 14 --zoom-max 16 --force true --verbose true
+
+then:
+
+node scripts/coverage-crawler.js verify-tiles --force true --verbose true
+
+then:
+
+node scripts/coverage-crawler.js export-geojson --verified-only
+
+If you paste the verify-tiles finished summary, I’ll tell you exactly where it stands.
