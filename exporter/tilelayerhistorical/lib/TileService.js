@@ -145,10 +145,8 @@ class TileService {
     return this.manager.resolveLayerEntryForPath(pathCode, date, iCode);
   }
 
-  async getUnifiedTile({ date, iCode, z, x, y, allowSourceFallback = false }) {
+  async getNativeTile({ date, iCode, pathCode, allowSourceFallback = false }) {
     await this.init();
-    const center = slippyTileToCenter(z, x, y);
-    const pathCode = latLonToPath(center.lat, center.lon, z);
     const entry = await this.resolveUnifiedEntry({ date, iCode, pathCode });
 
     if (!entry) {
@@ -157,7 +155,7 @@ class TileService {
         status: 404,
         contentType: 'image/png',
         buffer: TRANSPARENT_PNG_1X1,
-        reason: 'No logical layer entry matched this tile path',
+        reason: 'No logical layer entry matched this native path',
       };
     }
 
@@ -189,6 +187,13 @@ class TileService {
         entry,
       };
     }
+  }
+
+  async getUnifiedTile({ date, iCode, z, x, y, allowSourceFallback = false }) {
+    await this.init();
+    const center = slippyTileToCenter(z, x, y);
+    const pathCode = latLonToPath(center.lat, center.lon, z);
+    return this.getNativeTile({ date, iCode, pathCode, allowSourceFallback });
   }
 }
 

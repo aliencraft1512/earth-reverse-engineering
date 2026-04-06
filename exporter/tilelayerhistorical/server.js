@@ -5,6 +5,7 @@ const cors = require('cors');
 const MetadataManager = require('./lib/MetadataManager');
 const CoverageIndexStore = require('./lib/CoverageIndexStore');
 const TileService = require('./lib/TileService');
+const { pathCodeToBounds } = require('./lib/pathUtils');
 
 const app = express();
 const PORT = process.env.PORT || 3010;
@@ -23,6 +24,14 @@ app.use('/tile_cache', express.static(path.join(ROOT, 'tile_cache'), {
   immutable: false,
 }));
 app.use(express.static(path.join(ROOT, 'public')));
+
+function safePathBounds(pathCode) {
+  try {
+    return pathCode ? pathCodeToBounds(pathCode) : null;
+  } catch (error) {
+    return null;
+  }
+}
 
 app.get('/api/health', async (req, res) => {
   const index = await coverage.readIndex().catch(() => null);
@@ -70,6 +79,10 @@ app.post('/api/layers/discover', async (req, res) => {
       return res.status(400).json({ error: 'Missing bounds/zoom' });
     }
     const result = await manager.discoverLogicalLayers(bounds, zoom);
+    result.paths = (result.paths || []).map(pathInfo => ({
+      ...pathInfo,
+      sourceBounds: safePathBounds(pathInfo.sourcePath || pathInfo.path),
+    }));
     return res.json(result);
   } catch (error) {
     return res.status(500).json({ error: error.message });
@@ -111,6 +124,25 @@ app.get('/tiles/unified/:date/:iCode/:z/:x/:y.:ext?', async (req, res) => {
       z: Number(z),
       x: Number(x),
       y: Number(y),
+      allowSourceFallback,
+    });
+    res.status(result.status || 200);
+    res.setHeader('Content-Type', result.contentType || 'image/jpeg');
+    res.setHeader('Cache-Control', 'public, max-age=86400');
+    return res.send(result.buffer);
+  } catch (error) {
+    return res.status(500).json({ error: error.message });
+  }
+});
+
+app.get('/tiles/native/:date/:iCode/:pathCode.:ext?', async (req, res) => {
+  try {
+    const { date, iCode, pathCode } = req.params;
+    const allowSourceFallback = ['1', 'true', 'yes'].includes(String(req.query.allowSourceFallback || '').toLowerCase());
+    const result = await tileService.getNativeTile({
+      date,
+      iCode: Number(iCode),
+      pathCode,
       allowSourceFallback,
     });
     res.status(result.status || 200);

@@ -14,8 +14,10 @@ const dateDisplayEl = document.getElementById('active-date-display');
 const sliderContainer = document.getElementById('ui-container');
 const sliderElement = document.getElementById('timeline-slider');
 
-let currentHistoricalLayer = null;
+let currentHistoricalLayerGroup = null;
+let currentHistoricalLayerId = null;
 let discoveredLayers = [];
+let discoveredPathSummaries = [];
 let activeSelectedLayerId = null; // Track selected logical layer across panning
 
 // Initialize an empty disabled slider
@@ -56,6 +58,42 @@ function buildLayerLabels(layers) {
   });
 }
 
+function hasMatchingEntry(pathSummary, layerInfo) {
+  if (!Array.isArray(pathSummary?.entries)) return false;
+  return pathSummary.entries.some(entry => entry.date === layerInfo.date && Number(entry.iCode) === Number(layerInfo.iCode));
+}
+
+function boundsToLeaflet(bounds) {
+  if (!bounds) return null;
+  if (![bounds.south, bounds.west, bounds.north, bounds.east].every(Number.isFinite)) return null;
+  return [[bounds.south, bounds.west], [bounds.north, bounds.east]];
+}
+
+function buildOverlaySpecsForLayer(layerInfo) {
+  const seen = new Set();
+  const overlays = [];
+
+  for (const pathSummary of discoveredPathSummaries) {
+    if (!hasMatchingEntry(pathSummary, layerInfo)) continue;
+
+    const resolvedPathCode = pathSummary.sourcePath || pathSummary.path;
+    if (!resolvedPathCode || seen.has(resolvedPathCode)) continue;
+
+    const bounds = pathSummary.sourceBounds || pathSummary.bounds;
+    const leafletBounds = boundsToLeaflet(bounds);
+    if (!leafletBounds) continue;
+
+    seen.add(resolvedPathCode);
+    overlays.push({
+      key: resolvedPathCode,
+      pathCode: resolvedPathCode,
+      bounds: leafletBounds,
+    });
+  }
+
+  return overlays;
+}
+
 // Request debounce timeout
 let discoverTimeout = null;
 let discoverAbortController = null;
@@ -90,6 +128,7 @@ async function discoverLayers() {
     if (!response.ok) throw new Error(data.error || 'Layer discovery failed');
 
     discoveredLayers = data.layers || [];
+    discoveredPathSummaries = data.paths || [];
 
     if (discoveredLayers.length === 0) {
       statusEl.textContent = 'No historical layers found here.';
@@ -154,7 +193,6 @@ function updateTimeline(layers) {
     }
   });
 
-  // Switch to the target layer immediately
   triggerLayerRender(targetIndex);
 }
 
@@ -178,42 +216,53 @@ sliderElement.noUiSlider.on('update', function () {
 });
 
 function clearOverlays() {
-  if (currentHistoricalLayer) {
-    map.removeLayer(currentHistoricalLayer);
-    currentHistoricalLayer = null;
+  if (currentHistoricalLayerGroup) {
+    map.removeLayer(currentHistoricalLayerGroup);
+    currentHistoricalLayerGroup = null;
   }
+  currentHistoricalLayerId = null;
   dateDisplayEl.textContent = 'Historical Imagery Timeline';
 }
 
-function tileUrlForLayer(layerInfo) {
-  return `/tiles/unified/${encodeURIComponent(layerInfo.date)}/${encodeURIComponent(layerInfo.iCode)}/{z}/{x}/{y}.jpg`;
+function nativeOverlayUrl(layerInfo, overlaySpec) {
+  return `/tiles/native/${encodeURIComponent(layerInfo.date)}/${encodeURIComponent(layerInfo.iCode)}/${encodeURIComponent(overlaySpec.pathCode)}.jpg`;
 }
 
 function triggerLayerRender(index) {
   if (!discoveredLayers[index]) return;
   const layerInfo = discoveredLayers[index];
 
-  if (currentHistoricalLayer && currentHistoricalLayer.layerId === layerInfo.id) {
+  if (currentHistoricalLayerId === layerInfo.id) {
     return; // Already rendering this layer
   }
 
-  // Swap out layer
-  if (currentHistoricalLayer) {
-    map.removeLayer(currentHistoricalLayer);
+  if (currentHistoricalLayerGroup) {
+    map.removeLayer(currentHistoricalLayerGroup);
+    currentHistoricalLayerGroup = null;
   }
 
-  const layer = L.tileLayer(tileUrlForLayer(layerInfo), {
-    tileSize: 256,
-    opacity: 1.0,
-    maxZoom: 19,
-    crossOrigin: true,
-  });
+  const overlaySpecs = buildOverlaySpecsForLayer(layerInfo);
+  if (!overlaySpecs.length) {
+    currentHistoricalLayerId = null;
+    statusEl.textContent = 'Selected pass has no native overlays for this view.';
+    return;
+  }
 
-  layer.layerId = layerInfo.id;
-  layer.addTo(map);
-  layer.bringToFront();
+  const group = L.layerGroup();
 
-  currentHistoricalLayer = layer;
+  for (const overlaySpec of overlaySpecs) {
+    const overlay = L.imageOverlay(nativeOverlayUrl(layerInfo, overlaySpec), overlaySpec.bounds, {
+      opacity: 1.0,
+      interactive: false,
+      crossOrigin: true,
+      errorOverlayUrl: undefined,
+    });
+    overlay.addTo(group);
+  }
+
+  group.addTo(map);
+  currentHistoricalLayerGroup = group;
+  currentHistoricalLayerId = layerInfo.id;
 }
 
 // Map event listeners bind
