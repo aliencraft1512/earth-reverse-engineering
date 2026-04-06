@@ -236,37 +236,62 @@ class CoverageIndexStore {
       layers,
     };
 
+    const writeObjectEntries = (stream, object, indent) => new Promise((resolve, reject) => {
+      const entries = Object.entries(object);
+      let idx = 0;
+
+      stream.on('error', reject);
+
+      function writeNext() {
+        while (idx < entries.length) {
+          const [key, value] = entries[idx];
+          const prefix = idx === 0 ? '' : ',\n';
+          const line = `${prefix}${indent}${JSON.stringify(key)}: ${JSON.stringify(value)}`;
+
+          if (!stream.write(line)) {
+            idx += 1;
+            stream.once('drain', writeNext);
+            return;
+          }
+
+          idx += 1;
+        }
+
+        resolve();
+      }
+
+      writeNext();
+    });
+
     const _indexPath = this.indexPath;
     await new Promise((resolve, reject) => {
-      const stream = fs.createWriteStream(_indexPath);
+      const stream = fs.createWriteStream(_indexPath, { encoding: 'utf8' });
       stream.on('error', reject);
-      stream.write('{\n');
-      stream.write(`  "generatedAt": "${index.generatedAt}",\n`);
-      stream.write(`  "pathCount": ${index.pathCount},\n`);
-      stream.write(`  "sourceBucketCount": ${index.sourceBucketCount},\n`);
-      stream.write(`  "layerCount": ${index.layerCount},\n`);
-      
-      stream.write(`  "pathAliases": {`);
-      let count = 0;
-      for (const [k, v] of Object.entries(pathAliases)) {
-        if (count > 0) stream.write(',');
-        stream.write(`\n    "${k}": "${v}"`);
-        count++;
-      }
-      stream.write(`\n  },\n`);
 
-      stream.write(`  "sourceBuckets": {`);
-      count = 0;
-      for (const [k, v] of Object.entries(compactSourceBuckets)) {
-        if (count > 0) stream.write(',');
-        stream.write(`\n    "${k}": ${JSON.stringify(v)}`);
-        count++;
-      }
-      stream.write(`\n  },\n`);
+      (async () => {
+        stream.write('{\n');
+        stream.write(`  "generatedAt": ${JSON.stringify(index.generatedAt)},\n`);
+        stream.write(`  "pathCount": ${index.pathCount},\n`);
+        stream.write(`  "sourceBucketCount": ${index.sourceBucketCount},\n`);
+        stream.write(`  "layerCount": ${index.layerCount},\n`);
 
-      stream.write(`  "layers": ${JSON.stringify(layers)}\n`);
-      stream.write('}\n');
-      stream.end(resolve);
+        stream.write('  "pathAliases": {\n');
+        await writeObjectEntries(stream, pathAliases, '    ');
+        stream.write('\n  },\n');
+
+        stream.write('  "sourceBuckets": {\n');
+        await writeObjectEntries(stream, compactSourceBuckets, '    ');
+        stream.write('\n  },\n');
+
+        stream.write('  "layers": {\n');
+        await writeObjectEntries(stream, layers, '    ');
+        stream.write('\n  }\n');
+
+        stream.write('}\n');
+        stream.end(resolve);
+      })().catch(error => {
+        stream.destroy(error);
+      });
     });
 
     this._cachedIndex = index;
