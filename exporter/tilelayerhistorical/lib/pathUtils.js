@@ -28,6 +28,52 @@ function latLonToPath(lat, lon, zoom) {
   return pathCode;
 }
 
+function pathCodeToBounds(pathCode) {
+  const code = String(pathCode || '');
+  if (!code.length) {
+    throw new Error('pathCode is required');
+  }
+
+  let west = VALID_BOUND_RC[0];
+  let east = VALID_BOUND_RC[2];
+  let south = VALID_BOUND_RC[3];
+  let north = VALID_BOUND_RC[1];
+
+  for (let i = 1; i < code.length; i += 1) {
+    const ch = code[i];
+    const midLon = (west + east) / 2;
+    const midLat = (south + north) / 2;
+
+    if (ch === '0') {
+      east = midLon;
+      north = midLat;
+      continue;
+    }
+
+    if (ch === '1') {
+      west = midLon;
+      north = midLat;
+      continue;
+    }
+
+    if (ch === '2') {
+      west = midLon;
+      south = midLat;
+      continue;
+    }
+
+    if (ch === '3') {
+      east = midLon;
+      south = midLat;
+      continue;
+    }
+
+    throw new Error(`Unsupported pathCode character: ${ch}`);
+  }
+
+  return { west, south, east, north };
+}
+
 function normalizeBounds(rawBounds) {
   if (!rawBounds) {
     throw new Error('Bounds are required.');
@@ -151,6 +197,7 @@ module.exports = {
   getTileGeoSize,
   latLonToPath,
   normalizeBounds,
+  pathCodeToBounds,
   slippyTileToBounds,
   slippyTileToCenter,
 };
