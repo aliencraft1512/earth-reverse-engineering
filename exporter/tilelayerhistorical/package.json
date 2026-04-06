@@ -6,7 +6,8 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "crawler": "node scripts/coverage-crawler.js"
+    "crawler": "node scripts/coverage-crawler.js",
+    "smoke": "node scripts/smoke-test.js"
   },
   "dependencies": {
     "@turf/turf": "^7.3.4",

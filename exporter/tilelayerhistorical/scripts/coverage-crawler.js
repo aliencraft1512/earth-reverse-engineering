@@ -128,6 +128,14 @@ function createLogger(logPath, verbose = false) {
   };
 }
 
+function skippedPhase(name, reason) {
+  return {
+    status: 'skipped',
+    phase: name,
+    reason,
+  };
+}
+
 async function cmdBuildIndex(context) {
   const { store, logger } = context;
   const index = await store.buildIndex();
@@ -199,7 +207,6 @@ async function cmdProbeMetadata(context, args) {
     const alreadyDone = !force && await fs.pathExists(fileTarget);
     if (alreadyDone) {
       skippedExisting += 1;
-      // We no longer need to parse JSON to knownSources here because the new master Index bucket loader preloads them instantly.
       continue;
     }
 
@@ -298,7 +305,6 @@ async function cmdVerifyTiles(context, args) {
   const force = toBool(args.force, false);
   const allowSourceFallback = toBool(args['allow-source-fallback'], false);
   const filterCells = await loadAreaTiles(args);
-  const filterSet = new Set(filterCells.map(c => c.path));
 
   let totalPaths = 0;
   let totalEntries = 0;
@@ -311,7 +317,7 @@ async function cmdVerifyTiles(context, args) {
   let cacheWrites = 0;
 
   logger.info('verify-tiles started', {
-    totalPaths: filterSet.size,
+    totalPaths: filterCells.length,
     force,
     allowSourceFallback,
     area: args.bbox ? { mode: 'bbox', bbox: parseBBox(args.bbox), polygons: [] } : { mode: 'geojson', geojson: args.geojson },
@@ -328,7 +334,6 @@ async function cmdVerifyTiles(context, args) {
     for (const entry of entries) {
       totalEntries += 1;
       const existing = await store.readVerifyRecord(record.path, entry);
-      // If we previously failed to verify this tile (due to network or ban), automatically try again even if force is false!
       const isFailedRecord = existing && existing.verified === false;
       if (existing && !force && !isFailedRecord) {
         skippedExisting += 1;
@@ -415,10 +420,27 @@ async function cmdVerifyTiles(context, args) {
 }
 
 async function cmdFullRun(context, args) {
-  const probe = await cmdProbeMetadata(context, args);
-  const verify = await cmdVerifyTiles(context, args);
-  const index = await cmdBuildIndex(context, args);
-  const exported = await cmdExportGeoJSON(context, args);
+  const skipProbe = toBool(args['skip-probe'], false);
+  const skipVerify = toBool(args['skip-verify'], false);
+  const skipIndex = toBool(args['skip-index'], false);
+  const skipExport = toBool(args['skip-export'], false);
+
+  const probe = skipProbe
+    ? skippedPhase('probe-metadata', '--skip-probe')
+    : await cmdProbeMetadata(context, args);
+
+  const verify = skipVerify
+    ? skippedPhase('verify-tiles', '--skip-verify')
+    : await cmdVerifyTiles(context, args);
+
+  const index = skipIndex
+    ? skippedPhase('build-index', '--skip-index')
+    : await cmdBuildIndex(context, args);
+
+  const exported = skipExport
+    ? skippedPhase('export-geojson', '--skip-export')
+    : await cmdExportGeoJSON(context, args);
+
   return { probe, verify, index, exported };
 }
 
