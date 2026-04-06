@@ -16,7 +16,7 @@ const sliderElement = document.getElementById('timeline-slider');
 
 let currentHistoricalLayer = null;
 let discoveredLayers = [];
-let activeSelectedDate = null; // Track selected date across panning
+let activeSelectedLayerId = null; // Track selected logical layer across panning
 
 // Initialize an empty disabled slider
 noUiSlider.create(sliderElement, {
@@ -43,6 +43,19 @@ function currentBoundsPayload() {
   };
 }
 
+function buildLayerLabels(layers) {
+  const countsByDate = new Map();
+
+  for (const layer of layers) {
+    countsByDate.set(layer.date, (countsByDate.get(layer.date) || 0) + 1);
+  }
+
+  return layers.map(layer => {
+    const duplicateDate = (countsByDate.get(layer.date) || 0) > 1;
+    return duplicateDate ? `${layer.date} (i.${layer.iCode})` : layer.date;
+  });
+}
+
 // Request debounce timeout
 let discoverTimeout = null;
 let discoverAbortController = null;
@@ -57,7 +70,7 @@ async function discoverLayers() {
   }
 
   statusEl.textContent = 'Discovering layers in view...';
-  
+
   if (discoverAbortController) {
     discoverAbortController.abort();
   }
@@ -72,27 +85,27 @@ async function discoverLayers() {
       body: JSON.stringify({ bounds: currentBoundsPayload(), zoom: discoveryZoom }),
       signal: discoverAbortController.signal
     });
-    
+
     const data = await response.json();
     if (!response.ok) throw new Error(data.error || 'Layer discovery failed');
-    
+
     discoveredLayers = data.layers || [];
-    
+
     if (discoveredLayers.length === 0) {
       statusEl.textContent = 'No historical layers found here.';
       disableTimeline();
       clearOverlays();
       return;
     }
-    
-    // Sort layers chronologically automatically
-    // Expected date format typically includes year/month/day
-    // e.g. "2020-03-12" or similar depending on the exact payload
-    discoveredLayers.sort((a, b) => a.date.localeCompare(b.date));
-    
+
+    discoveredLayers.sort((a, b) => {
+      if (a.date === b.date) return a.iCode - b.iCode;
+      return a.date.localeCompare(b.date);
+    });
+
     statusEl.textContent = `Found ${discoveredLayers.length} distinct passes.`;
     updateTimeline(discoveredLayers);
-    
+
   } catch (error) {
     if (error.name === 'AbortError') return; // Ignore expected aborts
     statusEl.textContent = error.message;
@@ -118,13 +131,12 @@ function enableTimeline() {
 function updateTimeline(layers) {
   enableTimeline();
 
-  const labels = layers.map(l => l.date);
+  const labels = buildLayerLabels(layers);
 
   let targetIndex = layers.length - 1; // Default to most recent
 
-  // Try to preserve the user's previously selected date if it exists in the new area
-  if (activeSelectedDate) {
-    const foundIndex = labels.indexOf(activeSelectedDate);
+  if (activeSelectedLayerId) {
+    const foundIndex = layers.findIndex(layer => layer.id === activeSelectedLayerId);
     if (foundIndex !== -1) {
       targetIndex = foundIndex;
     }
@@ -150,7 +162,7 @@ function updateTimeline(layers) {
 sliderElement.noUiSlider.on('set', function () {
   const index = Math.round(Number(sliderElement.noUiSlider.get(true)));
   if (discoveredLayers[index]) {
-    activeSelectedDate = discoveredLayers[index].date;
+    activeSelectedLayerId = discoveredLayers[index].id;
   }
   triggerLayerRender(index);
 });
@@ -158,7 +170,7 @@ sliderElement.noUiSlider.on('set', function () {
 // UPDATE fires whenever slider is touched or dragged
 sliderElement.noUiSlider.on('update', function () {
    if (sliderElement.hasAttribute('disabled')) return;
-   
+
    const index = Math.round(Number(sliderElement.noUiSlider.get(true)));
    if (discoveredLayers[index]) {
       dateDisplayEl.innerHTML = `Active Pass: <strong>${discoveredLayers[index].date}</strong> <em>(i.${discoveredLayers[index].iCode})</em>`;
@@ -180,7 +192,7 @@ function tileUrlForLayer(layerInfo) {
 function triggerLayerRender(index) {
   if (!discoveredLayers[index]) return;
   const layerInfo = discoveredLayers[index];
-  
+
   if (currentHistoricalLayer && currentHistoricalLayer.layerId === layerInfo.id) {
     return; // Already rendering this layer
   }
@@ -196,11 +208,11 @@ function triggerLayerRender(index) {
     maxZoom: 19,
     crossOrigin: true,
   });
-  
+
   layer.layerId = layerInfo.id;
   layer.addTo(map);
   layer.bringToFront();
-  
+
   currentHistoricalLayer = layer;
 }
 
