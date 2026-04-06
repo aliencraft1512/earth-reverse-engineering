@@ -25,7 +25,7 @@ app.use('/tile_cache', express.static(path.join(ROOT, 'tile_cache'), {
 app.use(express.static(path.join(ROOT, 'public')));
 
 app.get('/api/health', async (req, res) => {
-  const index = await coverage.loadIndex().catch(() => null);
+  const index = await coverage.readIndex().catch(() => null);
   res.json({
     ok: true,
     now: new Date().toISOString(),
@@ -78,7 +78,7 @@ app.post('/api/layers/discover', async (req, res) => {
 
 app.get('/api/coverage/index', async (req, res) => {
   try {
-    const index = await coverage.loadIndex() || await coverage.buildIndex();
+    const index = await coverage.readIndex() || await coverage.buildIndex();
     return res.json(index);
   } catch (error) {
     return res.status(500).json({ error: error.message });
@@ -89,7 +89,13 @@ app.get('/api/coverage/geojson', async (req, res) => {
   try {
     const verifiedOnly = ['1', 'true', 'yes'].includes(String(req.query.verifiedOnly || '').toLowerCase());
     const exported = await coverage.exportGeoJSON({ verifiedOnly });
-    return res.json({ ok: true, filePath: exported.filePath, featureCount: exported.featureCount });
+    return res.json({
+      ok: true,
+      filePath: exported.filePath || exported.outPath,
+      outPath: exported.outPath || exported.filePath,
+      featureCount: Number.isFinite(exported.featureCount) ? exported.featureCount : null,
+      mode: exported.mode || null,
+    });
   } catch (error) {
     return res.status(500).json({ error: error.message });
   }

@@ -300,7 +300,6 @@ class CoverageIndexStore {
   }
 
   async readIndex() {
-    // RAM cache for 60 seconds to prevent hammering the disk
     if (this._cachedIndex && (Date.now() - this._cachedIndexTime < 60000)) {
       return this._cachedIndex;
     }
@@ -308,6 +307,10 @@ class CoverageIndexStore {
     this._cachedIndex = await fs.readJson(this.indexPath);
     this._cachedIndexTime = Date.now();
     return this._cachedIndex;
+  }
+
+  async loadIndex() {
+    return this.readIndex();
   }
 
   async resolveEntry(pathCode, date, iCode) {
@@ -358,6 +361,7 @@ class CoverageIndexStore {
     stream.write('{"type":"FeatureCollection","features":[\n');
 
     let first = true;
+    let featureCount = 0;
     for (const [sourcePath, polygons] of Object.entries(grouped)) {
       const bucket = index.sourceBuckets?.[sourcePath];
       if (!bucket || !polygons.length) continue;
@@ -377,6 +381,7 @@ class CoverageIndexStore {
       };
       if (!first) stream.write(',\n');
       first = false;
+      featureCount += 1;
       stream.write(JSON.stringify(feature));
     }
 
@@ -387,7 +392,12 @@ class CoverageIndexStore {
       stream.end();
     });
 
-    return { outPath, mode: verifiedOnly ? 'sources-verified' : 'sources' };
+    return {
+      outPath,
+      filePath: outPath,
+      featureCount,
+      mode: verifiedOnly ? 'sources-verified' : 'sources',
+    };
   }
 
   async exportRawGeoJSON({ verifiedOnly, index }) {
@@ -405,6 +415,7 @@ class CoverageIndexStore {
     stream.write('{"type":"FeatureCollection","features":[\n');
 
     let first = true;
+    let featureCount = 0;
     for (const alias of Object.values(index.pathAliases || {})) {
       const bucket = index.sourceBuckets?.[alias.sourcePath];
       if (!bucket) continue;
@@ -430,6 +441,7 @@ class CoverageIndexStore {
         };
         if (!first) stream.write(',\n');
         first = false;
+        featureCount += 1;
         stream.write(JSON.stringify(feature));
       }
     }
@@ -441,7 +453,12 @@ class CoverageIndexStore {
       stream.end();
     });
 
-    return { outPath, mode: verifiedOnly ? 'raw-verified' : 'raw' };
+    return {
+      outPath,
+      filePath: outPath,
+      featureCount,
+      mode: verifiedOnly ? 'raw-verified' : 'raw',
+    };
   }
 }
 
