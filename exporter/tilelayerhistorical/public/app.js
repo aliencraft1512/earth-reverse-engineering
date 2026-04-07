@@ -13,11 +13,15 @@ const statusEl = document.getElementById('status-text');
 const dateDisplayEl = document.getElementById('active-date-display');
 const sliderContainer = document.getElementById('ui-container');
 const sliderElement = document.getElementById('timeline-slider');
-const HISTORICAL_NATIVE_ZOOM = 18;
+const HISTORICAL_NATIVE_ZOOM_CANDIDATES = [18, 17, 19, 16];
+const FALLBACK_NATIVE_ZOOM = 18;
 
 let currentHistoricalLayer = null;
+let currentHistoricalNativeZoom = null;
 let discoveredLayers = [];
 let activeSelectedLayerId = null; // Track selected logical layer across panning
+let renderRequestToken = 0;
+const nativeZoomCache = new Map();
 
 // Initialize an empty disabled slider
 noUiSlider.create(sliderElement, {
@@ -55,6 +59,122 @@ function buildLayerLabels(layers) {
     const duplicateDate = (countsByDate.get(layer.date) || 0) > 1;
     return duplicateDate ? `${layer.date} (i.${layer.iCode})` : layer.date;
   });
+}
+
+function latLonToSlippyXY(lat, lon, z) {
+  const tileCount = Math.pow(2, z);
+  const x = Math.floor(((lon + 180) / 360) * tileCount);
+  const latRad = (lat * Math.PI) / 180;
+  const y = Math.floor(
+    ((1 - Math.log(Math.tan(latRad) + 1 / Math.cos(latRad)) / Math.PI) / 2) * tileCount
+  );
+  return { x, y };
+}
+
+async function fetchJson(url, options) {
+  const response = await fetch(url, options);
+  const text = await response.text();
+  let data = null;
+
+  try {
+    data = text ? JSON.parse(text) : null;
+  } catch (error) {
+    data = text;
+  }
+
+  if (!response.ok) {
+    const message = (data && data.error) || response.statusText || 'Request failed';
+    throw new Error(message);
+  }
+
+  return data;
+}
+
+function nativeZoomCacheKey(layerInfo) {
+  const center = map.getCenter();
+  return `${layerInfo.id}|${center.lat.toFixed(3)}|${center.lng.toFixed(3)}`;
+}
+
+async function fetchNeighborhoodDiagnostic(layerInfo, nativeZoom, radius = 1) {
+  const center = map.getCenter();
+  const { x, y } = latLonToSlippyXY(center.lat, center.lng, nativeZoom);
+  const url = `/api/debug/neighborhood/${encodeURIComponent(layerInfo.date)}/${encodeURIComponent(layerInfo.iCode)}/${nativeZoom}/${x}/${y}?radius=${radius}`;
+  return fetchJson(url);
+}
+
+function scoreDiagnostic(diag, zoom) {
+  const tiles = Array.isArray(diag?.tiles) ? diag.tiles : [];
+  if (!tiles.length) return -Infinity;
+
+  const okTiles = tiles.filter(tile => tile.ok && tile.status === 200 && tile.exactPathMatch && tile.resolvedPathCode);
+  if (!okTiles.length) return -Infinity;
+
+  const uniqueResolved = new Set(okTiles.map(tile => tile.resolvedPathCode)).size;
+  const duplicateResolved = okTiles.length - uniqueResolved;
+  const missingTiles = tiles.length - okTiles.length;
+
+  let score = 0;
+  score += okTiles.length * 100;
+  score += uniqueResolved * 20;
+  score -= duplicateResolved * 120;
+  score -= missingTiles * 80;
+
+  if (duplicateResolved === 0 && missingTiles === 0) {
+    score += 500;
+  }
+
+  score -= Math.abs(zoom - 18) * 8;
+  return score;
+}
+
+async function chooseNativeZoomForLayer(layerInfo) {
+  const cacheKey = nativeZoomCacheKey(layerInfo);
+  if (nativeZoomCache.has(cacheKey)) {
+    return nativeZoomCache.get(cacheKey);
+  }
+
+  const previousStatus = statusEl.textContent;
+  statusEl.textContent = 'Choosing native zoom...';
+
+  try {
+    const diagnostics = await Promise.all(HISTORICAL_NATIVE_ZOOM_CANDIDATES.map(async zoom => {
+      try {
+        const diag = await fetchNeighborhoodDiagnostic(layerInfo, zoom, 1);
+        return {
+          zoom,
+          score: scoreDiagnostic(diag, zoom),
+          diag,
+        };
+      } catch (error) {
+        return {
+          zoom,
+          score: -Infinity,
+          diag: null,
+          error: error.message,
+        };
+      }
+    }));
+
+    diagnostics.sort((a, b) => {
+      if (b.score !== a.score) return b.score - a.score;
+      return Math.abs(a.zoom - 18) - Math.abs(b.zoom - 18);
+    });
+
+    const best = diagnostics.find(item => Number.isFinite(item.score) && item.score > -Infinity);
+    const chosenZoom = best ? best.zoom : FALLBACK_NATIVE_ZOOM;
+    nativeZoomCache.set(cacheKey, chosenZoom);
+
+    console.table(diagnostics.map(item => ({
+      zoom: item.zoom,
+      score: item.score,
+      tiles: item.diag?.tiles?.length || 0,
+      error: item.error || null,
+    })));
+
+    return chosenZoom;
+  } finally {
+    statusEl.textContent = previousStatus;
+  }
 }
 
 // Request debounce timeout
@@ -156,7 +276,7 @@ function updateTimeline(layers) {
   });
 
   // Switch to the target layer immediately
-  triggerLayerRender(targetIndex);
+  void triggerLayerRender(targetIndex);
 }
 
 // SET fires when handle is released
@@ -165,7 +285,7 @@ sliderElement.noUiSlider.on('set', function () {
   if (discoveredLayers[index]) {
     activeSelectedLayerId = discoveredLayers[index].id;
   }
-  triggerLayerRender(index);
+  void triggerLayerRender(index);
 });
 
 // UPDATE fires whenever slider is touched or dragged
@@ -174,7 +294,8 @@ sliderElement.noUiSlider.on('update', function () {
 
    const index = Math.round(Number(sliderElement.noUiSlider.get(true)));
    if (discoveredLayers[index]) {
-      dateDisplayEl.innerHTML = `Active Pass: <strong>${discoveredLayers[index].date}</strong> <em>(i.${discoveredLayers[index].iCode})</em> <small>(native z.${HISTORICAL_NATIVE_ZOOM})</small>`;
+      const nativeZoomText = Number.isFinite(currentHistoricalNativeZoom) ? currentHistoricalNativeZoom : '?';
+      dateDisplayEl.innerHTML = `Active Pass: <strong>${discoveredLayers[index].date}</strong> <em>(i.${discoveredLayers[index].iCode})</em> <small>(native z.${nativeZoomText})</small>`;
    }
 });
 
@@ -183,6 +304,7 @@ function clearOverlays() {
     map.removeLayer(currentHistoricalLayer);
     currentHistoricalLayer = null;
   }
+  currentHistoricalNativeZoom = null;
   dateDisplayEl.textContent = 'Historical Imagery Timeline';
 }
 
@@ -190,12 +312,22 @@ function tileUrlForLayer(layerInfo) {
   return `/tiles/unified/${encodeURIComponent(layerInfo.date)}/${encodeURIComponent(layerInfo.iCode)}/{z}/{x}/{y}.jpg`;
 }
 
-function triggerLayerRender(index) {
+async function triggerLayerRender(index) {
   if (!discoveredLayers[index]) return;
   const layerInfo = discoveredLayers[index];
+  const token = ++renderRequestToken;
 
-  if (currentHistoricalLayer && currentHistoricalLayer.layerId === layerInfo.id) {
-    return; // Already rendering this layer
+  const chosenNativeZoom = await chooseNativeZoomForLayer(layerInfo);
+  if (token !== renderRequestToken) {
+    return;
+  }
+
+  if (
+    currentHistoricalLayer &&
+    currentHistoricalLayer.layerId === layerInfo.id &&
+    currentHistoricalNativeZoom === chosenNativeZoom
+  ) {
+    return;
   }
 
   // Swap out layer
@@ -207,8 +339,8 @@ function triggerLayerRender(index) {
     tileSize: 256,
     opacity: 1.0,
     maxZoom: 19,
-    minNativeZoom: HISTORICAL_NATIVE_ZOOM,
-    maxNativeZoom: HISTORICAL_NATIVE_ZOOM,
+    minNativeZoom: chosenNativeZoom,
+    maxNativeZoom: chosenNativeZoom,
     crossOrigin: true,
     updateWhenZooming: false,
   });
@@ -218,6 +350,11 @@ function triggerLayerRender(index) {
   layer.bringToFront();
 
   currentHistoricalLayer = layer;
+  currentHistoricalNativeZoom = chosenNativeZoom;
+
+  if (discoveredLayers[index]) {
+    dateDisplayEl.innerHTML = `Active Pass: <strong>${discoveredLayers[index].date}</strong> <em>(i.${discoveredLayers[index].iCode})</em> <small>(native z.${chosenNativeZoom})</small>`;
+  }
 }
 
 // Map event listeners bind
