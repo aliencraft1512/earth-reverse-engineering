@@ -2,7 +2,7 @@
 const fs = require('fs-extra');
 const path = require('path');
 const crypto = require('crypto');
-const Jimp = require('jimp');
+const JimpModule = require('jimp');
 
 const MetadataManager = require('./MetadataManager');
 const CoverageIndexStore = require('./CoverageIndexStore');
@@ -14,9 +14,36 @@ const TILE_BASE_URLS = MetadataManager.BASE_URLS;
 const DEFAULT_BASE_URL = MetadataManager.BASE_URL_DEFAULT;
 const TRANSPARENT_PNG_1X1 = Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAukB9Y9l9QAAAABJRU5ErkJggg==', 'base64');
 const TILE_SIZE = 256;
+const JimpRead =
+  (typeof JimpModule.read === 'function' && JimpModule.read.bind(JimpModule)) ||
+  (typeof JimpModule.Jimp?.read === 'function' && JimpModule.Jimp.read.bind(JimpModule.Jimp)) ||
+  (typeof JimpModule.default?.read === 'function' && JimpModule.default.read.bind(JimpModule.default));
+const JimpMimeJPEG = JimpModule.MIME_JPEG || JimpModule.Jimp?.MIME_JPEG || JimpModule.default?.MIME_JPEG || 'image/jpeg';
+const JimpResizeBilinear = JimpModule.RESIZE_BILINEAR || JimpModule.Jimp?.RESIZE_BILINEAR || JimpModule.default?.RESIZE_BILINEAR;
 
 function isJpeg(buffer) {
   return Buffer.isBuffer(buffer) && buffer.length >= 3 && buffer[0] === 0xff && buffer[1] === 0xd8 && buffer[2] === 0xff;
+}
+
+async function readJimpImage(buffer) {
+  if (!JimpRead) {
+    throw new Error('Jimp read() is unavailable in this runtime');
+  }
+  return JimpRead(buffer);
+}
+
+function resizeImage(image, width, height) {
+  if (JimpResizeBilinear !== undefined) {
+    image.resize(width, height, JimpResizeBilinear);
+  } else {
+    image.resize(width, height);
+  }
+  return image;
+}
+
+async function createBlankComposite(width, height) {
+  const image = await readJimpImage(TRANSPARENT_PNG_1X1);
+  return resizeImage(image, width, height);
 }
 
 class TileService {
@@ -204,7 +231,7 @@ class TileService {
   async composeFromHigherNativeZoom({ date, iCode, z, x, y, sourceZoom, allowSourceFallback = false }) {
     const scale = Math.pow(2, sourceZoom - z);
     const mosaicSize = TILE_SIZE * scale;
-    const mosaic = new Jimp(mosaicSize, mosaicSize, 0x00000000);
+    const mosaic = await createBlankComposite(mosaicSize, mosaicSize);
     let anySuccess = false;
     const childResults = [];
 
@@ -224,7 +251,7 @@ class TileService {
         if (!result.ok || !isJpeg(result.buffer)) {
           continue;
         }
-        const img = await Jimp.read(result.buffer);
+        const img = await readJimpImage(result.buffer);
         mosaic.composite(img, dx * TILE_SIZE, dy * TILE_SIZE);
         anySuccess = true;
       }
@@ -241,8 +268,8 @@ class TileService {
       };
     }
 
-    mosaic.resize(TILE_SIZE, TILE_SIZE, Jimp.RESIZE_BILINEAR);
-    const buffer = await mosaic.quality(85).getBufferAsync(Jimp.MIME_JPEG);
+    resizeImage(mosaic, TILE_SIZE, TILE_SIZE);
+    const buffer = await mosaic.quality(85).getBufferAsync(JimpMimeJPEG);
     return {
       ok: true,
       status: 200,
@@ -281,10 +308,10 @@ class TileService {
       };
     }
 
-    const image = await Jimp.read(parent.buffer);
+    const image = await readJimpImage(parent.buffer);
     image.crop(offsetX * cropSize, offsetY * cropSize, cropSize, cropSize);
-    image.resize(TILE_SIZE, TILE_SIZE, Jimp.RESIZE_BILINEAR);
-    const buffer = await image.quality(85).getBufferAsync(Jimp.MIME_JPEG);
+    resizeImage(image, TILE_SIZE, TILE_SIZE);
+    const buffer = await image.quality(85).getBufferAsync(JimpMimeJPEG);
     return {
       ok: true,
       status: 200,
