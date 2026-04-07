@@ -13,6 +13,7 @@ const statusEl = document.getElementById('status-text');
 const dateDisplayEl = document.getElementById('active-date-display');
 const sliderContainer = document.getElementById('ui-container');
 const sliderElement = document.getElementById('timeline-slider');
+const HISTORICAL_NATIVE_ZOOM = 18;
 
 let currentHistoricalLayer = null;
 let discoveredLayers = [];
@@ -173,7 +174,7 @@ sliderElement.noUiSlider.on('update', function () {
 
    const index = Math.round(Number(sliderElement.noUiSlider.get(true)));
    if (discoveredLayers[index]) {
-      dateDisplayEl.innerHTML = `Active Pass: <strong>${discoveredLayers[index].date}</strong> <em>(i.${discoveredLayers[index].iCode})</em>`;
+      dateDisplayEl.innerHTML = `Active Pass: <strong>${discoveredLayers[index].date}</strong> <em>(i.${discoveredLayers[index].iCode})</em> <small>(native z.${HISTORICAL_NATIVE_ZOOM})</small>`;
    }
 });
 
@@ -206,7 +207,10 @@ function triggerLayerRender(index) {
     tileSize: 256,
     opacity: 1.0,
     maxZoom: 19,
+    minNativeZoom: HISTORICAL_NATIVE_ZOOM,
+    maxNativeZoom: HISTORICAL_NATIVE_ZOOM,
     crossOrigin: true,
+    updateWhenZooming: false,
   });
 
   layer.layerId = layerInfo.id;
