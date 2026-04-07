@@ -2,6 +2,7 @@
 const fs = require('fs-extra');
 const path = require('path');
 const crypto = require('crypto');
+const Jimp = require('jimp');
 
 const MetadataManager = require('./MetadataManager');
 const CoverageIndexStore = require('./CoverageIndexStore');
@@ -12,6 +13,7 @@ const REQUEST_HEADERS = MetadataManager.REQUEST_HEADERS;
 const TILE_BASE_URLS = MetadataManager.BASE_URLS;
 const DEFAULT_BASE_URL = MetadataManager.BASE_URL_DEFAULT;
 const TRANSPARENT_PNG_1X1 = Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAukB9Y9l9QAAAABJRU5ErkJggg==', 'base64');
+const TILE_SIZE = 256;
 
 function isJpeg(buffer) {
   return Buffer.isBuffer(buffer) && buffer.length >= 3 && buffer[0] === 0xff && buffer[1] === 0xd8 && buffer[2] === 0xff;
@@ -21,11 +23,13 @@ class TileService {
   constructor(projectDir, options = {}) {
     this.projectDir = projectDir;
     this.tileCacheDir = path.join(projectDir, 'tile_cache');
+    this.compositeCacheDir = path.join(this.tileCacheDir, 'composite');
     this.oldDbRootPath = path.join(projectDir, 'old_dbroot.v5');
     this.secretKey = null;
     this.manager = options.manager || new MetadataManager(projectDir);
     this.coverageIndex = options.coverageIndex || new CoverageIndexStore({ rootDir: path.join(projectDir, 'workspace', 'coverage') });
     fs.ensureDirSync(this.tileCacheDir);
+    fs.ensureDirSync(this.compositeCacheDir);
   }
 
   async init() {
@@ -48,6 +52,12 @@ class TileService {
   cachePathForUrl(url) {
     const hash = crypto.createHash('md5').update(url).digest('hex');
     return path.join(this.tileCacheDir, `${hash}.jpg`);
+  }
+
+  compositeCachePathForRequest({ date, iCode, z, x, y, sourceZoom, allowSourceFallback }) {
+    const key = JSON.stringify({ date, iCode, z, x, y, sourceZoom, allowSourceFallback: !!allowSourceFallback });
+    const hash = crypto.createHash('md5').update(key).digest('hex');
+    return path.join(this.compositeCacheDir, `${hash}.jpg`);
   }
 
   async fetchAndCacheTile(tileUrl) {
@@ -145,7 +155,7 @@ class TileService {
     return this.manager.resolveLayerEntryForPath(pathCode, date, iCode);
   }
 
-  async getUnifiedTile({ date, iCode, z, x, y, allowSourceFallback = false }) {
+  async getDirectUnifiedTile({ date, iCode, z, x, y, allowSourceFallback = false }) {
     await this.init();
     const center = slippyTileToCenter(z, x, y);
     const pathCode = latLonToPath(center.lat, center.lon, z);
@@ -189,6 +199,150 @@ class TileService {
         entry,
       };
     }
+  }
+
+  async composeFromHigherNativeZoom({ date, iCode, z, x, y, sourceZoom, allowSourceFallback = false }) {
+    const scale = Math.pow(2, sourceZoom - z);
+    const mosaicSize = TILE_SIZE * scale;
+    const mosaic = new Jimp(mosaicSize, mosaicSize, 0x00000000);
+    let anySuccess = false;
+    const childResults = [];
+
+    for (let dy = 0; dy < scale; dy += 1) {
+      for (let dx = 0; dx < scale; dx += 1) {
+        const childX = x * scale + dx;
+        const childY = y * scale + dy;
+        const result = await this.getDirectUnifiedTile({
+          date,
+          iCode,
+          z: sourceZoom,
+          x: childX,
+          y: childY,
+          allowSourceFallback,
+        });
+        childResults.push({ x: childX, y: childY, ok: result.ok, status: result.status });
+        if (!result.ok || !isJpeg(result.buffer)) {
+          continue;
+        }
+        const img = await Jimp.read(result.buffer);
+        mosaic.composite(img, dx * TILE_SIZE, dy * TILE_SIZE);
+        anySuccess = true;
+      }
+    }
+
+    if (!anySuccess) {
+      return {
+        ok: false,
+        status: 404,
+        contentType: 'image/png',
+        buffer: TRANSPARENT_PNG_1X1,
+        reason: 'No source tiles available for composite downsample',
+        childResults,
+      };
+    }
+
+    mosaic.resize(TILE_SIZE, TILE_SIZE, Jimp.RESIZE_BILINEAR);
+    const buffer = await mosaic.quality(85).getBufferAsync(Jimp.MIME_JPEG);
+    return {
+      ok: true,
+      status: 200,
+      contentType: 'image/jpeg',
+      buffer,
+      childResults,
+      composited: true,
+      sourceZoom,
+    };
+  }
+
+  async composeFromLowerNativeZoom({ date, iCode, z, x, y, sourceZoom, allowSourceFallback = false }) {
+    const scale = Math.pow(2, z - sourceZoom);
+    const parentX = Math.floor(x / scale);
+    const parentY = Math.floor(y / scale);
+    const offsetX = x % scale;
+    const offsetY = y % scale;
+    const cropSize = TILE_SIZE / scale;
+
+    const parent = await this.getDirectUnifiedTile({
+      date,
+      iCode,
+      z: sourceZoom,
+      x: parentX,
+      y: parentY,
+      allowSourceFallback,
+    });
+
+    if (!parent.ok || !isJpeg(parent.buffer)) {
+      return {
+        ok: false,
+        status: parent.status || 404,
+        contentType: 'image/png',
+        buffer: TRANSPARENT_PNG_1X1,
+        reason: parent.reason || 'No parent tile available for upscale composite',
+      };
+    }
+
+    const image = await Jimp.read(parent.buffer);
+    image.crop(offsetX * cropSize, offsetY * cropSize, cropSize, cropSize);
+    image.resize(TILE_SIZE, TILE_SIZE, Jimp.RESIZE_BILINEAR);
+    const buffer = await image.quality(85).getBufferAsync(Jimp.MIME_JPEG);
+    return {
+      ok: true,
+      status: 200,
+      contentType: 'image/jpeg',
+      buffer,
+      composited: true,
+      sourceZoom,
+      parentTile: { z: sourceZoom, x: parentX, y: parentY },
+    };
+  }
+
+  async getCompositedUnifiedTile({ date, iCode, z, x, y, sourceZoom, allowSourceFallback = false }) {
+    const sourceZoomNum = Number(sourceZoom);
+    if (!Number.isFinite(sourceZoomNum)) {
+      return this.getDirectUnifiedTile({ date, iCode, z, x, y, allowSourceFallback });
+    }
+
+    if (sourceZoomNum === z) {
+      return this.getDirectUnifiedTile({ date, iCode, z, x, y, allowSourceFallback });
+    }
+
+    const cachePath = this.compositeCachePathForRequest({ date, iCode, z, x, y, sourceZoom: sourceZoomNum, allowSourceFallback });
+    if (await fs.pathExists(cachePath)) {
+      const buffer = await fs.readFile(cachePath);
+      return {
+        ok: true,
+        status: 200,
+        contentType: 'image/jpeg',
+        buffer,
+        cachePath,
+        composited: true,
+        sourceZoom: sourceZoomNum,
+        fromCache: true,
+      };
+    }
+
+    let result;
+    if (sourceZoomNum > z) {
+      result = await this.composeFromHigherNativeZoom({ date, iCode, z, x, y, sourceZoom: sourceZoomNum, allowSourceFallback });
+    } else {
+      result = await this.composeFromLowerNativeZoom({ date, iCode, z, x, y, sourceZoom: sourceZoomNum, allowSourceFallback });
+    }
+
+    if (result.ok && isJpeg(result.buffer)) {
+      await fs.writeFile(cachePath, result.buffer);
+      result.cachePath = cachePath;
+      result.fromCache = false;
+    }
+
+    return result;
+  }
+
+  async getUnifiedTile({ date, iCode, z, x, y, sourceZoom = null, allowSourceFallback = false }) {
+    await this.init();
+    if (sourceZoom !== null && sourceZoom !== undefined) {
+      return this.getCompositedUnifiedTile({ date, iCode, z, x, y, sourceZoom, allowSourceFallback });
+    }
+    return this.getDirectUnifiedTile({ date, iCode, z, x, y, allowSourceFallback });
   }
 }
 

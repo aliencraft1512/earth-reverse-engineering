@@ -275,7 +275,6 @@ function updateTimeline(layers) {
     }
   });
 
-  // Switch to the target layer immediately
   void triggerLayerRender(targetIndex);
 }
 
@@ -295,7 +294,7 @@ sliderElement.noUiSlider.on('update', function () {
    const index = Math.round(Number(sliderElement.noUiSlider.get(true)));
    if (discoveredLayers[index]) {
       const nativeZoomText = Number.isFinite(currentHistoricalNativeZoom) ? currentHistoricalNativeZoom : '?';
-      dateDisplayEl.innerHTML = `Active Pass: <strong>${discoveredLayers[index].date}</strong> <em>(i.${discoveredLayers[index].iCode})</em> <small>(native z.${nativeZoomText})</small>`;
+      dateDisplayEl.innerHTML = `Active Pass: <strong>${discoveredLayers[index].date}</strong> <em>(i.${discoveredLayers[index].iCode})</em> <small>(source z.${nativeZoomText})</small>`;
    }
 });
 
@@ -308,8 +307,8 @@ function clearOverlays() {
   dateDisplayEl.textContent = 'Historical Imagery Timeline';
 }
 
-function tileUrlForLayer(layerInfo) {
-  return `/tiles/unified/${encodeURIComponent(layerInfo.date)}/${encodeURIComponent(layerInfo.iCode)}/{z}/{x}/{y}.jpg`;
+function tileUrlForLayer(layerInfo, sourceZoom) {
+  return `/tiles/unified/${encodeURIComponent(layerInfo.date)}/${encodeURIComponent(layerInfo.iCode)}/{z}/{x}/{y}.jpg?sourceZoom=${encodeURIComponent(sourceZoom)}`;
 }
 
 async function triggerLayerRender(index) {
@@ -330,19 +329,18 @@ async function triggerLayerRender(index) {
     return;
   }
 
-  // Swap out layer
   if (currentHistoricalLayer) {
     map.removeLayer(currentHistoricalLayer);
   }
 
-  const layer = L.tileLayer(tileUrlForLayer(layerInfo), {
+  const layer = L.tileLayer(tileUrlForLayer(layerInfo, chosenNativeZoom), {
     tileSize: 256,
     opacity: 1.0,
     maxZoom: 19,
-    minNativeZoom: chosenNativeZoom,
-    maxNativeZoom: chosenNativeZoom,
     crossOrigin: true,
     updateWhenZooming: false,
+    updateWhenIdle: true,
+    keepBuffer: 0,
   });
 
   layer.layerId = layerInfo.id;
@@ -353,13 +351,13 @@ async function triggerLayerRender(index) {
   currentHistoricalNativeZoom = chosenNativeZoom;
 
   if (discoveredLayers[index]) {
-    dateDisplayEl.innerHTML = `Active Pass: <strong>${discoveredLayers[index].date}</strong> <em>(i.${discoveredLayers[index].iCode})</em> <small>(native z.${chosenNativeZoom})</small>`;
+    dateDisplayEl.innerHTML = `Active Pass: <strong>${discoveredLayers[index].date}</strong> <em>(i.${discoveredLayers[index].iCode})</em> <small>(source z.${chosenNativeZoom})</small>`;
   }
 }
 
-// Map event listeners bind
+map.on('movestart', clearOverlays);
+map.on('zoomstart', clearOverlays);
 map.on('moveend', queueDiscovery);
 map.on('zoomend', queueDiscovery);
 
-// Kick off
 setTimeout(() => queueDiscovery(), 200);

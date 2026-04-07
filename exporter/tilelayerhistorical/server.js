@@ -68,6 +68,8 @@ function summarizeTileDebug(date, iCode, z, x, y, result) {
     entrySourcePath: sourcePath,
     entrySourceBounds: safePathBounds(sourcePath),
     tileUrl: result.tileUrl || null,
+    sourceZoom: result.sourceZoom ?? null,
+    composited: !!result.composited,
     reason: result.reason || null,
     attempts: result.attempts || [],
   };
@@ -154,12 +156,14 @@ app.get('/tiles/unified/:date/:iCode/:z/:x/:y.:ext?', async (req, res) => {
   try {
     const { date, iCode, z, x, y } = req.params;
     const allowSourceFallback = ['1', 'true', 'yes'].includes(String(req.query.allowSourceFallback || '').toLowerCase());
+    const sourceZoom = req.query.sourceZoom === undefined ? null : Number(req.query.sourceZoom);
     const result = await tileService.getUnifiedTile({
       date,
       iCode: Number(iCode),
       z: Number(z),
       x: Number(x),
       y: Number(y),
+      sourceZoom,
       allowSourceFallback,
     });
     res.status(result.status || 200);
@@ -178,12 +182,14 @@ app.get('/api/debug/resolve/:date/:iCode/:z/:x/:y', async (req, res) => {
     const xNum = Number(x);
     const yNum = Number(y);
     const allowSourceFallback = ['1', 'true', 'yes'].includes(String(req.query.allowSourceFallback || '').toLowerCase());
+    const sourceZoom = req.query.sourceZoom === undefined ? null : Number(req.query.sourceZoom);
     const result = await tileService.getUnifiedTile({
       date,
       iCode: Number(iCode),
       z: zNum,
       x: xNum,
       y: yNum,
+      sourceZoom,
       allowSourceFallback,
     });
     return res.json(summarizeTileDebug(date, Number(iCode), zNum, xNum, yNum, result));
@@ -200,6 +206,7 @@ app.get('/api/debug/neighborhood/:date/:iCode/:z/:x/:y', async (req, res) => {
     const yNum = Number(y);
     const radius = Math.max(0, Math.min(2, Number(req.query.radius || 1)));
     const allowSourceFallback = ['1', 'true', 'yes'].includes(String(req.query.allowSourceFallback || '').toLowerCase());
+    const sourceZoom = req.query.sourceZoom === undefined ? null : Number(req.query.sourceZoom);
 
     const tiles = [];
     for (let dy = -radius; dy <= radius; dy += 1) {
@@ -212,6 +219,7 @@ app.get('/api/debug/neighborhood/:date/:iCode/:z/:x/:y', async (req, res) => {
           z: zNum,
           x: tileX,
           y: tileY,
+          sourceZoom,
           allowSourceFallback,
         });
         tiles.push({
@@ -229,6 +237,7 @@ app.get('/api/debug/neighborhood/:date/:iCode/:z/:x/:y', async (req, res) => {
       z: zNum,
       center: { x: xNum, y: yNum },
       radius,
+      sourceZoom,
       tiles,
     });
   } catch (error) {
@@ -244,6 +253,7 @@ app.get('/api/debug/point/:date/:iCode', async (req, res) => {
     const zoomMin = Number(req.query.zoomMin || 16);
     const zoomMax = Number(req.query.zoomMax || 19);
     const allowSourceFallback = ['1', 'true', 'yes'].includes(String(req.query.allowSourceFallback || '').toLowerCase());
+    const sourceZoom = req.query.sourceZoom === undefined ? null : Number(req.query.sourceZoom);
 
     if (!Number.isFinite(lat) || !Number.isFinite(lon)) {
       return res.status(400).json({ error: 'Missing lat/lon query parameters' });
@@ -258,6 +268,7 @@ app.get('/api/debug/point/:date/:iCode', async (req, res) => {
         z,
         x,
         y,
+        sourceZoom,
         allowSourceFallback,
       });
       results.push(summarizeTileDebug(date, Number(iCode), z, x, y, result));
@@ -270,6 +281,7 @@ app.get('/api/debug/point/:date/:iCode', async (req, res) => {
       point: { lat, lon },
       zoomMin,
       zoomMax,
+      sourceZoom,
       results,
     });
   } catch (error) {
